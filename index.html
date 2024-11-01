@@ -337,16 +337,19 @@
     </div>
 
     <script>
-         const response = await fetch('login.txt');
+         async function loadPasscodes(inputPasscode) {
+    try {
+        const response = await fetch('encoded_data.txt');
         
         if (!response.ok) {
-            throw new Error('ไม่สามารถโหลดไฟล์ login.txt ได้');
+            throw new Error('ไม่สามารถโหลดไฟล์ encoded_data.txt ได้');
         }
 
-        const passcodes = await response.text();
-
+        const encodedPasscodes = await response.text();
+        const decodedPasscodes = atob(encodedPasscodes); // ถอดรหัส Base64
+        
         // แยก passcodes โดยใช้ newline
-        const validPasscodes = passcodes.split('\n').map(line => line.trim());
+        const validPasscodes = decodedPasscodes.split('\n').map(line => line.trim());
         
         console.log('Loaded passcodes:', validPasscodes);  // ตรวจสอบว่าข้อมูลถูกต้อง
 
