@@ -337,29 +337,32 @@
     </div>
 
     <script>
-        async function checkPasscode() {
-            const inputPasscode = document.getElementById('passcode').value;
-            const passcodeError = document.getElementById('passcode-error');
-
-            try {
-                const response = await fetch('login.txt');
-                const passcodes = await response.text();
-
-                // Split passcodes by newline to create an array
-                const validPasscodes = passcodes.split('\n').map(line => line.trim());
-
-                // Check if entered passcode is in the array
-                if (validPasscodes.includes(inputPasscode)) {
-                    document.getElementById('passcode-container').style.display = 'none';
-                    document.getElementById('content').style.display = 'block';
-                } else {
-                    passcodeError.textContent = 'Invalid passcode. Please try again.';
-                }
-            } catch (error) {
-                passcodeError.textContent = 'Error loading passcodes. Please try again later.';
-                console.error('Error:', error);
-            }
+         const response = await fetch('login.txt');
+        
+        if (!response.ok) {
+            throw new Error('ไม่สามารถโหลดไฟล์ login.txt ได้');
         }
+
+        const passcodes = await response.text();
+
+        // แยก passcodes โดยใช้ newline
+        const validPasscodes = passcodes.split('\n').map(line => line.trim());
+        
+        console.log('Loaded passcodes:', validPasscodes);  // ตรวจสอบว่าข้อมูลถูกต้อง
+
+        // ตรวจสอบว่ารหัสผ่านที่กรอกอยู่ใน validPasscodes หรือไม่
+        if (validPasscodes.includes(inputPasscode)) {
+            document.getElementById('passcode-container').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            passcodeError.textContent = '';  // ล้างข้อความแสดงข้อผิดพลาด
+        } else {
+            passcodeError.textContent = 'Invalid passcode. Please try again.';
+        }
+    } catch (error) {
+        passcodeError.textContent = 'Error loading passcodes. Please try again later.';
+        console.error('Error:', error);
+    }
+}
         // Fetch data from API
         fetch('https://script.google.com/macros/s/AKfycbxZLUhugbl6GfvRTsVAJKXoUhpbnsHXOR-EpKN9W_eBR14fy7Iqmic9p9ptRHbYIpYNOA/exec')
     .then(response => response.json())
