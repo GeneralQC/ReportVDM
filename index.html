@@ -339,7 +339,7 @@
     <script>
          async function loadPasscodes(inputPasscode) {
     try {
-        const response = await fetch('encoded_data.txt');
+        const response = await fetch('login.txt');
         
         if (!response.ok) {
             throw new Error('ไม่สามารถโหลดไฟล์ encoded_data.txt ได้');
