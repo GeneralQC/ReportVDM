@@ -340,20 +340,21 @@
          async function loadPasscodes(inputPasscode) {
     try {
         const response = await fetch('login.txt');
-        
+
         if (!response.ok) {
-            throw new Error('ไม่สามารถโหลดไฟล์ encoded_data.txt ได้');
+            throw new Error('ไม่สามารถโหลดไฟล์ login.txt ได้');
         }
 
         const encodedPasscodes = await response.text();
         const decodedPasscodes = atob(encodedPasscodes); // ถอดรหัส Base64
-        
+
         // แยก passcodes โดยใช้ newline
         const validPasscodes = decodedPasscodes.split('\n').map(line => line.trim());
-        
-        console.log('Loaded passcodes:', validPasscodes);  // ตรวจสอบว่าข้อมูลถูกต้อง
+
+       
 
         // ตรวจสอบว่ารหัสผ่านที่กรอกอยู่ใน validPasscodes หรือไม่
+        const passcodeError = document.getElementById('passcode-error'); // อ้างอิง error div ให้ถูกต้อง
         if (validPasscodes.includes(inputPasscode)) {
             document.getElementById('passcode-container').style.display = 'none';
             document.getElementById('content').style.display = 'block';
@@ -362,9 +363,14 @@
             passcodeError.textContent = 'Invalid passcode. Please try again.';
         }
     } catch (error) {
+        const passcodeError = document.getElementById('passcode-error'); // อ้างอิง error div ให้ถูกต้อง
         passcodeError.textContent = 'Error loading passcodes. Please try again later.';
         console.error('Error:', error);
     }
+}
+        function checkPasscode() {
+    const inputPasscode = document.getElementById('passcode').value; // อ้างอิง ID ที่ถูกต้อง
+    loadPasscodes(inputPasscode); // เรียกฟังก์ชัน loadPasscodes พร้อม passcode ที่กรอก
 }
         // Fetch data from API
         fetch('https://script.google.com/macros/s/AKfycbxZLUhugbl6GfvRTsVAJKXoUhpbnsHXOR-EpKN9W_eBR14fy7Iqmic9p9ptRHbYIpYNOA/exec')
