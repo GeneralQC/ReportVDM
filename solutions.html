@@ -88,8 +88,8 @@
             font-size: 0.9rem;
         }
 
-        /* Popup styling */
-        .popup {
+       /* Popup styling */
+       .popup {
             display: none;
             position: fixed;
             top: 50%;
@@ -117,12 +117,6 @@
             max-width: 100%;
             margin-bottom: 15px;
             border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .popup img.enlarged {
-            transform: scale(1.5);
         }
 
         .popup p {
@@ -132,17 +126,19 @@
         }
 
         .popup-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            background-color: #00A7C1;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 1.5rem;
-            color: #aaa;
-            transition: color 0.2s;
+            transition: background-color 0.3s;
         }
 
         .popup-close:hover {
-            color: #00A7C1;
+            background-color: #008b9f;
         }
 
         /* Overlay for popup */
@@ -218,40 +214,33 @@
     <div class="pagination" id="pagination"></div>
     
     <!-- Popup and Overlay for displaying detailed information -->
-    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
     <div class="popup" id="popup">
-        <span class="popup-close" onclick="closePopup()">×</span>
         <img id="popupImage" src="" alt="Solution Image" onclick="toggleImageSize()">
         <h2 id="popupTopic"></h2>
         <p id="popupDetail"></p>
+        <button class="popup-close" onclick="closePopup()">Close</button>
     </div>
 
     <script>
         const apiUrl = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
         let solutions = [];
-        let currentPage = 1;
-        const itemsPerPage = 20;
 
         async function fetchSolutions() {
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
                 solutions = data;
-                displaySolutions(solutions, currentPage);
-                displayPagination(solutions.length);
+                displaySolutions(solutions);
             } catch (error) {
                 console.error("Error fetching solutions:", error);
             }
         }
 
-        function displaySolutions(items, page) {
+        function displaySolutions(items) {
             const solutionsContainer = document.getElementById("solutions");
             solutionsContainer.innerHTML = "";
-            const start = (page - 1) * itemsPerPage;
-            const end = page * itemsPerPage;
-            const paginatedItems = items.slice(start, end);
-
-            paginatedItems.forEach(item => {
+            items.forEach(item => {
                 const solutionElement = document.createElement("div");
                 solutionElement.className = "solution";
                 solutionElement.onclick = () => openPopup(item);
@@ -260,6 +249,7 @@
                     <div class="solution-content">
                         <h3>${item.topic}</h3>
                         <p>${item.detail}</p>
+                       
                     </div>
                 `;
                 solutionsContainer.appendChild(solutionElement);
@@ -268,16 +258,12 @@
 
         function filterSolutions() {
             const searchQuery = document.getElementById("search").value.toLowerCase();
-            const categoryFilter = document.getElementById("categoryFilter").value;
-            const filteredSolutions = solutions.filter(item => {
-                const matchesSearch = item.topic.toLowerCase().includes(searchQuery);
-                const matchesCategory = categoryFilter === "" || item.category === categoryFilter;
-                return matchesSearch && matchesCategory;
-            });
-            displaySolutions(filteredSolutions, 1);
-            displayPagination(filteredSolutions.length);
+            const filteredSolutions = solutions.filter(item => 
+                item.topic.toLowerCase().includes(searchQuery) || 
+                item.detail.toLowerCase().includes(searchQuery)
+            );
+            displaySolutions(filteredSolutions);
         }
-
         function displayPagination(totalItems) {
             const paginationContainer = document.getElementById("pagination");
             paginationContainer.innerHTML = "";
@@ -286,10 +272,11 @@
             for (let i = 1; i <= totalPages; i++) {
                 const button = document.createElement("button");
                 button.innerText = i;
-                button.className = currentPage === i ? "active" : "";
+                button.className = (i === currentPage) ? "active" : "";
                 button.onclick = () => {
                     currentPage = i;
                     displaySolutions(solutions, currentPage);
+                    displayPagination(totalItems);
                 };
                 paginationContainer.appendChild(button);
             }
@@ -299,18 +286,19 @@
             document.getElementById("popupImage").src = item.image;
             document.getElementById("popupTopic").innerText = item.topic;
             document.getElementById("popupDetail").innerText = item.detail;
-            document.getElementById("popupOverlay").style.display = "block";
             document.getElementById("popup").style.display = "block";
+            document.getElementById("popupOverlay").style.display = "block";
         }
 
         function closePopup() {
-            document.getElementById("popupOverlay").style.display = "none";
             document.getElementById("popup").style.display = "none";
+            document.getElementById("popupOverlay").style.display = "none";
         }
 
-        function toggleImageSize() {
-            const img = document.getElementById("popupImage");
-            img.classList.toggle("enlarged");
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none";
+            document.getElementById("popupOverlay").style.display = "none";
         }
 
         function googleTranslateElementInit() {
