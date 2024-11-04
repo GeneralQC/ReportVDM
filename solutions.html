@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem Solving Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0; /* Adjust margin for better mobile fit */
+            background-color: #a0dfe972;
+            color: #333;
+        }
+
+        h1 {
+            color: #00A7C1;
+            text-align: center;
+            font-size: 2rem;
+            margin: 20px 0; /* Adjusted margin */
+        }
+
+        /* Search bar and dropdown styling */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            width: 70%; /* Adjusted width for better layout */
+            max-width: 400px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px; /* Space between search bar and dropdown */
+        }
+
+        .category-filter {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        /* Solution card styling */
+        .solution {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            background-color: #fff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            border-radius: 8px;
+            flex-direction: row; /* Ensure items are aligned in a row */
+        }
+
+        .solution:hover {
+            border-color: #00A7C1;
+            box-shadow: 0 4px 8px rgba(0, 167, 193, 0.2);
+        }
+
+        .solution img {
+            max-width: 100px;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .solution-content {
+            max-width: 1000px;
+            flex: 1; /* Allow content to grow */
+        }
+
+        .solution-content h3 {
+            color: #00A7C1;
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .solution-content p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Popup styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%; /* Use 90% width for mobile */
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .popup h2 {
+            color: #00A7C1;
+            margin-top: 0;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #00A7C1;
+            padding-bottom: 10px;
+        }
+
+        .popup img {
+            max-width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .popup img.enlarged {
+            transform: scale(1.5);
+        }
+
+        .popup p {
+            font-size: 1rem;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #aaa;
+            transition: color 0.2s;
+        }
+
+        .popup-close:hover {
+            color: #00A7C1;
+        }
+
+        /* Overlay for popup */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Pagination */
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #00A7C1;
+            background-color: #fff;
+            color: #00A7C1;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination button:hover {
+            background-color: #00A7C1;
+            color: #fff;
+        }
+
+        .pagination .active {
+            background-color: #00A7C1;
+            color: #fff;
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 600px) {
+            .solution {
+                flex-direction: column; /* Stack items on mobile */
+                align-items: flex-start; /* Align items to the left */
+            }
+
+            .solution img {
+                margin-bottom: 10px; /* Add space below the image */
+                max-width: 80%; /* Adjust image size on mobile */
+            }
+
+            .popup {
+                width: 95%; /* Adjust width for mobile */
+            }
+
+            h1 {
+                font-size: 1.8rem; /* Smaller font size on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <h1>The Solutions</h1>
+    <div class="search-container">
+        <input type="text" id="search" class="search-bar" placeholder="Search by error topic..." oninput="filterSolutions()" />
+       <div id="google_translate_element"></div>
+    </div>
+
+    <div id="solutions"></div>
+    <div class="pagination" id="pagination"></div>
+    
+    <!-- Popup and Overlay for displaying detailed information -->
+    <div class="popup-overlay" id="popupOverlay"></div>
+    <div class="popup" id="popup">
+        <span class="popup-close" onclick="closePopup()">×</span>
+        <img id="popupImage" src="" alt="Solution Image" onclick="toggleImageSize()">
+        <h2 id="popupTopic"></h2>
+        <p id="popupDetail"></p>
+    </div>
+
+    <script>
+        const apiUrl = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
+        let solutions = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
+        async function fetchSolutions() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                solutions = data;
+                displaySolutions(solutions, currentPage);
+                displayPagination(solutions.length);
+            } catch (error) {
+                console.error("Error fetching solutions:", error);
+            }
+        }
+
+        function displaySolutions(items, page) {
+            const solutionsContainer = document.getElementById("solutions");
+            solutionsContainer.innerHTML = "";
+            const start = (page - 1) * itemsPerPage;
+            const end = page * itemsPerPage;
+            const paginatedItems = items.slice(start, end);
+
+            paginatedItems.forEach(item => {
+                const solutionElement = document.createElement("div");
+                solutionElement.className = "solution";
+                solutionElement.onclick = () => openPopup(item);
+                solutionElement.innerHTML = `
+                    <img src="${item.image}" alt="Solution Image">
+                    <div class="solution-content">
+                        <h3>${item.topic}</h3>
+                        <p>${item.detail}</p>
+                    </div>
+                `;
+                solutionsContainer.appendChild(solutionElement);
+            });
+        }
+
+        function filterSolutions() {
+            const searchQuery = document.getElementById("search").value.toLowerCase();
+            const categoryFilter = document.getElementById("categoryFilter").value;
+            const filteredSolutions = solutions.filter(item => {
+                const matchesSearch = item.topic.toLowerCase().includes(searchQuery);
+                const matchesCategory = categoryFilter === "" || item.category === categoryFilter;
+                return matchesSearch && matchesCategory;
+            });
+            displaySolutions(filteredSolutions, 1);
+            displayPagination(filteredSolutions.length);
+        }
+
+        function displayPagination(totalItems) {
+            const paginationContainer = document.getElementById("pagination");
+            paginationContainer.innerHTML = "";
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement("button");
+                button.innerText = i;
+                button.className = currentPage === i ? "active" : "";
+                button.onclick = () => {
+                    currentPage = i;
+                    displaySolutions(solutions, currentPage);
+                };
+                paginationContainer.appendChild(button);
+            }
+        }
+
+        function openPopup(item) {
+            document.getElementById("popupImage").src = item.image;
+            document.getElementById("popupTopic").innerText = item.topic;
+            document.getElementById("popupDetail").innerText = item.detail;
+            document.getElementById("popupOverlay").style.display = "block";
+            document.getElementById("popup").style.display = "block";
+        }
+
+        function closePopup() {
+            document.getElementById("popupOverlay").style.display = "none";
+            document.getElementById("popup").style.display = "none";
+        }
+
+        function toggleImageSize() {
+            const img = document.getElementById("popupImage");
+            img.classList.toggle("enlarged");
+        }
+
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+        }
+        // Fetch solutions when the page loads
+        fetchSolutions();
+    </script>
+    <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
