@@ -302,6 +302,30 @@
     transition: transform 0.3s ease;
 }
         }
+
+        .menu-bar-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .menu-bar {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .menu-bar a {
+            text-decoration: none;
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            
+        }
+
+        .menu-bar a:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 
@@ -313,7 +337,11 @@
     </div>
 
     <div id="content" style="display: none;">
-        <div id="google_translate_element"></div>
+        <div id="google_translate_element">
+             <div class="menu-bar">
+                <a href="solutions.html">The Solutions</a>
+            </div>
+        </div>
         <div class="header">
             <i class="fas fa-rocket" style="margin-right: 8px;"></i>
             Report VDM
