@@ -414,7 +414,7 @@
         });
 
         // เรียงลำดับข้อมูลตามวันที่ล่าสุด
-        const sortedData = parsedData.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+        const sortedData = parsedData.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 30);
 
         sortedData.forEach(item => {
             const newsItem = document.createElement('div');
