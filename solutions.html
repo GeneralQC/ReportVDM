@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,8 @@
         /* General styling */
         body {
             font-family: Arial, sans-serif;
-            margin: 0; /* Adjust margin for better mobile fit */
+            margin: 0;
+            /* Adjust margin for better mobile fit */
             background-color: #a0dfe972;
             color: #333;
         }
@@ -18,7 +20,8 @@
             color: #00A7C1;
             text-align: center;
             font-size: 2rem;
-            margin: 20px 0; /* Adjusted margin */
+            margin: 20px 0;
+            /* Adjusted margin */
         }
 
         /* Search bar and dropdown styling */
@@ -29,13 +32,15 @@
         }
 
         .search-bar {
-            width: 70%; /* Adjusted width for better layout */
+            width: 70%;
+            /* Adjusted width for better layout */
             max-width: 400px;
             padding: 10px;
             font-size: 1rem;
             border: 1px solid #ddd;
             border-radius: 5px;
-            margin-right: 10px; /* Space between search bar and dropdown */
+            margin-right: 10px;
+            /* Space between search bar and dropdown */
         }
 
         .category-filter {
@@ -57,7 +62,8 @@
             background-color: #fff;
             transition: border-color 0.3s, box-shadow 0.3s;
             border-radius: 8px;
-            flex-direction: row; /* Ensure items are aligned in a row */
+            flex-direction: row;
+            /* Ensure items are aligned in a row */
         }
 
         .solution:hover {
@@ -73,7 +79,8 @@
 
         .solution-content {
             max-width: 1000px;
-            flex: 1; /* Allow content to grow */
+            flex: 1;
+            /* Allow content to grow */
         }
 
         .solution-content h3 {
@@ -88,14 +95,15 @@
             font-size: 0.9rem;
         }
 
-       /* Popup styling */
-       .popup {
+        /* Popup styling */
+        .popup {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 90%; /* Use 90% width for mobile */
+            width: 90%;
+            /* Use 90% width for mobile */
             max-width: 600px;
             padding: 20px;
             background-color: #fff;
@@ -183,36 +191,222 @@
         /* Media Queries for Responsive Design */
         @media (max-width: 600px) {
             .solution {
-                flex-direction: column; /* Stack items on mobile */
-                align-items: flex-start; /* Align items to the left */
+                flex-direction: column;
+                /* Stack items on mobile */
+                align-items: flex-start;
+                /* Align items to the left */
             }
 
             .solution img {
-                margin-bottom: 10px; /* Add space below the image */
-                max-width: 80%; /* Adjust image size on mobile */
+                margin-bottom: 10px;
+                /* Add space below the image */
+                max-width: 80%;
+                /* Adjust image size on mobile */
             }
 
             .popup {
-                width: 95%; /* Adjust width for mobile */
+                width: 95%;
+                /* Adjust width for mobile */
             }
 
             h1 {
-                font-size: 1.8rem; /* Smaller font size on mobile */
+                font-size: 1.8rem;
+                /* Smaller font size on mobile */
             }
+        }
+
+
+        /* Chat Container */
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 100%;
+            max-width: 400px;
+            height: 600px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .chat-container.open {
+            transform: translateY(0);
+        }
+
+        .chat-container.collapsed {
+            height: 50px;
+        }
+
+        /* Header */
+        .chat-header {
+            background: linear-gradient(90deg, #4c8bf5, #2b65d9);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .chat-header button {
+            background: transparent;
+            border: none;
+            color: #ffffff;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Chat Log */
+        .chat-log {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            scrollbar-width: thin;
+            scrollbar-color: #4c8bf5 #f9f9f9;
+        }
+
+        .chat-log::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-log::-webkit-scrollbar-thumb {
+            background-color: #4c8bf5;
+            border-radius: 4px;
+        }
+
+        .chat-message {
+            margin: 10px 0;
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            font-size: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message {
+            background: #4c8bf5;
+            color: #ffffff;
+            margin-left: auto;
+        }
+
+        .bot-message {
+            background: #e4e6eb;
+            color: #333333;
+        }
+
+        /* Chat Input Bar */
+        .chat-input {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            background: #ffffff;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #4c8bf5;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            background: linear-gradient(90deg, #4c8bf5, #2b65d9);
+            color: #ffffff;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input button:hover {
+            background: #2b65d9;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Chat Toggle Button */
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #4c8bf5;
+            color: #ffffff;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .chat-toggle:hover {
+            background: #2b65d9;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #00A7C1;
+            background-color: #fff;
+            color: #00A7C1;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .pagination button.active {
+            background-color: #00A7C1;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .pagination button:hover {
+            background-color: #00A7C1;
+            color: #fff;
         }
     </style>
 </head>
+
 <body>
-    
+
     <h1>The Solutions</h1>
     <div class="search-container">
-        <input type="text" id="search" class="search-bar" placeholder="Search by error topic..." oninput="filterSolutions()" />
-       <div id="google_translate_element"></div>
+        <label for="search" style="margin-right: 10px; font-size: 1rem;">Search by topic:</label>
+        <input type="text" id="search" class="search-bar" placeholder="Search by error topic..."
+            oninput="filterSolutions()" />
+
+        <label for="language" style="margin-left: 20px; font-size: 1rem;">Select Language:</label>
+        <div id="google_translate_element" style="display: inline-block;"></div>
     </div>
 
     <div id="solutions"></div>
     <div class="pagination" id="pagination"></div>
-    
+
     <!-- Popup and Overlay for displaying detailed information -->
     <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
     <div class="popup" id="popup">
@@ -221,25 +415,48 @@
         <p id="popupDetail"></p>
         <button class="popup-close" onclick="closePopup()">Close</button>
     </div>
+    <div class="chat-container collapsed" id="chat-container">
+        <!-- Header -->
+        <div class="chat-header" onclick="collapseChat()">
+            VDM Genie Pro2
+            <button id="collapse-btn">−</button>
+        </div>
 
+        <!-- Chat Log -->
+        <div class="chat-log" id="chat-log"></div>
+
+        <!-- Chat Input -->
+        <div class="chat-input" id="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+
+        </div>
+    </div>
     <script>
         const apiUrl = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
         let solutions = [];
+        let currentPage = 1;
+        const itemsPerPage = 10;
 
         async function fetchSolutions() {
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
                 solutions = data;
-                displaySolutions(solutions);
+                displaySolutions();
+                displayPagination();
             } catch (error) {
                 console.error("Error fetching solutions:", error);
             }
         }
 
-        function displaySolutions(items) {
+        function displaySolutions() {
             const solutionsContainer = document.getElementById("solutions");
             solutionsContainer.innerHTML = "";
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const items = solutions.slice(startIndex, endIndex);
+
             items.forEach(item => {
                 const solutionElement = document.createElement("div");
                 solutionElement.className = "solution";
@@ -249,36 +466,120 @@
                     <div class="solution-content">
                         <h3>${item.topic}</h3>
                         <p>${item.detail}</p>
-                       
                     </div>
                 `;
                 solutionsContainer.appendChild(solutionElement);
             });
         }
 
+        function displayPagination(filteredSolutions) {
+    const paginationContainer = document.getElementById("pagination");
+    paginationContainer.innerHTML = ""; // ล้างปุ่มเดิมก่อน
+
+    const totalPages = Math.ceil(filteredSolutions.length / itemsPerPage);
+
+    // เพิ่มปุ่ม Previous
+    if (currentPage > 1) {
+        const prevButton = document.createElement("button");
+        prevButton.innerText = "Previous";
+        prevButton.onclick = () => {
+            currentPage--; // ย้อนหน้ากลับ
+            displayFilteredSolutions(filteredSolutions);
+            displayPagination(filteredSolutions);
+        };
+        paginationContainer.appendChild(prevButton);
+    }
+
+    // แสดงปุ่มเลขหน้า
+    for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement("button");
+        pageButton.innerText = i;
+        pageButton.classList.add("page-number");
+
+        // เน้นเลขหน้าปัจจุบัน
+        if (i === currentPage) {
+            pageButton.classList.add("active");
+        }
+
+        pageButton.onclick = () => {
+            currentPage = i; // เปลี่ยนเป็นหน้าที่คลิก
+            displayFilteredSolutions(filteredSolutions);
+            displayPagination(filteredSolutions);
+        };
+
+        paginationContainer.appendChild(pageButton);
+    }
+
+    // เพิ่มปุ่ม Next
+    if (currentPage < totalPages) {
+        const nextButton = document.createElement("button");
+        nextButton.innerText = "Next";
+        nextButton.onclick = () => {
+            currentPage++; // ไปหน้าถัดไป
+            displayFilteredSolutions(filteredSolutions);
+            displayPagination(filteredSolutions);
+        };
+        paginationContainer.appendChild(nextButton);
+    }
+}
         function filterSolutions() {
-            const searchQuery = document.getElementById("search").value.toLowerCase();
-            const filteredSolutions = solutions.filter(item => 
-                item.topic.toLowerCase().includes(searchQuery) || 
+            const searchQuery = document.getElementById("search").value.toLowerCase().trim();
+            const filteredSolutions = solutions.filter(item =>
+                item.topic.toLowerCase().includes(searchQuery) ||
                 item.detail.toLowerCase().includes(searchQuery)
             );
-            displaySolutions(filteredSolutions);
+            currentPage = 1; // รีเซ็ตหน้าปัจจุบัน
+            displayFilteredSolutions(filteredSolutions);
+            displayPagination(filteredSolutions);
         }
-        function displayPagination(totalItems) {
+
+        function displayFilteredSolutions(filteredSolutions) {
+            const solutionsContainer = document.getElementById("solutions");
+            solutionsContainer.innerHTML = "";
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const items = filteredSolutions.slice(startIndex, endIndex);
+
+            items.forEach(item => {
+                const solutionElement = document.createElement("div");
+                solutionElement.className = "solution";
+                solutionElement.onclick = () => openPopup(item);
+                solutionElement.innerHTML = `
+            <img src="${item.image}" alt="Solution Image">
+            <div class="solution-content">
+                <h3>${item.topic}</h3>
+                <p>${item.detail}</p>
+            </div>
+        `;
+                solutionsContainer.appendChild(solutionElement);
+            });
+        }
+
+        function displayPagination(filteredSolutions) {
             const paginationContainer = document.getElementById("pagination");
             paginationContainer.innerHTML = "";
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            const totalPages = Math.ceil(filteredSolutions.length / itemsPerPage);
 
-            for (let i = 1; i <= totalPages; i++) {
-                const button = document.createElement("button");
-                button.innerText = i;
-                button.className = (i === currentPage) ? "active" : "";
-                button.onclick = () => {
-                    currentPage = i;
-                    displaySolutions(solutions, currentPage);
-                    displayPagination(totalItems);
+            if (currentPage > 1) {
+                const prevButton = document.createElement("button");
+                prevButton.innerText = "Previous";
+                prevButton.onclick = () => {
+                    currentPage--;
+                    displayFilteredSolutions(filteredSolutions);
+                    displayPagination(filteredSolutions);
                 };
-                paginationContainer.appendChild(button);
+                paginationContainer.appendChild(prevButton);
+            }
+
+            if (currentPage < totalPages) {
+                const nextButton = document.createElement("button");
+                nextButton.innerText = "Next";
+                nextButton.onclick = () => {
+                    currentPage++;
+                    displayFilteredSolutions(filteredSolutions);
+                    displayPagination(filteredSolutions);
+                };
+                paginationContainer.appendChild(nextButton);
             }
         }
 
@@ -295,19 +596,362 @@
             document.getElementById("popupOverlay").style.display = "none";
         }
 
-
-        function closePopup() {
-            document.getElementById("popup").style.display = "none";
-            document.getElementById("popupOverlay").style.display = "none";
-        }
-
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
         }
+
         // Fetch solutions when the page loads
         fetchSolutions();
+
+
+
+        function toggleChat() {
+            const chatContainer = document.getElementById("chat-container");
+            chatContainer.classList.toggle("hidden");
+        }
+
+        function collapseChat() {
+            const chatContainer = document.getElementById("chat-container");
+            const chatInput = document.getElementById("chat-input");
+            const chatLog = document.getElementById("chat-log");
+
+            if (chatContainer.classList.contains("collapsed")) {
+                chatContainer.classList.remove("collapsed");
+                chatLog.style.display = "block";
+                chatInput.style.display = "flex";
+                document.getElementById("collapse-btn").textContent = "−";
+            } else {
+                chatContainer.classList.add("collapsed");
+                chatLog.style.display = "none";
+                chatInput.style.display = "none";
+                document.getElementById("collapse-btn").textContent = "+";
+            }
+        }
+
+        // ฟังก์ชันสำหรับอ่านออกเสียง
+        function readAloud(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US'; // ภาษาไทย
+            speechSynthesis.speak(utterance);
+        }
+
+        // ฟังก์ชันสร้างป๊อปอัปอีโมจิ
+        function createEmojiPopup(targetElement, text) {
+            // ลบป๊อปอัปเดิมถ้ามี
+            const existingPopup = document.getElementById('emoji-popup');
+            if (existingPopup) existingPopup.remove();
+
+            // สร้างป๊อปอัปใหม่
+            const popup = document.createElement('div');
+            popup.id = 'emoji-popup';
+            popup.style.position = 'absolute';
+            popup.style.background = '#fff';
+            popup.style.border = '1px solid #ccc';
+            popup.style.borderRadius = '10px';
+            popup.style.padding = '5px 10px';
+            popup.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+            popup.style.cursor = 'pointer';
+            popup.style.fontSize = '1.5rem';
+
+            // กำหนดตำแหน่ง
+            const rect = targetElement.getBoundingClientRect();
+            popup.style.left = `${rect.left + window.pageXOffset}px`;
+            popup.style.top = `${rect.top - 40 + window.pageYOffset}px`;
+
+            // เพิ่มอีโมจิรูปลำโพง
+            popup.textContent = '🔊';
+            popup.addEventListener('click', () => {
+                readAloud(text);
+                popup.remove(); // ลบป๊อปอัปเมื่อคลิก
+            });
+
+            document.body.appendChild(popup);
+
+            // ลบป๊อปอัปเมื่อผู้ใช้คลิกที่อื่น
+            document.addEventListener('click', (e) => {
+                if (!popup.contains(e.target) && e.target !== targetElement) {
+                    popup.remove();
+                }
+            }, { once: true });
+        }
+
+        const apiUrlc = "https://script.google.com/macros/s/AKfycbw8NmBDeYgjcH7R8j_WRkH-b7Y5z3w-T2OxZ85Y9uWj5fWg3ftsocUJx55053Q5k_tc/exec";
+
+
+
+
+        let conversationContext = ""; // ตัวแปรสำหรับเก็บ Context การสนทนา
+        // เพิ่มข้อความในแชท
+        function addMessage(sender, message, className) {
+            const chatLog = document.getElementById("chat-log");
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("chat-message", className);
+            messageElement.textContent = message;
+            chatLog.appendChild(messageElement);
+
+            let pressTimer; // ตัวจับเวลา
+
+            // จัดการ Event การกดค้าง
+            messageElement.addEventListener('mousedown', () => {
+                pressTimer = setTimeout(() => {
+                    createEmojiPopup(messageElement, message); // แสดงป๊อปอัป
+                }, 1000); // กดค้าง 1 วินาที
+            });
+            messageElement.addEventListener('mouseup', () => clearTimeout(pressTimer));
+            messageElement.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+            messageElement.addEventListener('touchstart', () => {
+                pressTimer = setTimeout(() => {
+                    createEmojiPopup(messageElement, message); // แสดงป๊อปอัป
+                }, 1000); // กดค้าง 1 วินาที
+            });
+            messageElement.addEventListener('touchend', () => clearTimeout(pressTimer));
+        }
+
+        async function logUserQuestion(message) {
+            try {
+                // ส่งคำถามไปที่ API (POST)
+                const response = await fetch(apiUrlc, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `userInput=${encodeURIComponent(message)}`
+                });
+                const result = await response.json();
+
+                // สร้างคำตอบที่มีการอ้างอิง Context การสนทนาก่อนหน้า
+                return `I don't quite understand the question you're asking. Can you please provide more specific words or details? 😊`;
+            } catch (error) {
+                console.error("There was an error saving the question:", error);
+                return "An error occurred connecting to the database. ❌";
+            }
+        }
+
+        // ฟังก์ชันแสดงสถานะ Bot กำลังพิมพ์
+        function showTypingIndicator() {
+            const chatLog = document.getElementById("chat-log");
+            const typingIndicator = document.createElement("div");
+            typingIndicator.classList.add("chat-message", "bot-message", "typing-indicator");
+            typingIndicator.textContent = "..."; // แสดงไข่ปลา
+            typingIndicator.id = "typing-indicator"; // ตั้ง ID เพื่อให้ลบออกง่าย
+            chatLog.appendChild(typingIndicator);
+            chatLog.scrollTop = chatLog.scrollHeight; // เลื่อนแชทไปด้านล่างสุด
+        }
+
+        // ฟังก์ชันลบสถานะ Bot กำลังพิมพ์
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById("typing-indicator");
+            if (typingIndicator) {
+                typingIndicator.remove(); // ลบออกจาก DOM
+            }
+        }
+
+        // Synonym Mapping (จับคู่คำใกล้เคียง)
+        const synonyms = {
+            "hi": ["hello", "hey", "hiya"],
+            "thanks": ["thank you", "thx", "appreciate"],
+            "error": ["problem", "issue", "bug"],
+            "stuck": ["freeze", "hang", "stop"]
+        };
+
+        // ฟังก์ชันจับคู่ Synonym
+        function matchSynonyms(userInput, data) {
+            const words = tokenize(userInput); // แยกคำออกจากข้อความ
+            for (let word of words) {
+                for (let key in synonyms) {
+                    if (synonyms[key].includes(word)) {
+                        userInput = userInput.replace(word, key); // แทนที่คำใกล้เคียง
+                    }
+                }
+            }
+            return userInput;
+        }
+
+        // ฟังก์ชันทำความสะอาดข้อความและตัดคำ
+        function cleanText(text) {
+            return text.toLowerCase().replace(/[^\w\s]/gi, '').trim();
+        }
+
+        function tokenize(text) {
+            return cleanText(text).split(" "); // ตัดคำแยกเป็น Array
+        }
+
+        async function loadDictionary() {
+            const response = await fetch("https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt");
+            const text = await response.text();
+            return text.split("\n"); // แปลงคำศัพท์เป็น array
+        }
+
+        // ฟังก์ชันแก้ไขคำสะกด
+        async function correctSpelling(input) {
+            const dictionary = await loadDictionary(); // โหลดคำศัพท์จากไฟล์ออนไลน์
+
+            // ฟังก์ชันคำนวณ Levenshtein Distance
+            function levenshteinDistance(a, b) {
+                const matrix = [];
+                for (let i = 0; i <= b.length; i++) {
+                    matrix[i] = [i];
+                }
+                for (let j = 0; j <= a.length; j++) {
+                    matrix[0][j] = j;
+                }
+                for (let i = 1; i <= b.length; i++) {
+                    for (let j = 1; j <= a.length; j++) {
+                        if (b.charAt(i - 1) === a.charAt(j - 1)) {
+                            matrix[i][j] = matrix[i - 1][j - 1];
+                        } else {
+                            matrix[i][j] = Math.min(
+                                matrix[i - 1][j - 1] + 1, // เปลี่ยนตัวอักษร
+                                Math.min(
+                                    matrix[i][j - 1] + 1, // ลบ
+                                    matrix[i - 1][j] + 1 // เพิ่ม
+                                )
+                            );
+                        }
+                    }
+                }
+                return matrix[b.length][a.length];
+            }
+
+            // ฟังก์ชันหา closest match
+            function findClosestWord(word, dictionary) {
+                let closestWord = word;
+                let lowestDistance = Infinity;
+
+                for (const dictWord of dictionary) {
+                    const distance = levenshteinDistance(word.toLowerCase(), dictWord.toLowerCase());
+                    if (distance < lowestDistance) {
+                        lowestDistance = distance;
+                        closestWord = dictWord;
+                    }
+                }
+                return closestWord;
+            }
+
+            // แยกคำใน input และแก้ไขทีละคำ
+            const words = input.split(" ");
+            const correctedWords = words.map(word => findClosestWord(word, dictionary));
+            return correctedWords.join(" ");
+        }
+
+        // ใช้ฟังก์ชัน
+        (async () => {
+            const userInput = "helo we have probem";
+            const correctedInput = await correctSpelling(userInput);
+            console.log(correctedInput); // Output: "hello we have problem"
+        })();
+
+        function findClosestMatch(userInput, data) {
+            let closestMatch = null;
+            let highestSimilarity = 0;
+
+            for (let item of data) {
+                const similarity = calculateSimilarity(userInput, item.user);
+                if (similarity > highestSimilarity) {
+                    highestSimilarity = similarity;
+                    closestMatch = item.answer;
+                }
+            }
+
+            return highestSimilarity >= 0.5 ? closestMatch : null; // กำหนด threshold
+        }
+
+        function calculateSimilarity(str1, str2) {
+            const words1 = str1.toLowerCase().split(" ");
+            const words2 = str2.toLowerCase().split(" ");
+            const matches = words1.filter(word => words2.includes(word));
+            return matches.length / Math.max(words1.length, words2.length);
+        }
+
+
+        let conversationHistory = []; // เก็บประวัติการสนทนาทั้งหมด
+
+        let unknownResponseCount = 0; // ตัวแปรสำหรับนับจำนวนครั้งที่ Bot ไม่เข้าใจ
+
+        async function sendMessage() {
+            const userInput = document.getElementById("user-input");
+            let message = userInput.value.trim();
+
+            // ตรวจจับข้อความว่ามีเฉพาะภาษาอังกฤษหรือไม่
+            const englishRegex = /^[a-zA-Z0-9\s.,?!'’‘"“”\u2018\u2019\u201C\u201D\u00A0:;(){}[\]<>+*=/@#&%$^_|~-\u1F600-\u1F64F\u1F300-\u1F5FF\u1F680-\u1F6FF\u2600-\u26FF\u2700-\u27BF]+$/;
+
+            if (message !== "") {
+                // เพิ่มข้อความผู้ใช้ในแชท
+                addMessage("You", message, "user-message");
+
+                // ตรวจสอบภาษา
+                if (!englishRegex.test(message)) {
+                    addMessage("Bot", "Sorry, I only support English. 😊", "bot-message");
+                    userInput.value = ""; // เคลียร์ช่องป้อนข้อความ
+                    return; // หยุดการทำงานถ้าไม่ใช่ภาษาอังกฤษ
+                }
+
+                userInput.value = ""; // เคลียร์ช่องป้อนข้อความ
+
+                try {
+                    showTypingIndicator(); // แสดงสถานะ Bot กำลังพิมพ์
+
+                    const response = await fetch(apiUrlc);
+                    const data = await response.json();
+
+                    // ตรวจหาคำตอบที่ตรงหรือใกล้เคียง
+                    message = processContext(conversationHistory, message, data);
+                    let answer = findClosestMatch(message, data);
+
+                    if (!answer) {
+                        answer = await logUserQuestion(message);
+                    }
+
+                    hideTypingIndicator(); // ซ่อนสถานะ Bot กำลังพิมพ์
+
+                    // เพิ่มข้อความจาก Bot
+                    addMessage("Bot", answer, "bot-message");
+
+                    // บันทึกประวัติการสนทนา
+                    conversationHistory.push({ user: message, bot: answer });
+                } catch (error) {
+                    hideTypingIndicator();
+                    addMessage("Bot", "An error occurred connecting to the API. ❌", "bot-message");
+                }
+            }
+        }
+
+        function processContext(history, message, data) {
+            const userMessage = message.toLowerCase();
+
+            // คำที่ทำให้ Context ถูกเคลียร์
+            const resetKeywords = ["thank you", "thanks", "hi", "hello", "ok", "done", "finish", "I'm fine"];
+
+            // ตรวจหาคำที่ตัดจบบทสนทนา
+            if (resetKeywords.some(keyword => userMessage.includes(keyword))) {
+                history.length = 0; // เคลียร์ Context
+                return message; // ใช้ข้อความปัจจุบันเป็นบริบทใหม่
+            }
+
+            // ตรวจหาคำถามที่ตรงหรือใกล้เคียงในฐานข้อมูล
+            for (let item of data) {
+                if (userMessage.includes(item.user.toLowerCase())) {
+                    history.length = 0; // เคลียร์ Context เดิม
+                    return message; // ใช้ข้อความปัจจุบันเป็นบริบทใหม่
+                }
+            }
+
+            // เชื่อมกับ Context เดิมถ้าไม่มีคำที่ตัดจบและไม่ตรงกับข้อมูลในฐานข้อมูล
+            if (history.length > 0) {
+                const lastContext = history[history.length - 1].user; // ข้อความก่อนหน้า
+                return `${lastContext} ${message}`.trim(); // เชื่อมข้อความก่อนหน้ากับปัจจุบัน
+            }
+
+            return message; // ถ้าไม่มี Context ก่อนหน้า ให้ใช้ข้อความปัจจุบัน
+        }
+
+        // เพิ่มการกด Enter เพื่อส่งข้อความ
+        document.getElementById("user-input").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
+        });
     </script>
     <script type="text/javascript"
-    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
+
 </html>
