@@ -443,8 +443,9 @@
                 const response = await fetch(apiUrl);
                 const data = await response.json();
                 solutions = data;
+                currentPage = 1; // รีเซ็ตหน้าปัจจุบัน
                 displaySolutions();
-                displayPagination();
+                displayPagination(solutions); // ใช้ solutions เป็นค่าพื้นฐาน
             } catch (error) {
                 console.error("Error fetching solutions:", error);
             }
@@ -472,56 +473,56 @@
             });
         }
 
-        function displayPagination(filteredSolutions) {
-    const paginationContainer = document.getElementById("pagination");
-    paginationContainer.innerHTML = ""; // ล้างปุ่มเดิมก่อน
+        function displayPagination(filteredSolutions = solutions) {
+            const paginationContainer = document.getElementById("pagination");
+            paginationContainer.innerHTML = ""; // ล้างปุ่มเดิมก่อน
 
-    const totalPages = Math.ceil(filteredSolutions.length / itemsPerPage);
+            const totalPages = Math.ceil(filteredSolutions.length / itemsPerPage);
 
-    // เพิ่มปุ่ม Previous
-    if (currentPage > 1) {
-        const prevButton = document.createElement("button");
-        prevButton.innerText = "Previous";
-        prevButton.onclick = () => {
-            currentPage--; // ย้อนหน้ากลับ
-            displayFilteredSolutions(filteredSolutions);
-            displayPagination(filteredSolutions);
-        };
-        paginationContainer.appendChild(prevButton);
-    }
+            // เพิ่มปุ่ม Previous
+            if (currentPage > 1) {
+                const prevButton = document.createElement("button");
+                prevButton.innerText = "Previous";
+                prevButton.onclick = () => {
+                    currentPage--; // ย้อนหน้ากลับ
+                    displayFilteredSolutions(filteredSolutions);
+                    displayPagination(filteredSolutions);
+                };
+                paginationContainer.appendChild(prevButton);
+            }
 
-    // แสดงปุ่มเลขหน้า
-    for (let i = 1; i <= totalPages; i++) {
-        const pageButton = document.createElement("button");
-        pageButton.innerText = i;
-        pageButton.classList.add("page-number");
+            // แสดงปุ่มเลขหน้า
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement("button");
+                pageButton.innerText = i;
+                pageButton.classList.add("page-number");
 
-        // เน้นเลขหน้าปัจจุบัน
-        if (i === currentPage) {
-            pageButton.classList.add("active");
+                // เน้นเลขหน้าปัจจุบัน
+                if (i === currentPage) {
+                    pageButton.classList.add("active");
+                }
+
+                pageButton.onclick = () => {
+                    currentPage = i; // เปลี่ยนเป็นหน้าที่คลิก
+                    displayFilteredSolutions(filteredSolutions);
+                    displayPagination(filteredSolutions);
+                };
+
+                paginationContainer.appendChild(pageButton);
+            }
+
+            // เพิ่มปุ่ม Next
+            if (currentPage < totalPages) {
+                const nextButton = document.createElement("button");
+                nextButton.innerText = "Next";
+                nextButton.onclick = () => {
+                    currentPage++; // ไปหน้าถัดไป
+                    displayFilteredSolutions(filteredSolutions);
+                    displayPagination(filteredSolutions);
+                };
+                paginationContainer.appendChild(nextButton);
+            }
         }
-
-        pageButton.onclick = () => {
-            currentPage = i; // เปลี่ยนเป็นหน้าที่คลิก
-            displayFilteredSolutions(filteredSolutions);
-            displayPagination(filteredSolutions);
-        };
-
-        paginationContainer.appendChild(pageButton);
-    }
-
-    // เพิ่มปุ่ม Next
-    if (currentPage < totalPages) {
-        const nextButton = document.createElement("button");
-        nextButton.innerText = "Next";
-        nextButton.onclick = () => {
-            currentPage++; // ไปหน้าถัดไป
-            displayFilteredSolutions(filteredSolutions);
-            displayPagination(filteredSolutions);
-        };
-        paginationContainer.appendChild(nextButton);
-    }
-}
         function filterSolutions() {
             const searchQuery = document.getElementById("search").value.toLowerCase().trim();
             const filteredSolutions = solutions.filter(item =>
