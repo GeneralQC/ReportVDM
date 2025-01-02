@@ -269,15 +269,17 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 100%;
-            max-width: 400px;
-            height: 600px;
+            width: 350px;
+            max-width: 90%;
+            height: 500px;
             background: #ffffff;
             display: flex;
             flex-direction: column;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             border-radius: 15px;
             overflow: hidden;
+            z-index: 10;
+            /* ลดค่า z-index */
         }
 
         .chat-container.open {
@@ -285,7 +287,13 @@
         }
 
         .chat-container.collapsed {
-            height: 50px;
+            height: 100px;
+            /* ลดขนาดเมื่อย่อ */
+            width: 110px;
+            bottom: 10px;
+            right: 20px;
+            background: #4c8bf5;
+            border-radius: 10%;
         }
 
         /* Header */
@@ -416,16 +424,13 @@
             display: none;
         }
 
-        .pagination button {
-            padding: 8px 12px;
-            margin: 0 5px;
-            border: 1px solid #00A7C1;
-            background-color: #fff;
-            color: #00A7C1;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s, color 0.3s;
-        }
+        .pagination {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 100px; /* เพิ่มพื้นที่ด้านล่าง */
+    z-index: 20; /* เพิ่มค่า z-index */
+    position: relative; /* ป้องกันซ้อนทับ */
+}
 
         .pagination button.active {
             background-color: #00A7C1;
