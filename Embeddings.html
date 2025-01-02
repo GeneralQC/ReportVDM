@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Embeddings</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        button {
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        pre {
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: left;
+            overflow-x: auto;
+            max-height: 400px;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Create Embeddings from Google Drive Images</h1>
+    <div class="container">
+        <p>Click the button below to fetch images and generate embeddings:</p>
+        <button onclick="processDriveImages()">Fetch and Generate Embeddings</button>
+        <pre id="output">Generated embeddings will appear here...</pre>
+    </div>
+
+    <script>
+        let model;
+        const embeddingsData = [];
+        const apiUrl = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
+
+        // Load MobileNet model
+        async function loadModel() {
+            model = await mobilenet.load();
+            console.log("Model loaded successfully!");
+        }
+
+        async function fetchImagesFromApi() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                // Adjust image links for Google Drive
+                return data.map(item => ({
+                    id: item.topic,
+                    image: convertToDriveDownloadLink(item.image) // Convert Google Drive links
+                }));
+            } catch (error) {
+                console.error("Error fetching images from API:", error);
+                return [];
+            }
+        }
+
+        // Convert Google Drive links to Direct Download Links
+        function convertToDriveDownloadLink(driveLink) {
+            const fileIdMatch = driveLink.match(/\/d\/([a-zA-Z0-9_-]+)\//);
+            return fileIdMatch ? `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}` : driveLink;
+        }
+
+        async function convertImageToBase64(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous"; // Allow cross-origin requests
+                img.src = url;
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    const dataURL = canvas.toDataURL("image/png");
+                    resolve(dataURL);
+                };
+                img.onerror = () => reject(`Failed to load image: ${url}`);
+            });
+        }
+
+        async function processDriveImages() {
+            const images = await fetchImagesFromApi();
+
+            if (!images || images.length === 0) {
+                alert("No images found from API.");
+                return;
+            }
+
+            for (const { id, image } of images) {
+                try {
+                    const base64Image = await convertImageToBase64(image);
+                    const img = document.createElement("img");
+                    img.src = base64Image;
+
+                    await new Promise((resolve) => {
+                        img.onload = async () => {
+                            const tensor = tf.browser.fromPixels(img)
+                                .resizeNearestNeighbor([224, 224])
+                                .toFloat()
+                                .expandDims();
+
+                            const embeddings = await model.infer(tensor, true);
+                            const embeddingArray = embeddings.arraySync()[0];
+
+                            embeddingsData.push({
+                                id, // Use topic as ID
+                                embedding: embeddingArray
+                            });
+
+                            resolve();
+                        };
+                    });
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            displayEmbeddings();
+        }
+
+        // Display embeddings and allow download
+        function displayEmbeddings() {
+            const output = document.getElementById("output");
+            const embeddingsJs = `const databaseEmbeddings = ${JSON.stringify(embeddingsData, null, 2)};`;
+            output.textContent = embeddingsJs;
+
+            // Download embeddings.js file
+            const blob = new Blob([embeddingsJs], { type: "application/javascript" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "embeddings.js";
+            link.textContent = "Download Embeddings.js";
+            document.body.appendChild(link);
+        }
+
+        // Load the model on page load
+        window.onload = loadModel;
+    </script>
+</body>
+
+</html>
