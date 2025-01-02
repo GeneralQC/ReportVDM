@@ -43,14 +43,13 @@
         }
 
         .search-group {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            flex: 1 1 30%;
-            max-width: 300px;
-            margin: 5px;
-            /* เพิ่มระยะห่างระหว่างกล่อง */
-        }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1 30%;
+    max-width: 300px;
+    margin: 5px; /* เพิ่มระยะห่างระหว่างกล่อง */
+}
 
         .search-label {
             font-size: 1rem;
@@ -241,78 +240,30 @@
             color: #fff;
         }
 
-        @media (max-width: 768px) {
-            .search-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 15px;
-                /* เพิ่มช่องว่างระหว่างกล่อง */
-                padding: 15px;
-                /* ลด padding บนมือถือ */
-            }
-
-            .search-group {
-                flex: 1 1 100%;
-                /* ให้กล่องยืดเต็มความกว้าง */
-                max-width: 100%;
-                /* ปรับขนาดกล่องให้พอดีกับจอ */
-                text-align: center;
-                /* จัดให้อยู่กลาง */
-            }
-
-            .search-bar,
-            .image-upload,
-            .translate-dropdown {
-                width: 100%;
-                /* ให้ input ยืดเต็มความกว้าง */
-                max-width: 400px;
-                /* จำกัดความกว้างสูงสุด */
-            }
-
-            #image-preview {
-                max-width: 100%;
-                /* ปรับขนาดภาพให้พอดีกับจอ */
-                margin-top: 10px;
-                /* เพิ่มระยะห่างด้านบน */
-            }
-
-            h1 {
-                font-size: 1.5rem;
-                /* ลดขนาดตัวอักษรหัวเรื่อง */
-                margin: 10px 0;
-                /* ลดระยะห่าง */
-            }
-
-            .pagination button {
-                padding: 10px 15px;
-                /* เพิ่มความใหญ่ของปุ่ม */
-            }
-
+        /* Media Queries for Responsive Design */
+        @media (max-width: 600px) {
             .solution {
                 flex-direction: column;
-                /* จัดเนื้อหาใน solution card เป็นแนวตั้ง */
-                align-items: center;
-                /* จัดให้อยู่กลาง */
-                text-align: center;
+                /* Stack items on mobile */
+                align-items: flex-start;
+                /* Align items to the left */
             }
 
             .solution img {
-                max-width: 80%;
-                /* ลดขนาดภาพ */
                 margin-bottom: 10px;
-                /* เพิ่มช่องว่างระหว่างภาพกับข้อความ */
+                /* Add space below the image */
+                max-width: 80%;
+                /* Adjust image size on mobile */
             }
 
-            .solution-content {
-                max-width: 100%;
-                /* ขยายเนื้อหาให้เต็มจอ */
+            .popup {
+                width: 95%;
+                /* Adjust width for mobile */
             }
 
-            .chat-container {
-                width: 100%;
-                /* ให้กล่องแชทเต็มจอบนมือถือ */
-                bottom: 0;
-                /* ย้ายไปอยู่ที่ขอบล่าง */
+            h1 {
+                font-size: 1.8rem;
+                /* Smaller font size on mobile */
             }
         }
 
@@ -348,28 +299,19 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 15px;
-            /* ลด padding เพื่อให้เล็กลง */
-            font-size: 1.2rem;
-            /* ลดขนาดตัวอักษร */
+            padding: 10px 20px;
+            font-size: 1.5rem;
             font-weight: 600;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             cursor: pointer;
-            width: auto;
-            /* ให้ความกว้างปรับตามเนื้อหา */
-            border-radius: 8px;
-            /* เพิ่มมุมโค้งให้ดูเล็กลง */
         }
 
-        #collapse-btn {
+        .chat-header button {
             background: transparent;
             border: none;
             color: #ffffff;
-            font-size: 1rem;
-            /* ลดขนาดของปุ่ม */
+            font-size: 1.2rem;
             cursor: pointer;
-            padding: 5px;
-            /* ลด padding ของปุ่ม */
         }
 
         /* Chat Log */
@@ -513,13 +455,11 @@
         </div>
         <div class="search-group">
             <label for="image-upload" class="search-label">📸 Search by image:</label>
-            <!-- ใช้กล้องมือถือ -->
-            <input type="file" id="image-upload" class="image-upload" accept="image/*" capture="environment"
+            <input type="file" id="image-upload" class="image-upload" accept="image/*"
                 onchange="searchByImage(event)" />
-            <div id="image-preview-container">
-                <img id="image-preview" src="" alt="Image Preview"
-                    style="display: none; max-width: 100%; border: 2px dashed #0078D7; margin-top: 10px; border-radius: 8px;" />
-            </div>
+                <div id="image-preview-container">
+                    <img id="image-preview" src="" alt="Image Preview" style="display: none; max-width: 100%; border: 2px dashed #0078D7; margin-top: 10px; border-radius: 8px;" />
+                </div>
         </div>
         <div class="search-group">
             <label for="language" class="search-label">🌐 Select Language:</label>
@@ -581,47 +521,47 @@
         };
 
         async function searchByImage(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById("image-preview");
+    const file = event.target.files[0];
+    const preview = document.getElementById("image-preview");
 
-            if (!file) {
-                alert("Please upload an image.");
-                preview.style.display = "none"; // ซ่อนตัวอย่างหากไม่มีไฟล์
-                return;
-            }
+    if (!file) {
+        alert("Please upload an image.");
+        preview.style.display = "none"; // ซ่อนตัวอย่างหากไม่มีไฟล์
+        return;
+    }
 
-            // แสดงตัวอย่างภาพ
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = "block";
-            };
-            reader.readAsDataURL(file);
+    // แสดงตัวอย่างภาพ
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+    };
+    reader.readAsDataURL(file);
 
-            // ดำเนินการโหลดโมเดลและสร้าง embeddings (โค้ดเดิม)
-            const img = document.createElement("img");
-            img.src = URL.createObjectURL(file);
-            img.onload = async function () {
-                const tensor = tf.browser.fromPixels(img)
-                    .resizeNearestNeighbor([224, 224])
-                    .toFloat()
-                    .expandDims();
+    // ดำเนินการโหลดโมเดลและสร้าง embeddings (โค้ดเดิม)
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.onload = async function () {
+        const tensor = tf.browser.fromPixels(img)
+            .resizeNearestNeighbor([224, 224])
+            .toFloat()
+            .expandDims();
 
-                // สร้าง embeddings จากภาพที่อัปโหลด
-                const uploadedEmbedding = (await model.infer(tensor, true)).arraySync()[0];
+        // สร้าง embeddings จากภาพที่อัปโหลด
+        const uploadedEmbedding = (await model.infer(tensor, true)).arraySync()[0];
 
-                // ค้นหา embeddings ที่ตรงกัน
-                const matchedSolutions = matchImageEmbeddings(uploadedEmbedding);
+        // ค้นหา embeddings ที่ตรงกัน
+        const matchedSolutions = matchImageEmbeddings(uploadedEmbedding);
 
-                if (matchedSolutions.length === 0) {
-                    alert("No matching solutions found for the uploaded image.");
-                }
-
-                // ฟิลเตอร์และแสดงผลลัพธ์ที่ตรง
-                displayFilteredSolutions(matchedSolutions);
-                displayPagination(matchedSolutions); // สร้าง Pagination ใหม่สำหรับผลลัพธ์นี้
-            };
+        if (matchedSolutions.length === 0) {
+            alert("No matching solutions found for the uploaded image.");
         }
+
+        // ฟิลเตอร์และแสดงผลลัพธ์ที่ตรง
+        displayFilteredSolutions(matchedSolutions);
+        displayPagination(matchedSolutions); // สร้าง Pagination ใหม่สำหรับผลลัพธ์นี้
+    };
+}
 
         function matchImageEmbeddings(uploadedEmbedding) {
             const threshold = 0.8; // กำหนดเกณฑ์ความคล้าย
