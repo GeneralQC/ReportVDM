@@ -1163,6 +1163,33 @@ h1::before {
                 sendMessage();
             }
         });
+
+
+
+
+
+        function sendLocationToGA(lat, lon) {
+    gtag('event', 'user_location', {
+        'latitude': lat,
+        'longitude': lon
+    });
+}
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            console.log("User Location:", lat, lon);
+            sendLocationToGA(lat, lon);
+        },
+        (error) => {
+            console.warn("Location access denied or unavailable.");
+        }
+    );
+} else {
+    console.warn("Geolocation is not supported in this browser.");
+}
     </script>
     <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
