@@ -6,18 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Problem Solving Solutions</title>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-SDQG1N4SSV"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SDQG1N4SSV"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-  gtag('config', 'G-SDQG1N4SSV');
-</script>
+        gtag('config', 'G-SDQG1N4SSV');
+    </script>
 
 
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
@@ -34,42 +34,48 @@
         }
 
         h1 {
-    color: #ffffff;
-    text-align: center;
-    font-size: 2.5rem;
-    margin: 20px 0;
-    position: relative; /* ใช้สำหรับ pseudo-elements */
-    font-family: 'Orbitron', sans-serif; /* ฟอนต์แบบ Futuristic */
-    letter-spacing: 2px; /* เพิ่มระยะห่างระหว่างตัวอักษร */
-    text-transform: uppercase; /* แปลงเป็นตัวพิมพ์ใหญ่ทั้งหมด */
-    text-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff,
-        0 0 40px #00eaff, 0 0 80px #00eaff; /* เงาเรืองแสง */
-}
+            color: #ffffff;
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 20px 0;
+            position: relative;
+            /* ใช้สำหรับ pseudo-elements */
+            font-family: 'Orbitron', sans-serif;
+            /* ฟอนต์แบบ Futuristic */
+            letter-spacing: 2px;
+            /* เพิ่มระยะห่างระหว่างตัวอักษร */
+            text-transform: uppercase;
+            /* แปลงเป็นตัวพิมพ์ใหญ่ทั้งหมด */
+            text-shadow: 0 0 5px #00eaff, 0 0 10px #00eaff, 0 0 20px #00eaff,
+                0 0 40px #00eaff, 0 0 80px #00eaff;
+            /* เงาเรืองแสง */
+        }
 
-h1::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    background: linear-gradient(120deg, rgba(255, 255, 255, 0.1), rgba(0, 234, 255, 0.2), rgba(255, 255, 255, 0.1));
-    filter: blur(15px);
-    z-index: -1;
-    animation: glow 3s infinite alternate;
-}
+        h1::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.1), rgba(0, 234, 255, 0.2), rgba(255, 255, 255, 0.1));
+            filter: blur(15px);
+            z-index: -1;
+            animation: glow 3s infinite alternate;
+        }
 
-@keyframes glow {
-    0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.7;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 1;
-    }
-}
+        @keyframes glow {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+        }
 
         /* เพิ่ม CSS สำหรับ Search Container */
         /* ปรับระยะห่างของกล่อง */
@@ -468,12 +474,15 @@ h1::before {
         }
 
         .pagination {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 100px; /* เพิ่มพื้นที่ด้านล่าง */
-    z-index: 20; /* เพิ่มค่า z-index */
-    position: relative; /* ป้องกันซ้อนทับ */
-}
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 100px;
+            /* เพิ่มพื้นที่ด้านล่าง */
+            z-index: 20;
+            /* เพิ่มค่า z-index */
+            position: relative;
+            /* ป้องกันซ้อนทับ */
+        }
 
         .pagination button.active {
             background-color: #00A7C1;
@@ -490,7 +499,7 @@ h1::before {
 
 <body>
 
-    <h1>The Solutions 2.0</h1>
+    <h1>The Solutions VDM 2.1 Turbo</h1>
     <div class="search-container">
         <div class="search-group">
             <label for="search" class="search-label">🔍 Search by topic:</label>
@@ -519,7 +528,12 @@ h1::before {
     <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
     <div class="popup" id="popup">
         <img id="popupImage" src="" alt="Solution Image" onclick="toggleImageSize()">
-        <h2 id="popupTopic"></h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="popupTopic" style="flex: 1;"></h2>
+            <button onclick="readPopupText()"
+                style="font-size: 1.5rem; background: none; border: none; cursor: pointer;"
+                title="Read Aloud">🔊</button>
+        </div>
         <p id="popupDetail"></p>
         <button class="popup-close" onclick="closePopup()">Close</button>
     </div>
@@ -844,10 +858,24 @@ h1::before {
 
         // ฟังก์ชันสำหรับอ่านออกเสียง
         function readAloud(text) {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel(); // หยุดเสียงเดิมก่อน
+            }
+
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US'; // ภาษาไทย
-            speechSynthesis.speak(utterance);
+            utterance.lang = getSelectedLanguage();
+
+            // รอให้ voices โหลดเสร็จก่อน (ในบางกรณี Chrome ต้องรอ)
+            const voices = speechSynthesis.getVoices();
+            if (!voices.length) {
+                speechSynthesis.onvoiceschanged = () => {
+                    speechSynthesis.speak(utterance);
+                };
+            } else {
+                speechSynthesis.speak(utterance);
+            }
         }
+
 
         // ฟังก์ชันสร้างป๊อปอัปอีโมจิ
         function createEmojiPopup(targetElement, text) {
@@ -1169,55 +1197,79 @@ h1::before {
 
 
         function sendLocationToGA(lat, lon) {
-    gtag('event', 'user_location', {
-        'latitude': lat,
-        'longitude': lon
-    });
-}
-
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            console.log("User Location:", lat, lon);
-            sendLocationToGA(lat, lon);
-        },
-        (error) => {
-            console.warn("Location access denied or unavailable.");
+            gtag('event', 'user_location', {
+                'latitude': lat,
+                'longitude': lon
+            });
         }
-    );
-} else {
-    console.warn("Geolocation is not supported in this browser.");
-}
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    console.log("User Location:", lat, lon);
+                    sendLocationToGA(lat, lon);
+                },
+                (error) => {
+                    console.warn("Location access denied or unavailable.");
+                }
+            );
+        } else {
+            console.warn("Geolocation is not supported in this browser.");
+        }
 
 
 
         // ตรวจสอบว่าเบราว์เซอร์รองรับ Geolocation หรือไม่
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            function (position) {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                console.log("🌍 Your Location:");
-                console.log("Latitude:", lat);
-                console.log("Longitude:", lon);
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    console.log("🌍 Your Location:");
+                    console.log("Latitude:", lat);
+                    console.log("Longitude:", lon);
 
-                // แสดงบนหน้าเว็บ (เพิ่ม element ID ชื่อ location-display ถ้าต้องการแสดง)
-                const locationDisplay = document.createElement("div");
-                locationDisplay.id = "location-display";
-                locationDisplay.style.margin = "20px";
-                locationDisplay.style.fontWeight = "bold";
-                locationDisplay.innerHTML = `📍 Your Location: Latitude ${lat}, Longitude ${lon}`;
-                document.body.prepend(locationDisplay); // แสดงด้านบนสุดของหน้า
-            },
-            function (error) {
-                console.error("❌ Error getting location:", error.message);
+                    // แสดงบนหน้าเว็บ (เพิ่ม element ID ชื่อ location-display ถ้าต้องการแสดง)
+                    const locationDisplay = document.createElement("div");
+                    locationDisplay.id = "location-display";
+                    locationDisplay.style.margin = "20px";
+                    locationDisplay.style.fontWeight = "bold";
+                    locationDisplay.innerHTML = `📍 Your Location: Latitude ${lat}, Longitude ${lon}`;
+                    document.body.prepend(locationDisplay); // แสดงด้านบนสุดของหน้า
+                },
+                function (error) {
+                    console.error("❌ Error getting location:", error.message);
+                }
+            );
+        } else {
+            console.warn("Geolocation is not supported by your browser.");
+        }
+
+        function getSelectedLanguage() {
+            const htmlLang = document.documentElement.lang || 'en';
+            switch (htmlLang.toLowerCase()) {
+                case 'zh-cn': return 'zh-CN';
+                case 'zh-tw': return 'zh-TW';
+                case 'th': return 'th-TH';
+                case 'ja': return 'ja-JP';
+                case 'ko': return 'ko-KR';
+                case 'vi': return 'vi-VN';
+                case 'km': return 'km-KH';      // 🇰🇭 Khmer (Cambodia)
+                case 'my': return 'my-MM';      // 🇲🇲 Burmese (Myanmar)
+                case 'tl':                      // 🇵🇭 Tagalog (Filipino)
+                case 'fil': return 'fil-PH';
+                case 'en': return 'en-US';
+                default: return 'en-US';
             }
-        );
-    } else {
-        console.warn("Geolocation is not supported by your browser.");
-    }
+        }
+        function readPopupText() {
+            const topic = document.getElementById("popupTopic").innerText;
+            const detail = document.getElementById("popupDetail").innerText;
+            const textToRead = `${topic}. ${detail}`;
+            readAloud(textToRead); // อ่านทุกครั้งที่เรียก
+        }
     </script>
     <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
