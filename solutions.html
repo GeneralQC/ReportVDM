@@ -793,23 +793,25 @@
         }
 
         function findSolutionMatch(userInput) {
-            const minSimilarityThreshold = 0.15; // Lowered threshold for broader conversational search
+            const fallbackThreshold = 0.1; // If best score is less than this, tone down the recommendation message.
             
             // ใช้เฉพาะข้อความปัจจุบันในการค้นหา (Ignoring conversationHistory)
             const contextText = userInput;
 
             const matches = solutions
                 .map(item => {
-                    const combinedText = `${item.topic} ${item.detail}`;
+                    // Weight the topic more heavily by concatenating it twice
+                    const combinedText = `${item.topic} ${item.topic} ${item.detail}`;
                     return {
                         ...item,
                         similarity: calculateSimilarity(contextText, combinedText)
                     };
                 })
-                .filter(item => item.similarity > minSimilarityThreshold)
+                // Sort all solutions by similarity (highest first)
                 .sort((a, b) => b.similarity - a.similarity);
 
-            return matches.slice(0, 3); // Return top 3 matches
+            // Return top 3 matches regardless of score
+            return matches.slice(0, 3);
         }
         
         async function sendMessage() {
@@ -828,6 +830,10 @@
             const relevantSolutions = findSolutionMatch(message);
             let botResponse = "";
 
+            // Check the best score to determine the tone of the response
+            const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
+            const fallbackThreshold = 0.1; // If best score is less than 10%, treat as general fallback
+
             if (relevantSolutions.length > 0) {
                 // Construct a response with relevant topics and a prompt for action
                 const listItems = relevantSolutions.map((sol, index) => {
@@ -838,10 +844,22 @@
                             </div>`;
                 }).join('<br>');
 
-                botResponse = `Based on your description, here are the top ${relevantSolutions.length} solutions that might help:<br>${listItems}<br><br>You can search for the full topic name in the Search Bar above, or describe your problem in more detail.`;
+                // Determine the introductory text based on the best match score
+                let introText;
+                if (bestSimilarity >= fallbackThreshold) {
+                    // Good or decent match
+                    introText = `Based on your description, here are the top ${relevantSolutions.length} solutions that might help:`;
+                } else {
+                    // Low match, providing general recommendations instead of saying "no match"
+                    introText = `I couldn't find very precise matches, but here are the top ${relevantSolutions.length} generally related solutions:`;
+                }
+
+
+                botResponse = `${introText}<br>${listItems}<br><br>You can search for the full topic name in the Search Bar above, or describe your problem in more detail.`;
 
             } else {
-                botResponse = "I couldn't find any closely matching solutions. Please try different keywords or use the main Search Bar at the top of the page.";
+                // This case should only happen if the solutions array is empty or API failed previously
+                botResponse = "I am unable to access the solution database right now. Please check your connection.";
             }
 
             hideTypingIndicator();
