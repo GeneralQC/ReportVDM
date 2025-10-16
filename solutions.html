@@ -255,25 +255,68 @@
         }
 
         /* FIX: CSS for allowing the popup content (image) to expand outside its container */
-        .popup.expanded {
+        .popup-content-container {
+            /* Container for the new dynamic popup */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            pointer-events: none; /* Allows clicks through when modal is closed */
+        }
+
+        .popup-overlay {
+            /* Overlay style */
+            position: absolute;
+            inset: 0;
+            background-color: rgba(26, 32, 44, 0.8); /* Dark background with opacity */
+            transition: opacity 0.3s;
+            pointer-events: auto; /* Enable clicks on overlay */
+        }
+
+        .popup-modal {
+            /* Modal style */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95%;
+            max-width: 600px;
+            background-color: #2D3748;
+            color: #E2E8F0;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: auto; /* Enable clicks on modal */
+        }
+        .popup-modal.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Image Zoom Styles (Reused) */
+        .popup-modal.expanded {
             overflow: visible !important;
-            /* Hides scrollbar on the popup itself, allowing the content to expand */
         }
         .popup-image-zoomed {
-            max-width: 150vw !important; /* Allow image to take up 150% of viewport width */
+            max-width: 150vw !important;
             width: auto !important;
             cursor: zoom-out !important;
-            /* Uses a fixed position and moves the image back up/left to center it in the viewport */
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 60; /* Higher than popup (z-50) but lower than overlay (z-40 if it were covering the whole screen) */
-            border-radius: 0.75rem; /* Matches the popup's rounded-xl */
+            z-index: 1001; 
+            border-radius: 0.75rem; 
             box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
             transition: all 0.3s ease-in-out;
         }
-
+        /* Hide google's automatic "Select Language" text */
+        .goog-te-combo+br { display: none; }
     </style>
     <!-- Google Analytics Tag -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SDQG1N4SSV"></script>
@@ -290,7 +333,6 @@
     <header class="header-bg p-6 shadow-md">
         <h1 class="text-4xl font-extrabold text-center header-text tracking-wider uppercase header-text-glow">
             VDM Solutions Platform 
-            <!-- Removed Rocket Icon SVG and "2.1 Turbo" text -->
         </h1>
     </header>
 
@@ -299,8 +341,8 @@
         <!-- Filter Card -->
         <div class="flex flex-col md:flex-row justify-between items-center search-card p-4 sm:p-6 rounded-xl shadow-lg mb-8 gap-4">
             
-            <!-- Search by Topic Group (ADJUSTED to 66.6%) -->
-            <div class="w-full md:w-8/12">
+            <!-- Search by Topic Group (50%) -->
+            <div class="w-full md:w-6/12">
                 <label for="search" class="block text-sm font-medium search-label mb-2">
                     <!-- Updated Icon: Search -->
                     <svg class="inline-block w-4 h-4 mr-1 align-text-top" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -312,18 +354,19 @@
                     oninput="filterSolutions()" />
             </div>
 
-            <!-- Category Filter Group (REMOVED - Block removed) -->
-            <!-- Language Selection Group (ADJUSTED to 33.3%) -->
-            <div class="w-full md:w-4/12">
+            <!-- Language Selection Group (25%) -->
+            <div class="w-full md:w-3/12">
                 <label for="language" class="block text-sm font-medium search-label mb-2">
                     <!-- Updated Icon: Globe -->
                     <svg class="inline-block w-4 h-4 mr-1 align-text-top" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7-7-7m7 7v10a1 1 0 001 1h3"></path></svg>
                     Select Language:
                 </label>
-                <!-- Google Translate element integrated and styled below -->
-                <!-- Container is now 4/12 for professional layout, height fixed for usability -->
+                <!-- Container is now 3/12 for professional layout, height fixed for usability -->
                 <div id="google_translate_element" class="translate-dropdown w-full active:scale-[0.99] h-12"></div>
             </div>
+            
+             <!-- Spacer for visual balance (25% on MD+) -->
+            <div class="hidden md:block md:w-3/12"></div>
         </div>
         
         <!-- AI Loading Indicator -->
@@ -342,29 +385,11 @@
         </div>
     </div>
 
-    <!-- Popup/Modal for Detailed View -->
-    <div class="popup-overlay fixed inset-0 bg-gray-900 bg-opacity-75 hidden z-40" id="popupOverlay"
-        onclick="closePopup()"></div>
-    <div class="popup fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-xl bg-gray-700 text-white p-6 rounded-xl shadow-2xl hidden z-50"
-        id="popup">
-        <img id="popupImage" src="" alt="Solution Image"
-            class="w-full h-auto rounded-lg mb-4 cursor-zoom-in transition-all duration-300" onclick="toggleImageSize()">
-        <div class="flex justify-between items-start mb-4 border-b pb-2 border-cyan-400">
-            <h2 id="popupTopic" class="text-2xl font-bold text-cyan-400 flex-1 pr-4"></h2>
-            <!-- Updated Icon: Speaker (TTS) -->
-            <button onclick="readPopupText()"
-                class="text-3xl p-1 text-gray-400 hover:text-cyan-400 active:scale-90 transition duration-150" title="Read Aloud">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg>
-            </button>
-        </div>
-        <div class="h-64 overflow-y-auto pr-2">
-            <p id="popupDetail" class="text-gray-300 leading-relaxed text-base"></p>
-        </div>
-        <button class="popup-close w-full mt-6 py-2 bg-cyan-500 text-gray-900 font-semibold rounded-lg hover:bg-cyan-400 active:bg-cyan-600 active:scale-[0.99] transition duration-300 shadow-md"
-            onclick="closePopup()">
-            Close
-        </button>
+    <!-- Container for the dynamic Popup/Modal -->
+    <div id="popup-container" class="popup-content-container hidden">
+        <!-- The modal and overlay will be generated here -->
     </div>
+
 
     <!-- Floating Chat Container (Re-introduced) -->
     <div class="fixed bottom-4 right-4 z-30" id="chat-wrapper">
@@ -402,22 +427,155 @@
 
     <script>
         // Data and API configuration
-        const apiUrl = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
+        // Consolidate API declarations
+        const apiUrlMain = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
+        const apiUrlc = "https://script.google.com/macros/s/AKfycbw8NmBDeYgjcH7R8j_WRkH-b7Y5z3w-T2OxZ85Y9uWj5fWg3ftsocUJx55053Q5k_tc/exec"; 
 
+        // Consolidated variable declarations
         let solutions = [];
         let currentPage = 1;
         const itemsPerPage = 10;
         let conversationHistory = []; // Stores conversation context
+        let currentPopupItem = null; // Store item data for the currently open popup
 
+        // --- Global Popup Management ---
+        let popupObserver = null;
+
+        function closePopup() {
+            const container = document.getElementById('popup-container');
+            const modal = document.querySelector('.popup-modal');
+            const overlay = document.querySelector('.popup-overlay');
+            
+            if (modal) modal.classList.remove('show');
+            if (overlay) overlay.style.opacity = 0;
+
+            speechSynthesis.cancel(); 
+            
+            // Wait for transition before removing from DOM
+            setTimeout(() => {
+                container.classList.add('hidden');
+                container.innerHTML = ''; // Crucial: Remove modal from DOM
+                currentPopupItem = null;
+                
+                // Disconnect observer after closing
+                if (popupObserver) {
+                    popupObserver.disconnect();
+                    popupObserver = null;
+                }
+            }, 300); // Wait for CSS transition time
+        }
+
+        // --- Function to Create and Open Dynamic Popup ---
+        function openPopup(item) {
+            currentPopupItem = item;
+            const container = document.getElementById('popup-container');
+            container.classList.remove('hidden');
+
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.onclick = closePopup;
+            overlay.style.opacity = 0;
+            
+            const modal = document.createElement('div');
+            modal.className = 'popup-modal';
+            modal.id = 'dynamic-popup';
+
+            // HTML Structure of the Modal Content
+            modal.innerHTML = `
+                <img id="popupImage" src="${item.image || 'https://placehold.co/600x400/1A202C/00FFFF?text=NO+IMAGE'}" 
+                    alt="Solution Image"
+                    class="w-full h-auto rounded-lg mb-4 cursor-zoom-in transition-all duration-300" 
+                    onclick="window.toggleImageSize(this)">
+
+                <div class="flex justify-between items-start mb-4 border-b pb-2 border-cyan-400">
+                    <h2 id="popupTopic" class="text-2xl font-bold text-cyan-400 flex-1 pr-4">${item.topic}</h2>
+                    <!-- Updated Icon: Speaker (TTS) -->
+                    <button onclick="window.readPopupText()"
+                        class="text-3xl p-1 text-gray-400 hover:text-cyan-400 active:scale-90 transition duration-150" title="Read Aloud">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg>
+                    </button>
+                </div>
+                <div class="h-64 overflow-y-auto pr-2">
+                    <p id="popupDetail" class="text-gray-300 leading-relaxed text-base">${item.detail}</p>
+                </div>
+                <button class="popup-close w-full mt-6 py-2 bg-cyan-500 text-gray-900 font-semibold rounded-lg hover:bg-cyan-400 active:bg-cyan-600 active:scale-[0.99] transition duration-300 shadow-md"
+                    onclick="window.closePopup()">
+                    Close
+                </button>
+            `;
+
+            container.appendChild(overlay);
+            container.appendChild(modal);
+
+            // Trigger show animation
+            setTimeout(() => {
+                overlay.style.opacity = 1;
+                modal.classList.add('show');
+            }, 10);
+            
+            // --- FIX: Force Google Translate to re-scan the new content by simulating selection ---
+            const langSelect = document.querySelector('.goog-te-combo');
+            if (langSelect) {
+                const selectedValue = langSelect.value;
+                
+                // Only force re-translation if a non-English language is selected
+                if (selectedValue && selectedValue !== 'en') {
+                    
+                    // Use a short delay to ensure the modal content is fully rendered in the DOM
+                    setTimeout(() => {
+                        // Create a native change event
+                        const changeEvent = new Event('change');
+                        
+                        // Manually re-set the value (even to itself) and dispatch the event
+                        // This is the most reliable way to force the widget to re-read the page.
+                        langSelect.value = selectedValue; 
+                        langSelect.dispatchEvent(changeEvent);
+
+                        // Add a second, slightly longer delay dispatch as a failsafe
+                        setTimeout(() => {
+                            langSelect.dispatchEvent(changeEvent);
+                        }, 500); 
+
+                    }, 50); // Small delay to ensure DOM insertion is complete
+                }
+            }
+        }
+
+        function toggleImageSize(imgElement) {
+            const modal = document.getElementById('dynamic-popup');
+            
+            if (imgElement.classList.contains('cursor-zoom-in')) {
+                // EXPAND / Zoom Out
+                imgElement.classList.remove("cursor-zoom-in");
+                imgElement.classList.add("cursor-zoom-out", "popup-image-zoomed"); // Add custom class for zoom style
+                if (modal) modal.classList.add('expanded'); // Allow overflow
+                
+                // Set width to a fixed large size relative to viewport for expansion effect
+                imgElement.style.width = '150vw'; 
+                imgElement.style.maxWidth = '150vw'; 
+
+            } else {
+                // COLLAPSE / Zoom In (Fit to popup)
+                imgElement.classList.remove("cursor-zoom-out", "popup-image-zoomed");
+                imgElement.classList.add("cursor-zoom-in");
+                if (modal) modal.classList.remove('expanded'); // Disallow overflow
+                
+                // Reset width to fit container
+                imgElement.style.width = '100%'; 
+                imgElement.style.maxWidth = '100%'; 
+            }
+        }
+        
+        window.toggleImageSize = toggleImageSize; // Expose to global scope for onclick in dynamic HTML
+        window.closePopup = closePopup; // Expose to global scope
+        
         // --- Data Fetching and Display ---
 
-        // Mock categories for demonstration (Removed)
-        // function mockCategory(index) { ... }
-        
+
         function showLoading() {
             document.getElementById("loading-indicator").classList.remove("hidden");
-            document.getElementById("solutions").innerHTML = ""; // Clear old solutions while loading
-            document.getElementById("pagination").innerHTML = ""; // Clear pagination while loading
+            document.getElementById("solutions").innerHTML = ""; 
+            document.getElementById("pagination").innerHTML = ""; 
         }
 
         function hideLoading() {
@@ -425,30 +583,22 @@
         }
 
         async function fetchSolutions() {
-            showLoading(); // <<< SHOW LOADING
+            showLoading(); 
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(apiUrlMain); // Use apiUrlMain
                 const data = await response.json();
-
-                // Assigning data directly without mock categories
                 solutions = data;
-
                 currentPage = 1;
                 displayFilteredSolutions(solutions);
                 displayPagination(solutions);
             } catch (error) {
                 console.error("Error fetching solutions:", error);
-                // Optionally display an error message in solutions area
                 document.getElementById("solutions").innerHTML = '<p class="text-center text-red-500 mt-8">Error loading solutions. Please check the API connection.</p>';
             } finally {
-                hideLoading(); // <<< HIDE LOADING
+                hideLoading(); 
             }
         }
 
-        // Function to populate the category filter dropdown (Removed, placeholder kept)
-        function populateCategories(allSolutions) {
-            // Function no longer needed 
-        }
 
         function filterSolutions() {
             const searchQuery = document.getElementById("search").value.toLowerCase().trim();
@@ -457,20 +607,14 @@
                 const passesSearch = item.topic.toLowerCase().includes(searchQuery) ||
                                      item.detail.toLowerCase().includes(searchQuery);
 
-                return passesSearch; // Only filtering by search query now
+                return passesSearch; 
             });
 
-            currentPage = 1; // **สำคัญ:** รีเซ็ตกลับไปหน้าแรกเสมอเมื่อมีการค้นหา/กรองใหม่
+            currentPage = 1; 
             displayFilteredSolutions(filteredSolutions);
             displayPagination(filteredSolutions);
         }
 
-        // Function to get category color (Removed)
-        /*
-        function getCategoryColor(category) {
-            // ... logic removed
-        }
-        */
 
         function displayFilteredSolutions(filteredSolutions) {
             const solutionsContainer = document.getElementById("solutions");
@@ -481,16 +625,12 @@
 
             // Use Tailwind classes for card styling
             items.forEach(item => {
-                // Category related variables removed
-
                 const solutionElement = document.createElement("div");
-                // Added interactive classes for solution cards
                 solutionElement.className = "solution flex items-start p-4 rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer border border-gray-700 hover:border-cyan-400 active:scale-[0.995]";
                 solutionElement.onclick = () => openPopup(item);
                 solutionElement.innerHTML = `
                     <img src="${item.image || 'https://placehold.co/100x100/1A202C/00FFFF?text=IMG'}" alt="Solution Image" class="w-20 h-20 object-cover rounded-lg mr-4 flex-shrink-0" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1A202C/00FFFF?text=IMG';">
                     <div class="solution-content flex-1 min-w-0">
-                        <!-- Category tag display removed -->
                         <h3 class="text-lg font-semibold solution-title truncate mb-1">${item.topic}</h3>
                         <p class="text-sm text-gray-400 line-clamp-2">${item.detail}</p>
                     </div>
@@ -508,7 +648,6 @@
                 currentPage = page;
                 displayFilteredSolutions(filteredSolutions);
                 displayPagination(filteredSolutions);
-                // Scroll to top of the solutions list for better UX
                 document.getElementById('solutions').scrollIntoView({ behavior: 'smooth' });
             };
 
@@ -516,7 +655,6 @@
             if (currentPage > 1) {
                 const prevButton = document.createElement("button");
                 prevButton.innerText = "Previous";
-                // Added interactive classes
                 prevButton.className = "px-4 py-2 mx-1 border border-cyan-500 text-cyan-400 rounded-lg hover:bg-cyan-500 hover:text-gray-900 transition duration-200 hover:shadow-md active:scale-95";
                 prevButton.onclick = () => navigate(currentPage - 1);
                 paginationContainer.appendChild(prevButton);
@@ -535,7 +673,6 @@
             for (let i = startPage; i <= endPage; i++) {
                 const pageButton = document.createElement("button");
                 pageButton.innerText = i;
-                // Added interactive classes
                 pageButton.className = `px-4 py-2 mx-1 border rounded-lg transition duration-200 hover:shadow-md active:scale-95 ${i === currentPage ? 'bg-cyan-500 text-gray-900 font-bold border-cyan-500 shadow-md' : 'bg-gray-700 text-cyan-400 border-gray-600 hover:bg-gray-600'}`;
                 pageButton.onclick = () => navigate(i);
                 paginationContainer.appendChild(pageButton);
@@ -545,62 +682,9 @@
             if (currentPage < totalPages) {
                 const nextButton = document.createElement("button");
                 nextButton.innerText = "Next";
-                // Added interactive classes
                 nextButton.className = "px-4 py-2 mx-1 border border-cyan-500 text-cyan-400 rounded-lg hover:bg-cyan-500 hover:text-gray-900 transition duration-200 hover:shadow-md active:scale-95";
                 nextButton.onclick = () => navigate(currentPage + 1);
                 paginationContainer.appendChild(nextButton);
-            }
-        }
-
-        // --- Popup/Modal Logic ---
-
-        function openPopup(item) {
-            const popup = document.getElementById("popup");
-            const img = document.getElementById("popupImage");
-            
-            img.src = item.image || 'https://placehold.co/600x400/1A202C/00FFFF?text=NO+IMAGE';
-            document.getElementById("popupTopic").innerText = item.topic;
-            document.getElementById("popupDetail").innerText = item.detail;
-            document.getElementById("popup").classList.remove("hidden");
-            document.getElementById("popupOverlay").classList.remove("hidden");
-            
-            // Initial state reset
-            popup.classList.remove('expanded');
-            img.classList.remove("cursor-zoom-out", "popup-image-zoomed");
-            img.classList.add("cursor-zoom-in");
-            img.style.maxWidth = '100%';
-            img.style.width = '100%'; 
-        }
-
-        function closePopup() {
-            document.getElementById("popup").classList.add("hidden");
-            document.getElementById("popupOverlay").classList.add("hidden");
-            speechSynthesis.cancel(); // Stop reading when closing popup
-        }
-
-        function toggleImageSize() {
-            const img = document.getElementById("popupImage");
-            const popup = document.getElementById("popup");
-            
-            if (img.classList.contains('cursor-zoom-in')) {
-                // EXPAND / Zoom Out
-                img.classList.remove("cursor-zoom-in");
-                img.classList.add("cursor-zoom-out", "popup-image-zoomed"); // Add custom class for zoom style
-                popup.classList.add('expanded'); // Allow overflow
-                
-                // Set width to a fixed large size relative to viewport for expansion effect
-                img.style.width = '150vw'; 
-                img.style.maxWidth = '150vw'; 
-
-            } else {
-                // COLLAPSE / Zoom In (Fit to popup)
-                img.classList.remove("cursor-zoom-out", "popup-image-zoomed");
-                img.classList.add("cursor-zoom-in");
-                popup.classList.remove('expanded'); // Disallow overflow
-                
-                // Reset width to fit container
-                img.style.width = '100%'; 
-                img.style.maxWidth = '100%'; 
             }
         }
 
@@ -611,6 +695,16 @@
         }
 
         // --- Text-to-Speech (TTS) Logic ---
+        
+        window.readPopupText = function() {
+            const modal = document.getElementById('dynamic-popup');
+            if (modal) {
+                const topic = modal.querySelector("#popupTopic").innerText;
+                const detail = modal.querySelector("#popupDetail").innerText;
+                const textToRead = `Topic: ${topic}. Details: ${detail}`;
+                readAloud(textToRead);
+            }
+        }
 
         function getSelectedLanguage() {
             const langCodeElement = document.querySelector('.goog-te-combo');
@@ -641,17 +735,10 @@
             speechSynthesis.speak(utterance);
         }
 
-        function readPopupText() {
-            const topic = document.getElementById("popupTopic").innerText;
-            const detail = document.getElementById("popupDetail").innerText;
-            const textToRead = `Topic: ${topic}. Details: ${detail}`;
-            readAloud(textToRead);
-        }
 
         // --- Chatbot Logic (Re-implemented for Similarity Search) ---
         
         // Define SVG icons for Chatbot toggle
-        // ปรับขนาดเป็น w-7 h-7 และสีเป็นสีขาวเพื่อให้ดูสวยงามและชัดเจนขึ้น
         const collapseIconSVG = `<svg class="w-7 h-7" fill="none" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4"></path></svg>`; // Minus icon (to close)
         const chatIconSVG = `<svg class="w-7 h-7" fill="none" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>`; // Message Square (to open)
 
@@ -661,9 +748,8 @@
             const chatLog = document.getElementById("chat-log");
             const chatInput = document.getElementById("chat-input");
             const collapseBtn = document.getElementById("collapse-btn");
-            const chatTitle = document.getElementById("chat-title"); // Get the title span
+            const chatTitle = document.getElementById("chat-title"); 
 
-            // Check if currently expanded (not collapsed)
             const isExpanded = chatContainer.classList.contains("h-[500px]");
 
             if (!isExpanded) {
@@ -672,16 +758,16 @@
                 chatContainer.classList.remove("h-16", "w-16", "rounded-full"); 
                 chatLog.classList.remove("hidden");
                 chatInput.classList.remove("hidden");
-                collapseBtn.innerHTML = collapseIconSVG; // Minus icon
-                chatTitle.style.display = 'block'; // Show title
+                collapseBtn.innerHTML = collapseIconSVG; 
+                chatTitle.style.display = 'block'; 
             } else {
                 // Collapse
                 chatContainer.classList.remove("h-[500px]", "w-full", "max-w-xs");
                 chatContainer.classList.add("h-16", "w-16", "rounded-full"); 
                 chatLog.classList.add("hidden");
                 chatInput.classList.add("hidden");
-                collapseBtn.innerHTML = chatIconSVG; // Message icon
-                chatTitle.style.display = 'none'; // Hide title
+                collapseBtn.innerHTML = chatIconSVG; 
+                chatTitle.style.display = 'none'; 
             }
         }
 
@@ -691,18 +777,17 @@
             const messageElement = document.createElement("div");
 
             const isUser = className === "user-message";
-            const bgColor = isUser ? 'bg-cyan-600 text-white' : 'bg-gray-600 text-gray-200'; /* Updated colors */
+            const bgColor = isUser ? 'bg-cyan-600 text-white' : 'bg-gray-600 text-gray-200'; 
             const alignment = isUser ? 'self-end' : 'self-start';
             const margin = isUser ? 'ml-auto' : 'mr-auto';
 
             messageElement.className = `chat-message max-w-[80%] p-3 rounded-xl mb-2 ${bgColor} ${alignment} shadow-md ${margin} text-sm transition-all duration-300`;
-            messageElement.innerHTML = message; // Use innerHTML to allow for formatting like <br>
+            messageElement.innerHTML = message; 
 
             // Handle touch/press for text-to-speech
             let pressTimer;
             const startPress = () => {
                 pressTimer = setTimeout(() => {
-                    // Pass only the plain text content for reading aloud
                     createEmojiPopup(messageElement, messageElement.textContent);
                 }, 800);
             };
@@ -726,7 +811,6 @@
 
             const popup = document.createElement('div');
             popup.id = 'emoji-popup';
-            // Updated popup styling for dark theme
             popup.className = 'fixed bg-gray-700 border border-cyan-500 text-cyan-400 rounded-lg p-2 text-2xl shadow-xl cursor-pointer z-[1001] hover:bg-gray-600 transition';
             popup.textContent = '🔊';
 
@@ -775,12 +859,10 @@
         
         // Utility for similarity calculation
         function tokenize(text) {
-            // Cleans and splits text into an array of words
             return text.toLowerCase().replace(/[^\w\s]/gi, '').trim().split(/\s+/).filter(word => word.length > 2);
         }
 
         function calculateSimilarity(str1, str2) {
-            // Simple word overlap similarity (Jaccard-like index for words)
             const words1 = tokenize(str1);
             const words2 = tokenize(str2);
             if (words1.length === 0 || words2.length === 0) return 0;
@@ -793,24 +875,18 @@
         }
 
         function findSolutionMatch(userInput) {
-            const fallbackThreshold = 0.1; // If best score is less than this, tone down the recommendation message.
-            
-            // ใช้เฉพาะข้อความปัจจุบันในการค้นหา (Ignoring conversationHistory)
             const contextText = userInput;
 
             const matches = solutions
                 .map(item => {
-                    // Weight the topic more heavily by concatenating it twice
                     const combinedText = `${item.topic} ${item.topic} ${item.detail}`;
                     return {
                         ...item,
                         similarity: calculateSimilarity(contextText, combinedText)
                     };
                 })
-                // Sort all solutions by similarity (highest first)
                 .sort((a, b) => b.similarity - a.similarity);
 
-            // Return top 3 matches regardless of score
             return matches.slice(0, 3);
         }
         
@@ -832,12 +908,11 @@
 
             // Check the best score to determine the tone of the response
             const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
-            const fallbackThreshold = 0.1; // If best score is less than 10%, treat as general fallback
+            const fallbackThreshold = 0.1; 
 
             if (relevantSolutions.length > 0) {
                 // Construct a response with relevant topics and a prompt for action
                 const listItems = relevantSolutions.map((sol, index) => {
-                    // **MODIFICATION:** Removed similarity percent display
                     return `<div class="p-2 mt-1 rounded-lg border border-cyan-500 bg-gray-700 text-white">
                                 <strong>${index + 1}. ${sol.topic}</strong><br>
                                 <span class="text-xs text-gray-400">${sol.detail.substring(0, 50)}...</span>
@@ -847,10 +922,8 @@
                 // Determine the introductory text based on the best match score
                 let introText;
                 if (bestSimilarity >= fallbackThreshold) {
-                    // Good or decent match
                     introText = `Based on your description, here are the top ${relevantSolutions.length} solutions that might help:`;
                 } else {
-                    // Low match, providing general recommendations instead of saying "no match"
                     introText = `I couldn't find very precise matches, but here are the top ${relevantSolutions.length} generally related solutions:`;
                 }
 
@@ -858,15 +931,12 @@
                 botResponse = `${introText}<br>${listItems}<br><br>You can search for the full topic name in the Search Bar above, or describe your problem in more detail.`;
 
             } else {
-                // This case should only happen if the solutions array is empty or API failed previously
                 botResponse = "I am unable to access the solution database right now. Please check your connection.";
             }
 
             hideTypingIndicator();
             addMessage("Bot", botResponse, "bot-message");
 
-            // 3. Update history (Ignoring history for search logic as requested)
-            // conversationHistory no longer manages chat history for search context
         }
 
         // Add Enter key listener for sending messages
@@ -884,15 +954,15 @@
             const chatLog = document.getElementById("chat-log");
             const chatInput = document.getElementById("chat-input");
             const collapseBtn = document.getElementById("collapse-btn");
-            const chatTitle = document.getElementById("chat-title"); // Get the title span
+            const chatTitle = document.getElementById("chat-title"); 
 
             // Initial state: start collapsed
             chatContainer.classList.remove("h-[500px]", "w-full", "max-w-xs");
             chatContainer.classList.add("h-16", "w-16", "rounded-full");
             chatLog.classList.add("hidden");
             chatInput.classList.add("hidden");
-            collapseBtn.innerHTML = chatIconSVG; // Message icon
-            chatTitle.style.display = 'none'; // Hide title initially
+            collapseBtn.innerHTML = chatIconSVG; 
+            chatTitle.style.display = 'none'; 
             
             // Add a friendly greeting message once (with slight delay for UI setup)
             setTimeout(() => {
