@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report VDM - Dark Neon Theme</title>
+    <!-- Load Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* Define Inter font and dark background for the Neon theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #E2E8F0;
+            margin: 0;
+            min-height: 100vh;
+            background-color: #1A202C;
+            /* Deep dark blue background */
+            background: radial-gradient(circle at 50% 10%, #2c3748 0%, #1A202C 50%, #10141a 100%);
+        }
+
+        /* Neon Text Glow Effect */
+        .neon-cyan {
+            color: #00FFFF;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.7), 0 0 15px rgba(0, 255, 255, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* --- Custom Timeline Structure Styles --- */
+        .news-container {
+            display: flex;
+            flex-direction: column;
+            gap: 28px; /* Increased gap for better visual separation */
+            position: relative;
+            /* Remove fixed max-width for container and let outer div (p-8) handle it */
+            padding-left: 120px; /* Wider space for date/circle, allowing better left alignment */
+            width: 100%; /* Ensure it takes full available width of its parent */
+            margin: 40px auto;
+        }
+
+        /* Timeline Line (Neon Cyan) */
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: #00FFFF;
+            box-shadow: 0 0 8px #00FFFF;
+        }
+
+        /* Timeline Circle (Neon Cyan) */
+        .timeline-circle {
+            position: absolute;
+            left: 13px; /* Adjusted to center on line */
+            top: 15px;
+            width: 18px; /* Slightly larger circle */
+            height: 18px;
+            background-color: #00FFFF;
+            border-radius: 50%;
+            border: 4px solid #1A202C; /* Match body background for "floating" effect */
+            z-index: 10; /* Bring circle to front */
+            box-shadow: 0 0 10px rgba(0, 255, 255, 1);
+            transition: all 0.3s ease;
+        }
+        
+        /* Timeline Date Label (Left Aligned for cleaner look) */
+        .timeline-date {
+            position: absolute;
+            left: -100px; /* Positioned to the left of the timeline line */
+            top: 0px;
+            background-color: #2D3748; 
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.85rem; /* Slightly larger date font */
+            color: #00FFFF;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            white-space: nowrap;
+            text-align: right;
+            width: 85px; /* Fixed width for better date alignment */
+        }
+        
+        /* News Item Hover Effect: Elevate and Glow */
+        .news-item:hover .timeline-circle {
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 1);
+        }
+
+        /* Mobile Adjustments for Timeline */
+        @media (max-width: 768px) {
+            .news-container {
+                padding-left: 50px; /* Reduce padding for mobile */
+                gap: 24px;
+            }
+            .timeline-line {
+                left: 10px; /* Move line further left */
+            }
+            .timeline-circle {
+                left: 3px;
+                width: 14px;
+                height: 14px;
+                border-width: 3px;
+            }
+            .timeline-date {
+                left: -65px;
+                font-size: 0.75rem;
+                padding: 3px 6px;
+                width: 50px;
+            }
+        }
+        
+        /* Google Translate Styling to fit Dark Theme */
+        #google_translate_element {
+            /* Keep Google Translate combo box aligned to the right */
+            margin-left: 10px; 
+        }
+        .goog-te-combo {
+            background-color: #374151 !important; 
+            color: #E2E8F0 !important;
+            border: 1px solid #4B5563 !important;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        /* --- CHAT ASSISTANT STYLES --- */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #00FFFF;
+            color: #1A202C;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 30;
+        }
+
+        .chat-button:hover {
+            transform: scale(1.1);
+            background-color: #00E5E5;
+        }
+
+        .chat-modal {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 90vw;
+            max-width: 400px;
+            height: 60vh;
+            max-height: 550px;
+            background-color: #2D3748;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.7);
+            border: 1px solid #00FFFF;
+            z-index: 30;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: #1A202C;
+            color: #00FFFF;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #00FFFF;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #4A5568;
+            display: flex;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: #00FFFF;
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            word-wrap: break-word;
+            /* Added margin-bottom to space messages */
+            margin-bottom: 5px; 
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: #00FFFF;
+            color: #1A202C;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background-color: #1A202C;
+            border: 1px solid #00FFFF;
+            color: #E2E8F0;
+            border-bottom-left-radius: 4px;
+            /* Container for text and buttons */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px; /* Space between text and options */
+        }
+        
+        /* Container for options buttons */
+        .option-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .chat-option-button {
+            background-color: #00FFFF;
+            color: #1A202C;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+            border: none;
+            width: 100%;
+        }
+
+        .chat-option-button:hover {
+            background-color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* --- Loading Dots (Not used since Gemini is removed, but kept for future proofing) --- */
+        .loading-dots {
+            display: none; 
+        }
+
+        @media (max-width: 500px) {
+            .chat-modal {
+                right: 15px;
+                bottom: 80px;
+                max-width: 90%;
+                height: 70vh;
+            }
+            .chat-button {
+                right: 15px;
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Main Content -->
+    <div id="content" class="p-4 md:p-8">
+        
+        <!-- TOP NAVIGATION BAR (Home Button Left, Language Selector Right) -->
+        <div class="w-full max-w-7xl mx-auto flex justify-between items-center mb-4">
+            <!-- Go to Home Button (Left Aligned) -->
+            <a href="index.html" aria-label="Go to Home" class="flex items-center space-x-1 text-cyan-400 font-semibold p-2 rounded-lg transition duration-200 hover:bg-cyan-500 hover:text-gray-900 active:scale-95 shadow-md hover:shadow-cyan-400/50">
+                <!-- Home Icon -->
+                <i class="fas fa-home"></i>
+                <span class="inline text-sm">Go to Home</span>
+            </a>
+            
+            <!-- Language Selector (Right Aligned) -->
+            <div id="google_translate_element"></div>
+        </div>
+        
+        <!-- Header Section - Neon Style -->
+        <header class="w-full max-w-7xl mx-auto mb-8 text-center p-6 rounded-2xl border-b-4 border-t-4 border-[#00FFFF] bg-gray-800 shadow-2xl shadow-gray-900/70 relative">
+             <!-- Title Section (Center Aligned) -->
+            <h1 class="text-3xl md:text-5xl font-extrabold neon-cyan flex items-center justify-center mx-auto">
+                <i class="fas fa-chart-line mr-4 text-3xl md:text-4xl"></i>
+                VDM Operation Timeline Report
+            </h1>
+            <p class="text-base text-gray-400 mt-2">Latest 30 Operational Events and Notifications</p>
+        </header>
+
+        <!-- News Timeline Container -->
+        <div class="w-full max-w-7xl mx-auto">
+            <div class="news-container" id="news-container">
+                <!-- Timeline Line (Styled in <style> block) -->
+                <div class="timeline-line"></div>
+                <!-- News items will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Popup Overlay - Styled with Dark/Neon Theme -->
+        <div class="popup-overlay fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-20 transition-opacity duration-300" id="popup-overlay" style="display: none;" onclick="closePopup()">
+            <div class="popup-content bg-gray-800 p-8 rounded-xl max-w-lg w-full shadow-[0_0_40px_rgba(0,255,255,0.8)] border-2 border-[#00FFFF] text-center relative" onclick="event.stopPropagation()">
+                <img id="popup-image" src="" alt="News Image" class="w-full h-auto rounded-lg mb-6 cursor-zoom-in border border-gray-700 transition-all duration-300 hover:scale-[1.01]">
+                <div id="popup-title" class="text-2xl font-bold text-[#00FFFF] mb-3"></div>
+                
+                <div class="text-base text-gray-300 space-y-2">
+                    <p class="flex items-center justify-center"><i class="fas fa-calendar-alt mr-2 text-gray-400"></i> <span id="popup-date" class="font-medium"></span></p>
+                    <p class="flex items-center justify-center"><i class="fas fa-map-marker-alt mr-2 text-gray-400"></i> <span id="popup-zone"></span></p>
+                    <p class="flex items-center justify-center"><i class="fas fa-user-circle mr-2 text-gray-400"></i> <span id="popup-postby"></span></p>
+                </div>
+
+                <button class="close-btn mt-8 px-8 py-3 bg-[#00FFFF] text-gray-900 rounded-lg font-bold hover:bg-white transition duration-300 transform hover:scale-[1.05]" onclick="closePopup()">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Image Zoom Popup Overlay -->
+        <div class="fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 transition-opacity duration-300" id="image-zoom-overlay" style="display: none;" onclick="closeImagePopup()">
+            <div class="p-4 relative">
+                <img id="zoom-image" src="" alt="Zoomed Image" class="max-w-[95vw] max-h-[95vh] rounded-lg shadow-2xl transition-all duration-500" onclick="event.stopPropagation()">
+                <p class="text-white text-center mt-4 cursor-pointer text-sm">Click anywhere to close</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Chat Assistant Button -->
+    <div class="chat-button" id="chat-button" onclick="openChatModal()">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Chat Modal/Popup -->
+    <div class="chat-modal" id="chat-modal" style="display: none;">
+        <div class="chat-header">
+            <span><i class="fas fa-microchip mr-2"></i> VDM Assistant</span>
+            <button class="text-white hover:text-red-500 transition" onclick="closeChatModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be rendered here -->
+        </div>
+        <!-- Removed chat-input-area completely -->
+    </div>
+
+    <script>
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxZLUhugbl6GfvRTsVAJKXoUhpbnsHXOR-EpKN9W_eBR14fy7Iqmic9p9ptRHbYIpYNOA/exec';
+        
+        // Global state 
+        let timelineData = []; // Global variable to store fetched and sorted timeline data
+        
+        // --- TEXT TRANSLATION MAPPING (Used for initial prompt based on Google Translate) ---
+        const MESSAGES = {
+            TH: {
+                initial_prompt: "ต้องการสรุปรายงานใช่มั้ยครับ?",
+                button_text: "สรุปรายงานตามวันที่",
+                date_prompt: "กรุณาเลือกวันที่คุณต้องการดูรายงานสรุป (แสดง 10 วันล่าสุด):",
+                back_button: "กลับสู่เมนูหลัก",
+                loading: "กำลังโหลดข้อมูลอยู่ครับ กรุณาลองใหม่อีกครั้ง...",
+                no_reports: "ขออภัยครับ ไม่พบวันที่ที่มีรายงานในระบบ"
+            },
+            EN: {
+                initial_prompt: "Do you want to summarize the report?",
+                button_text: "Summarize by Date",
+                date_prompt: "Please select the date you want to view the report summary (showing the latest 10 days):",
+                back_button: "Back to Main Menu",
+                loading: "Data is currently loading. Please try again later...",
+                no_reports: "Sorry, no report dates were found in the system"
+            }
+        };
+
+        // Function to determine the display language
+        function getDisplayLanguage() {
+            // Changed default language to EN as requested.
+            // If the user selects a language via Google Translate, the page content 
+            // (including the EN prompt) should still be translated automatically.
+            return 'EN'; 
+        }
+        
+        // Initial chat history with the first option
+        let chatHistory = [];
+        
+        // --- Google Translate Initialization ---
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({pageLanguage: 'th'}, 'google_translate_element');
+        }
+
+        // --- Data Fetching and Rendering Logic ---
+
+        function fetchNewsData() {
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = '<div class="text-center text-gray-400 mt-10">กำลังโหลดข้อมูล Timeline... <i class="fas fa-spinner fa-spin animate-spin"></i></div><div class="timeline-line"></div>';
+
+            fetch(API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`API response status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!Array.isArray(data)) {
+                        throw new Error('API returned non-array data.');
+                    }
+                    
+                    newsContainer.innerHTML = '<div class="timeline-line"></div>';
+
+                    // Process and sort data (Latest 30 items)
+                    const parsedData = data.map(item => {
+                        const [day, month, year] = item.date.split('/');
+                        let formattedDate = null;
+                        if (day && month && year) {
+                             formattedDate = `${year}-${month}-${day}`;
+                        }
+                        
+                        return { 
+                            ...item, 
+                            sortDate: formattedDate, 
+                            displayDate: item.date || 'N/A'
+                        };
+                    });
+
+                    const sortedData = parsedData
+                        .filter(item => item.sortDate)
+                        .sort((a, b) => new Date(b.sortDate) - new Date(a.sortDate))
+                        .slice(0, 30);
+                    
+                    timelineData = sortedData; 
+
+                    if (sortedData.length === 0) {
+                        newsContainer.innerHTML = '<div class="text-center text-red-400 mt-10">ไม่พบรายงานการดำเนินงานล่าสุด.</div>';
+                        return;
+                    }
+
+                    sortedData.forEach(item => {
+                        const newsItem = document.createElement('div');
+                        newsItem.className = 'news-item relative bg-gray-700 p-6 rounded-xl flex items-center gap-8 shadow-xl border-l-4 border-l-[#00FFFF] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] transition duration-500 cursor-pointer mb-8';
+
+                        const timelineCircle = document.createElement('div');
+                        timelineCircle.classList.add('timeline-circle');
+                        
+                        const timelineDate = document.createElement('div');
+                        timelineDate.classList.add('timeline-date');
+                        timelineDate.textContent = item.displayDate;
+
+                        const newsImg = document.createElement('img');
+                        newsImg.className = 'w-20 h-20 rounded-lg object-cover flex-shrink-0 border-2 border-[#00FFFF]/50';
+                        newsImg.src = item.image || 'https://placehold.co/80x80/2D3748/A0AEC0?text=VDM';
+
+                        const detailsDiv = document.createElement('div');
+                        detailsDiv.className = 'flex-1 min-w-0';
+
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'text-xl font-bold truncate text-[#00FFFF]';
+                        titleDiv.textContent = item.detail || 'No Title Available';
+
+                        const zoneElement = document.createElement('div');
+                        zoneElement.className = 'text-base text-gray-300 mt-1 flex items-center';
+                        zoneElement.innerHTML = `<i class="fas fa-map-marker-alt mr-2 text-gray-400"></i> <span>Zone: ${item.zone || 'N/A'}</span>`;
+
+                        const postedByDiv = document.createElement('div');
+                        postedByDiv.className = 'text-sm text-gray-500 mt-1 flex items-center';
+                        postedByDiv.innerHTML = `<i class="fas fa-user-circle mr-2"></i> <span>Posted by: ${item.postby || 'System'}</span>`;
+
+                        detailsDiv.appendChild(titleDiv);
+                        detailsDiv.appendChild(zoneElement);
+                        detailsDiv.appendChild(postedByDiv);
+
+                        newsItem.appendChild(timelineCircle);
+                        newsItem.appendChild(timelineDate);
+                        newsItem.appendChild(newsImg);
+                        newsItem.appendChild(detailsDiv);
+
+                        newsItem.addEventListener('click', () => {
+                            openPopup(item);
+                        });
+
+                        newsContainer.appendChild(newsItem);
+                    });
+                    
+                    // After data load, set initial chat history and render
+                    chatHistory = []; // Clear history
+                    showInitialOptions(); // Set the first prompt with button
+                })
+                .catch(error => {
+                    newsContainer.innerHTML = `<div class="text-center text-red-400 mt-10">ข้อผิดพลาดในการดึงข้อมูล: ${error.message}</div>`;
+                    console.error('Fetch Error:', error);
+                });
+        }
+
+        // --- Popup Functions (No Change) ---
+
+        function openPopup(item) {
+            const popupOverlay = document.getElementById('popup-overlay');
+            const popupImage = document.getElementById('popup-image');
+
+            document.getElementById('popup-title').textContent = item.detail || 'No Title Available';
+            popupImage.src = item.image || 'https://placehold.co/468x200/2D3748/A0AEC0?text=Image+Not+Available';
+            document.getElementById('popup-date').textContent = `Date: ${item.displayDate || item.date}`; 
+            document.getElementById('popup-zone').textContent = `Zone: ${item.zone || 'N/A'}`;
+            document.getElementById('popup-postby').textContent = `Posted by: ${item.postby || 'System'}`;
+            
+            popupImage.onclick = function() {
+                openImagePopup(popupImage.src);
+            };
+
+            popupOverlay.style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('popup-overlay').style.display = 'none';
+        }
+
+        function openImagePopup(imageSrc) {
+            const zoomOverlay = document.getElementById('image-zoom-overlay');
+            document.getElementById('zoom-image').src = imageSrc;
+            zoomOverlay.style.display = 'flex';
+        }
+
+        function closeImagePopup() {
+            document.getElementById('image-zoom-overlay').style.display = 'none';
+        }
+
+        // --- CHAT ASSISTANT FUNCTIONS (Internal Logic) ---
+        
+        // Utility for creating a clean summary of a single date's reports
+        function generateDateSummary(date) {
+            const reports = timelineData.filter(item => item.displayDate === date);
+            const lang = getDisplayLanguage();
+
+            if (reports.length === 0) {
+                return lang === 'TH' 
+                    ? `ขออภัยครับ ไม่พบรายงานสำหรับวันที่ **${date}**` 
+                    : `Sorry, no reports were found for **${date}**.`;
+            }
+
+            let summary = lang === 'TH' 
+                ? `**สรุปรายงานประจำวันที่ ${date} (${reports.length} รายการ):**\n\n`
+                : `**Summary Report for ${date} (${reports.length} items):**\n\n`;
+            
+            const reportsByZone = reports.reduce((acc, item) => {
+                const zone = item.zone || (lang === 'TH' ? 'โซนไม่ทราบ' : 'Unknown Zone');
+                if (!acc[zone]) {
+                    acc[zone] = [];
+                }
+                const postByText = lang === 'TH' ? 'โพสต์โดย' : 'Posted by';
+                acc[zone].push(`- ${item.detail} (${postByText}: ${item.postby || (lang === 'TH' ? 'ระบบ' : 'System')})`);
+                return acc;
+            }, {});
+
+            for (const zone in reportsByZone) {
+                summary += `**[Zone: ${zone}]**\n${reportsByZone[zone].join('\n')}\n\n`;
+            }
+            
+            summary += lang === 'TH' 
+                ? "มีอะไรให้ผมช่วยสรุปหรือค้นหาเพิ่มเติมอีกไหมครับ?" 
+                : "Is there anything else I can help summarize or search for?";
+            return summary;
+        }
+
+        // Action function to show unique date options
+        function showReportDateOptions() {
+            const lang = getDisplayLanguage();
+            
+            if (timelineData.length === 0) {
+                chatHistory.push({
+                    role: "model",
+                    parts: [{ text: MESSAGES[lang].loading }]
+                });
+                renderChatHistory();
+                return;
+            }
+            
+            // Get unique dates from the timeline data
+            const uniqueDates = Array.from(new Set(timelineData.map(item => item.displayDate))).sort((a, b) => {
+                // Convert DD/MM/YYYY back to Date objects for accurate sorting
+                const [dA, mA, yA] = a.split('/').map(Number);
+                const [dB, mB, yB] = b.split('/').map(Number);
+                const dateA = new Date(yA, mA - 1, dA);
+                const dateB = new Date(yB, mB - 1, dB);
+                return dateB - dateA; // Sort descending (latest first)
+            });
+            
+            if (uniqueDates.length === 0) {
+                 chatHistory.push({
+                    role: "model",
+                    parts: [{ text: MESSAGES[lang].no_reports }]
+                });
+                renderChatHistory();
+                return;
+            }
+
+            // Create option parts (limit to 10 latest dates)
+            const dateOptions = uniqueDates.slice(0, 10).map(date => ({
+                type: "option",
+                text: date,
+                action: `showReportSummary('${date}')`
+            }));
+
+            // Add the model's instruction
+            chatHistory.push({
+                role: "model",
+                parts: [
+                    { text: MESSAGES[lang].date_prompt },
+                    ...dateOptions
+                ]
+            });
+
+            renderChatHistory();
+        }
+
+        // Action function to show the actual report summary
+        function showReportSummary(date) {
+            const lang = getDisplayLanguage();
+            const summaryText = generateDateSummary(date);
+            
+            // Add user's choice to history (for context)
+            chatHistory.push({
+                role: "user",
+                parts: [{ text: lang === 'TH' ? `สรุปรายงานวันที่ ${date}` : `Summarize report for ${date}` }]
+            });
+
+            // Add model's summary to history
+            chatHistory.push({
+                role: "model",
+                parts: [{ text: summaryText }]
+            });
+            
+            // Add option to return to main menu
+            chatHistory.push({
+                role: "model",
+                parts: [
+                    {
+                        type: "option",
+                        text: MESSAGES[lang].back_button,
+                        action: "showInitialOptions"
+                    }
+                ]
+            });
+
+            renderChatHistory();
+        }
+        
+        // Function to reset chat to initial options (Primary Menu)
+        function showInitialOptions() {
+            const lang = getDisplayLanguage();
+
+             chatHistory.push({
+                role: "model",
+                parts: [
+                    { 
+                        text: MESSAGES[lang].initial_prompt 
+                    },
+                    {
+                        type: "option",
+                        text: MESSAGES[lang].button_text,
+                        action: "showReportDateOptions"
+                    }
+                ]
+            });
+             renderChatHistory();
+        }
+
+        // --- CHAT HISTORY RENDERING & USER INPUT HANDLING ---
+
+        function renderChatHistory() {
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.innerHTML = ''; 
+
+            chatHistory.forEach(message => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${message.role === 'user' ? 'user-message' : 'ai-message'}`;
+                
+                const textContainer = document.createElement('div');
+                textContainer.className = 'message-text-content';
+
+                const optionContainer = document.createElement('div');
+                optionContainer.className = 'option-container';
+
+                let hasOptions = false;
+                
+                // Handle complex message parts (text + options)
+                if (Array.isArray(message.parts)) {
+                    message.parts.forEach(part => {
+                        if (part.type === "option") {
+                            hasOptions = true;
+                            // Create clickable button for option
+                            const button = document.createElement('button');
+                            button.className = 'chat-option-button';
+                            button.textContent = part.text;
+                            button.onclick = () => handleOptionClick(part.text, part.action);
+                            optionContainer.appendChild(button);
+                        } else {
+                            // Text part
+                            textContainer.innerHTML += part.text.replace(/\n/g, '<br>');
+                        }
+                    });
+                } else {
+                     // Simple text message
+                    textContainer.innerHTML = message.parts[0].text.replace(/\n/g, '<br>');
+                }
+                
+                // Only append text container if it has content
+                if (textContainer.innerHTML) {
+                    msgDiv.appendChild(textContainer);
+                }
+
+                // Only append option container if buttons were created
+                if (hasOptions) {
+                    msgDiv.appendChild(optionContainer);
+                }
+
+                messagesContainer.appendChild(msgDiv);
+            });
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Handle option button clicks
+        function handleOptionClick(text, action) {
+            // Add user's choice to history
+            chatHistory.push({ role: 'user', parts: [{ text: text }] });
+            
+            // Execute the action
+            if (action) {
+                switch (action) {
+                    case "showReportDateOptions":
+                        showReportDateOptions();
+                        break;
+                    case "showInitialOptions":
+                        showInitialOptions();
+                        break;
+                    default:
+                        // Handle date summary actions (e.g., showReportSummary('01/10/2025'))
+                        if (action.startsWith("showReportSummary")) {
+                            // Safely extract the date string inside the function call
+                            const dateMatch = action.match(/'([^']+)'/);
+                            if (dateMatch && dateMatch[1]) {
+                                showReportSummary(dateMatch[1]);
+                            }
+                        } else {
+                            console.error("Unknown action:", action);
+                        }
+                        break;
+                }
+            }
+            renderChatHistory();
+        }
+
+        // This function is now redundant (Input field is disabled)
+        function sendMessage() {
+            return;
+        }
+
+        // Chat UI functions
+        function openChatModal() {
+            document.getElementById('chat-modal').style.display = 'flex';
+            renderChatHistory(); 
+        }
+
+        function closeChatModal() {
+            document.getElementById('chat-modal').style.display = 'none';
+        }
+
+        // Start loading data when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNewsData(); 
+        });
+
+    </script>
+    <!-- Google Translate Script -->
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+
+</html>
