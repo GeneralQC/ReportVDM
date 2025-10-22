@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VDM Platform Main Menu</title>
+    <!-- Load Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Chart.js for creating charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <!-- Load Chart.js Data Labels Plugin for showing values on bars -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    
+    <style>
+        /* --- CORE AI THEME STYLES (Space/Neon Cyan Dark Theme) --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #E2E8F0; /* Light text for contrast */
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            /* DEEPER SPACE BACKGROUND EFFECT */
+            background-color: #1A202C; 
+            background: radial-gradient(circle at 50% 10%, #2c3748 0%, #1A202C 50%, #10141a 100%);
+        }
+
+        /* Header Text Glow Effect */
+        .neon-cyan {
+            color: #00FFFF; /* Neon Cyan Text */
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.6); /* Stronger text glow */
+            letter-spacing: 2px;
+        }
+        @keyframes subtle-pulse {
+            0%, 100% {
+                text-shadow: 0 0 5px rgba(0, 255, 255, 0.4), 0 0 10px rgba(0, 255, 255, 0.2);
+            }
+            50% {
+                text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+            }
+        }
+        .header-text-glow {
+            animation: subtle-pulse 3s infinite ease-in-out;
+        }
+
+        /* Card Link Base Style */
+        .card-link {
+            background-color: #2D3748; /* Dark Card Background */
+            color: #E2E8F0;
+            border: 1px solid #4A5568; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 5px rgba(0, 0, 0, 0.2); /* Added inner shadow */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        /* Card Hover Effect: Stronger Neon Border Glow */
+        .card-link:hover {
+            transform: translateY(-5px);
+            border-color: #00FFFF; /* Solid neon border on hover */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 10px rgba(0, 255, 255, 0.1); 
+        }
+        
+        /* Icon Background Styles */
+        .icon-bg-cyan { background-color: #00FFFF33; }
+        .icon-bg-blue { background-color: #1D4ED833; }
+        .icon-bg-green { background-color: #10B98133; }
+
+        /* Chart-specific styles */
+        .dashboard-card {
+            background-color: #2D3748; /* Dark Card Background */
+            border: 1px solid #4A5568; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        .chart-container {
+            overflow-x: auto;
+            padding-bottom: 1rem;
+        }
+        #workStatusChart {
+            /* Retain mini size height */
+            min-height: 150px; 
+            min-width: 100%;
+        }
+        /* Styles for Collapse/Expand transition */
+        .collapse-transition {
+            transition: all 0.3s ease-in-out;
+            max-height: 500px; /* Max height to enable transition effect */
+            overflow: hidden;
+        }
+        .collapsed {
+            max-height: 0;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        /* Style for the chevron icon rotation */
+        .chevron {
+            transition: transform 0.3s ease-in-out;
+            transform: rotate(0deg);
+        }
+        .chevron.up {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="w-full max-w-5xl mx-auto py-10">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <!-- Adjusted text size for responsiveness -->
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-3 neon-cyan uppercase header-text-glow">
+                VDM | Digital Hub
+            </h1>
+            <!-- Adjusted subtitle size for responsiveness -->
+            <p class="text-lg sm:text-xl text-gray-400 font-light mt-4">
+                Select your required operational module
+            </p>
+        </header>
+
+        <!-- === START OF CHART/DASHBOARD SECTION === -->
+        <div class="dashboard-card p-6 rounded-xl mb-12">
+            
+            <!-- Chart Header with Toggle Button -->
+            <button id="chartToggle" onclick="toggleChart()" class="w-full text-left focus:outline-none border-b border-gray-600 pb-2 flex items-center justify-between group">
+                <h2 id="chart" class="text-2xl font-semibold text-gray-100 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-[#00FFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    Status Work Issue by Plant
+                </h2>
+                <!-- Chevron Icon for Collapse/Expand (DEFAULT TO UP/COLLAPSED) -->
+                <svg id="chevronIcon" class="chevron w-6 h-6 text-[#00FFFF] group-hover:text-white up" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <!-- Chart Content (Collapsible) (DEFAULT TO COLLAPSED) -->
+            <div id="chartContent" class="collapse-transition pt-4 collapsed">
+
+                <!-- Data Loading Indicator and Error Message (in English) -->
+                <div id="loading" class="text-center text-lg text-yellow-400 mb-4">
+                    <div class="animate-spin inline-block w-6 h-6 border-3 border-yellow-500 border-t-transparent rounded-full mr-2"></div>
+                    Fetching data and preparing chart...
+                </div>
+
+                <div id="error-message" class="hidden text-center text-lg text-red-500 mb-4 p-3 rounded-lg bg-red-900/50">
+                    Error fetching data: <span id="error-details" class="font-mono"></span>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="workStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- === END OF CHART/DASHBOARD SECTION === -->
+
+        <h2 class="text-2xl font-bold text-gray-300 mb-6 uppercase tracking-wider border-b border-gray-700 pb-2">
+            Operational Modules
+        </h2>
+
+        <!-- Menu Cards Container: 3 columns for large screens -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Card 1: Reports and Notifications (Neon Cyan - #00FFFF) -->
+            <!-- Link restored to 'report.html' based on the original structure (before the chart was merged into Index.html) -->
+            <button onclick="window.location.href='report.html'" class="card-link block p-6 rounded-xl border-t-4 border-[#00FFFF] transform text-left">
+                <div class="flex items-start mb-4">
+                    <!-- Icon for Report/Data -->
+                    <div class="icon-bg-cyan p-3 rounded-full shadow-lg border border-[#00FFFF] mr-4 flex-shrink-0">
+                        <svg class="w-8 h-8 text-[#00FFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white uppercase">Reports</h2>
+                        <span class="text-sm text-gray-500">Real-time Metrics</span>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">Access the latest performance metrics, operational alerts, and timeline reports (Report VDM).</p>
+                <div class="flex justify-end">
+                    <span class="text-sm font-medium text-[#00FFFF] flex items-center transition-colors duration-200">
+                        View Dashboard
+                        <svg class="w-4 h-4 ml-1 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
+                </div>
+            </button>
+
+            <!-- Card 2: Guides and Troubleshooting (Electric Blue - #1D4ED8) -->
+            <!-- Link restored to 'solution.html' -->
+            <button onclick="window.location.href='solution.html'" class="card-link block p-6 rounded-xl border-t-4 border-[#1D4ED8] transform text-left">
+                <div class="flex items-start mb-4">
+                    <!-- Icon for Solutions/Support -->
+                    <div class="icon-bg-blue p-3 rounded-full shadow-lg border border-[#1D4ED8] mr-4 flex-shrink-0">
+                        <svg class="w-8 h-8 text-[#1D4ED8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white uppercase">Support & Guides</h2>
+                        <span class="text-sm text-gray-500">Self-Service Solutions</span>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">Find technical solutions, user manuals, and use the AI assistant for troubleshooting (VDM Solutions).</p>
+                <div class="flex justify-end">
+                    <span class="text-sm font-medium text-[#1D4ED8] flex items-center transition-colors duration-200">
+                        View Support
+                        <svg class="w-4 h-4 ml-1 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
+                </div>
+            </button>
+            
+            <!-- Card 3: PM and Calibration (Teal/Green - #10B981) -->
+            <!-- Link restored to the AppSheet URL -->
+            <button onclick="window.location.href='https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA62PQQ6CMBRE7zLrnqBbdGEMJkbDxrKo9JM0QktoQUnTu1uIRNfE5Z_Je5kfMGp6XrysHuC38L2ONIEjCFynjgS4QGaN720jwAROsl3DtpM9Fbt9dOdMICKWbLV4cuBhi4T_YwmDVmS8rjX1s3Hmk-lDp3pml-CXRGRoBy_vDS0vJDLGlNW2GhypIs3aPMcdzP7VSaNyq5K4lo2j-AaS989FgwEAAA==&view=CompareVDMvsQC'" class="card-link block p-6 rounded-xl border-t-4 border-[#10B981] transform text-left">
+                <div class="flex items-start mb-4">
+                    <!-- Icon for Maintenance/Calibration (Wrench and Checkmark) -->
+                    <div class="icon-bg-green p-3 rounded-full shadow-lg border border-[#10B981] mr-4 flex-shrink-0">
+                        <svg class="w-8 h-8 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-6s-1.5 1-2 1h-2c-.5 0-2-1-2-1"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2 text-white uppercase">Maintenance</h2>
+                        <span class="text-sm text-gray-500">PM & Calibration</span>
+                    </div>
+                </div>
+                <p class="text-gray-400 text-sm mb-4">Manage Preventative Maintenance schedules, check calibration, Inform Issue</p>
+                <div class="flex justify-end">
+                    <span class="mt-4 text-sm font-medium text-[#10B981] flex items-center transition-colors duration-200">
+                        View Schedules
+                        <svg class="w-4 h-4 ml-1 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
+                </div>
+            </button>
+
+        </div>
+        
+        <!-- Footer / Contact Info -->
+        <footer class="mt-16 text-center text-gray-600 text-sm">
+            &copy; 2025 VDM Platform. All systems operational.
+        </footer>
+        
+    </div>
+
+    <!-- START JAVASCRIPT FOR DATA FETCHING AND CHART RENDERING -->
+    <script>
+        // Google Apps Script API URL provided by the user
+        const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzDTO0biyndbrxLnJUb4yOORgYytoX1ZlANMNiZsM-RoexobcDMZP16un2PGZLDdnHmCA/exec';
+
+        // Register the DataLabels plugin globally
+        Chart.register(ChartDataLabels);
+
+        // --- Helper functions for Exponential Backoff (API retry logic) ---
+        const MAX_RETRIES = 3;
+        const INITIAL_DELAY_MS = 1000;
+
+        async function fetchWithRetry(url, options = {}, retries = 0) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (retries < MAX_RETRIES) {
+                    const delay = INITIAL_DELAY_MS * Math.pow(2, retries);
+                    console.warn(`Fetch failed (Attempt ${retries + 1}). Retrying in ${delay / 1000}s...`, error);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchWithRetry(url, options, retries + 1);
+                } else {
+                    console.error("Fetch failed after all retries.", error);
+                    throw new Error("Failed to fetch data after multiple attempts.");
+                }
+            }
+        }
+
+        // --- Data Processing Logic (Group by Plant) ---
+
+        function processData(rawData) {
+            let dataArray = rawData;
+            if (typeof rawData === 'object' && rawData !== null && Array.isArray(rawData.data)) {
+                dataArray = rawData.data;
+            }
+
+            if (!dataArray || !Array.isArray(dataArray) || dataArray.length === 0) {
+                return { plants: [], inProcess: [], completed: [] };
+            }
+
+            const firstObject = dataArray[0];
+            if (typeof firstObject !== 'object' || firstObject === null) {
+                throw new Error("Invalid data structure received. Expected array of objects.");
+            }
+            
+            const plantKey = 'Plant';
+            const statusKey = 'Status';
+
+            if (!Object.prototype.hasOwnProperty.call(firstObject, plantKey) || 
+                !Object.prototype.hasOwnProperty.call(firstObject, statusKey)) {
+                 throw new Error("Missing required data columns ('Plant' or 'Status') in JSON object keys.");
+            }
+
+            const plantStatusCounts = {};
+
+            dataArray.forEach(rowObject => {
+                const plant = rowObject[plantKey];
+                const status = rowObject[statusKey];
+
+                if (!plant || typeof plant !== 'string' || plant.trim() === '') {
+                    return;
+                }
+
+                if (!plantStatusCounts[plant]) {
+                    plantStatusCounts[plant] = { 'In process': 0, 'Completed': 0 };
+                }
+
+                if (status === 'In process') {
+                    plantStatusCounts[plant]['In process']++;
+                } else if (status === 'Completed') {
+                    plantStatusCounts[plant]['Completed']++;
+                }
+            });
+
+            const plants = Object.keys(plantStatusCounts);
+            const inProcess = plants.map(plant => plantStatusCounts[plant]['In process']);
+            const completed = plants.map(plant => plantStatusCounts[plant]['Completed']);
+            
+            // Reset min-width for vertical chart
+            const chartCanvas = document.getElementById('workStatusChart');
+            chartCanvas.style.minWidth = `100%`;
+
+            return { plants, inProcess, completed };
+        }
+        
+        // --- Chart Rendering Logic (World Class Aesthetics & Mini Size) ---
+
+        function renderChart(data) {
+            const chartCanvas = document.getElementById('workStatusChart');
+            const chartCard = chartCanvas.closest('.dashboard-card');
+
+            if (data.plants.length === 0) {
+                chartCanvas.style.display = 'none';
+                
+                const noDataMessage = document.createElement('p');
+                noDataMessage.textContent = 'No task data found for the required statuses (In process or Completed).';
+                noDataMessage.className = 'text-center text-lg text-gray-400 py-10';
+                
+                const container = chartCard.querySelector('.chart-container') || chartCard;
+                container.innerHTML = '';
+                container.appendChild(noDataMessage);
+                return;
+            }
+
+            // Destroy previous chart instance if it exists to prevent overlap
+            if (window.myChartInstance) {
+                window.myChartInstance.destroy();
+            }
+
+            const ctx = chartCanvas.getContext('2d');
+            
+            window.myChartInstance = new Chart(ctx, {
+                type: 'bar', // Vertical Bar Chart
+                data: {
+                    labels: data.plants, // X-axis: Plant
+                    datasets: [
+                        {
+                            label: 'In Process',
+                            data: data.inProcess, // Y-axis: In Process Count
+                            // Pseudo 3D/Glow effect colors
+                            backgroundColor: 'rgba(0, 255, 255, 0.9)', 
+                            borderColor: '#00FFFF', 
+                            borderWidth: 2,
+                            borderRadius: 8, // More rounded edges
+                            borderSkipped: false, // Ensures full rectangle drawing
+                            hoverBackgroundColor: 'rgba(0, 255, 255, 1.0)',
+                            hoverBorderColor: '#FFFFFF',
+                            barThickness: 20, // Slightly thicker for visual impact
+                            categoryPercentage: 0.8,
+                            barPercentage: 0.9,
+                        },
+                        {
+                            label: 'Completed',
+                            data: data.completed, // Y-axis: Completed Count
+                            // Pseudo 3D/Glow effect colors
+                            backgroundColor: 'rgba(16, 185, 129, 0.9)', 
+                            borderColor: '#10B981', 
+                            borderWidth: 2,
+                            borderRadius: 8, // More rounded edges
+                            borderSkipped: false, // Ensures full rectangle drawing
+                            hoverBackgroundColor: 'rgba(16, 185, 129, 1.0)',
+                            hoverBorderColor: '#FFFFFF',
+                            barThickness: 20, // Slightly thicker for visual impact
+                            categoryPercentage: 0.8,
+                            barPercentage: 0.9,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#E2E8F0',
+                                font: {
+                                    size: 12 // ADJUSTED: Bigger legend font
+                                },
+                                boxWidth: 12, // Bigger legend box
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Status Work issue by Plant',
+                            color: '#00FFFF',
+                            font: {
+                                size: 16, // ADJUSTED: Bigger title font
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                            titleColor: '#1A202C',
+                            bodyColor: '#1A202C',
+                            borderColor: '#00FFFF',
+                            borderWidth: 1,
+                            cornerRadius: 6,
+                            displayColors: true,
+                            padding: 10, // Slightly more padding
+                        },
+                        datalabels: { // Data Labels Plugin Configuration
+                            align: 'end', // Position above the bar
+                            anchor: 'end',
+                            offset: 3, // Slightly bigger offset
+                            color: '#E2E8F0', // Light text color
+                            font: {
+                                size: 12, // ADJUSTED: Bigger data label font
+                                weight: 'bold'
+                            },
+                            formatter: function(value, context) {
+                                return value > 0 ? value : ''; // Only show positive values
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: false, 
+                            ticks: {
+                                color: '#A0AEC0',
+                                font: {
+                                    weight: 'bold',
+                                    size: 10 // ADJUSTED: Bigger X-axis ticks
+                                }
+                            },
+                            grid: {
+                                display: false, // Removed all vertical grid lines (cleaner)
+                            },
+                            title: {
+                                display: true,
+                                text: 'Plant (X-Axis)',
+                                color: '#E2E8F0',
+                                font: {
+                                    weight: 'bold',
+                                    size: 12 // ADJUSTED: Bigger X-axis title
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#A0AEC0', 
+                                precision: 0,
+                                size: 10, // ADJUSTED: Bigger Y-axis ticks
+                                callback: function(value) {
+                                    return value > 0 ? value : '';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(74, 85, 104, 0.2)' // Adjusted grid opacity (jader)
+                            },
+                            title: {
+                                display: true,
+                                text: 'Tasks Count (Y-Axis)',
+                                color: '#E2E8F0',
+                                font: {
+                                    weight: 'bold',
+                                    size: 12 // ADJUSTED: Bigger Y-axis title
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Execution Function ---
+
+        async function initDashboard() {
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error-message');
+            const errorDetails = document.getElementById('error-details');
+
+            loadingElement.classList.remove('hidden');
+            errorElement.classList.add('hidden');
+
+            try {
+                // Fetch data from the GAS API 
+                const rawData = await fetchWithRetry(GAS_API_URL, { cache: 'no-cache' }); 
+                
+                // Process the raw data into chart-ready format
+                const chartData = processData(rawData);
+
+                // Render the chart
+                renderChart(chartData);
+                
+            } catch (error) {
+                console.error("Failed to initialize dashboard:", error);
+                errorDetails.textContent = error.message;
+                errorElement.classList.remove('hidden');
+            } finally {
+                loadingElement.classList.add('hidden');
+            }
+        }
+
+        // Start the process when the window loads
+        window.onload = initDashboard;
+        
+        // --- Toggle Chart Visibility Function ---
+        function toggleChart() {
+            const content = document.getElementById('chartContent');
+            const chevron = document.getElementById('chevronIcon');
+            
+            content.classList.toggle('collapsed');
+            chevron.classList.toggle('up');
+        }
+
+    </script>
+</body>
+</html>
