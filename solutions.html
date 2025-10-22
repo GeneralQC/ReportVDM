@@ -330,10 +330,21 @@
 
 <body class="min-h-screen">
     <!-- Header Section -->
-    <header class="header-bg p-6 shadow-md">
-        <h1 class="text-4xl font-extrabold text-center header-text tracking-wider uppercase header-text-glow">
+    <header class="header-bg p-4 sm:p-6 shadow-md flex items-center justify-between">
+        <!-- Home Button Added Here -->
+        <a href="index.html" aria-label="Go to Home" class="flex items-center space-x-2 text-cyan-400 font-semibold p-2 rounded-lg transition duration-200 hover:bg-cyan-500 hover:text-gray-900 active:scale-95 shadow-md hover:shadow-cyan-400/50">
+            <!-- Home Icon -->
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7-7-7m7 7v10a1 1 0 001 1h3"></path></svg>
+            <span class="inline">Go to Home</span>
+        </a>
+        
+        <!-- Title Section -->
+        <h1 class="text-xl sm:text-4xl font-extrabold text-center header-text tracking-wider uppercase header-text-glow flex-1">
             VDM Solutions Platform 
         </h1>
+
+        <!-- Placeholder for symmetry/space -->
+        <div class="w-[70px] sm:w-[100px] h-0"></div>
     </header>
 
     <!-- Main Content Container (Search & Filter) -->
