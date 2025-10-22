@@ -71,8 +71,9 @@
         .timeline-date {
             position: absolute;
             left: -100px; /* Positioned to the left of the timeline line */
-            top: 0px;
-            background-color: #2D3748; 
+            top: -12px; /* ปรับขึ้นเล็กน้อยเพื่อให้ไม่ซ้อนกับ Card */
+            /* MODIFICATION: ใช้สีน้ำเงินเข้มโปร่งใส (rgba(45, 62, 86, 0.9)) เพื่อให้เข้ากับธีม Neon มากขึ้น */
+            background-color: rgba(45, 62, 86, 0.9); 
             padding: 4px 8px;
             border-radius: 8px;
             font-size: 0.85rem; /* Slightly larger date font */
@@ -110,6 +111,7 @@
                 font-size: 0.75rem;
                 padding: 3px 6px;
                 width: 50px;
+                top: -10px; /* ปรับขึ้นเล็กน้อยสำหรับมือถือ */
             }
         }
         
@@ -454,7 +456,8 @@
 
                     sortedData.forEach(item => {
                         const newsItem = document.createElement('div');
-                        newsItem.className = 'news-item relative bg-gray-700 p-6 rounded-xl flex items-center gap-8 shadow-xl border-l-4 border-l-[#00FFFF] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] transition duration-500 cursor-pointer mb-8';
+                        // MODIFIED: Changed bg-gray-700 to bg-gray-800 and added border-2 for crispness/better neon theme look.
+                        newsItem.className = 'news-item relative bg-gray-800 p-6 rounded-xl flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 shadow-xl border-l-4 border-l-[#00FFFF] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] transition duration-500 cursor-pointer mb-8 border-2 border-gray-700';
 
                         const timelineCircle = document.createElement('div');
                         timelineCircle.classList.add('timeline-circle');
@@ -464,14 +467,17 @@
                         timelineDate.textContent = item.displayDate;
 
                         const newsImg = document.createElement('img');
-                        newsImg.className = 'w-20 h-20 rounded-lg object-cover flex-shrink-0 border-2 border-[#00FFFF]/50';
+                        // MODIFIED: Reduced image size on mobile (default) to w-16 h-16 to give more space for text, then scales up on sm:
+                        newsImg.className = 'w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0 border-2 border-[#00FFFF]/50 mb-3 sm:mb-0';
                         newsImg.src = item.image || 'https://placehold.co/80x80/2D3748/A0AEC0?text=VDM';
 
                         const detailsDiv = document.createElement('div');
-                        detailsDiv.className = 'flex-1 min-w-0';
+                        // MODIFICATION: Ensure details take full width (w-full) on mobile.
+                        detailsDiv.className = 'flex-1 min-w-0 w-full';
 
                         const titleDiv = document.createElement('div');
-                        titleDiv.className = 'text-xl font-bold truncate text-[#00FFFF]';
+                        // MODIFIED: Removed 'truncate' and adjusted font size for better mobile wrapping and readability.
+                        titleDiv.className = 'text-base sm:text-xl font-bold text-[#00FFFF] leading-snug';
                         titleDiv.textContent = item.detail || 'No Title Available';
 
                         const zoneElement = document.createElement('div');
