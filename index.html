@@ -371,6 +371,15 @@
 
     <!-- START JAVASCRIPT FOR DATA FETCHING AND CHART RENDERING -->
     <script>
+        // --- GEMINI API Configuration ---
+        const GEMINI_API_KEY = "AIzaSyAZ21Q2d1piqewVvPzGW3mWbgj7zqM2QdQ";
+        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
+        
+        // --- Solution State Management ---
+        // Global state to track previous randomly suggested solutions' indices
+        let previousRandomSolutionIndices = []; 
+
+
         // --- TEXTAREA AUTO-RESIZE FOR GEMINI INPUT STYLE ---
         function autoResizeTextarea(element) {
             // Reset height to collapse it and re-calculate scroll height
@@ -384,6 +393,54 @@
                  window.scrollTo(0, document.body.scrollHeight);
             }
         }
+
+        // ⭐️ NEW FUNCTION: Typing Simulation for Conversational Feel ⭐️
+        function typeMessage(elementId, fullText, delay = 20) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let charIndex = 0;
+            element.innerHTML = ''; // Clear placeholder text
+
+            function type() {
+                if (charIndex < fullText.length) {
+                    // Check for HTML tags to skip typing animation over them (e.g., <div>, <strong>)
+                    const char = fullText.charAt(charIndex);
+                    if (char === '<') {
+                        const tagEnd = fullText.indexOf('>', charIndex);
+                        if (tagEnd !== -1) {
+                            element.innerHTML += fullText.substring(charIndex, tagEnd + 1);
+                            charIndex = tagEnd + 1;
+                        } else {
+                            // If tag is somehow malformed, just print the character
+                            element.innerHTML += char;
+                            charIndex++;
+                        }
+                    } else {
+                        element.innerHTML += char;
+                        charIndex++;
+                    }
+                    
+                    // Scroll to bottom periodically to follow text
+                    if (charIndex % 10 === 0) {
+                         window.scrollTo(0, document.body.scrollHeight);
+                    }
+                    
+                    // Add a typing indicator class if not present
+                    if (!element.classList.contains('typing-indicator')) {
+                         element.classList.add('typing-indicator');
+                    }
+
+                    setTimeout(type, delay);
+                } else {
+                    // Remove typing indicator class when done
+                    element.classList.remove('typing-indicator');
+                     window.scrollTo(0, document.body.scrollHeight);
+                }
+            }
+            type();
+        }
+        window.typeMessage = typeMessage; 
 
         // --- ⭐️ GOOGLE TRANSLATE INITIALIZATION (ADJUSTED) ⭐️ ---
         function googleTranslateElementInit() {
@@ -478,7 +535,7 @@
         const REPORT_API_URL = 'https://script.google.com/macros/s/AKfycbxZLUhugbl6GfvRTsVAJKXoUhpbnsHXOR-EpKN9W_eBR14fy7Iqmic9p9ptRHbYIpYNOA/exec';
         let timelineReports = []; // Report data array
         
-        // ⭐️ UPDATED: Expanded REPORT_KEYWORDS list (FIXED: Added 'cáo' for Vietnamese) ⭐️
+        // ⭐️ UPDATED: Expanded REPORT_KEYWORDS list ⭐️
         const REPORT_KEYWORDS = [
             'report', 'รายงาน', 'timeline', 'เหตุการณ์', 'event', 'สรุป', 'summary', 'info',
             
@@ -506,6 +563,11 @@
             // Hindi/Indian (Comprehensive)
             'रिपोर्ट', 'सारांश', 'विवरण', 'khabar', 'jaankaari', 'karyavahi',
         ];
+
+        // ⭐️ UPDATED: General Chat Keywords (Minimal for Gemini trigger) ⭐️
+        const GENERAL_KEYWORDS = [
+            'hello', 'hi', 'hey', 'สวัสดี', 'สบายดี', 'how are you', 'who are you', 'what are you', 'thanks', 'thank you', 'goodbye', 'bye'
+        ];
         
         // Global state to track if we are in a report flow
         let isInReportFlow = false;
@@ -514,6 +576,122 @@
         Chart.register(ChartDataLabels);
         
         // ⭐️ REMOVED: The simulateNavigation function is now removed as links are handled by anchor tags ⭐️
+        
+        // --- Gemini API Call Function ---
+        async function callGeminiApi(userPrompt, systemPrompt = "") {
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+            
+            const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
+            
+            try {
+                 const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text || 
+                             "Sorry, the AI model could not generate a response.";
+                return text;
+            } catch (error) {
+                console.error("Gemini API call failed:", error);
+                return "Sorry, I'm having trouble connecting to the AI service right now. Please stick to VDM related questions.";
+            }
+        }
+
+        // --- Language Detection Helper (No longer primary check, just for safety/context) ---
+        function isEnglishOrThai(text) {
+            const normalized = text.toLowerCase().trim();
+            const englishRegex = /[a-z]/;
+            const thaiRegex = /[\u0E00-\u0E7F]/;
+            
+            const isEnglish = englishRegex.test(normalized);
+            const isThai = thaiRegex.test(normalized);
+            
+            if (isEnglish || isThai || normalized.length === 0) {
+                return true; 
+            }
+            return false;
+        }
+        
+        // ⭐️ NEW: Gemini Classification Function (Returns structured JSON) ⭐️
+        async function classifyQueryWithGemini(message) {
+            const classificationSystemPrompt = `You are the VDM Assistant's Query Classifier. Your task is to analyze the user's query and strictly determine if it relates to VDM operational tasks (like reports, machine status, maintenance procedures, or solutions data) or if it is a general, non-work-related question (like greetings, asking about your health, or chit-chat).
+
+Your output MUST be a JSON object with two keys:
+1. "classification": Must be exactly "WORK" or "GENERAL".
+2. "english_query": A clean, accurate English translation of the user's query. If the query was already in English, return it as is. Do not include any extra text outside the JSON object.`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: message }] }],
+                systemInstruction: {
+                    parts: [{ text: classificationSystemPrompt }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            "classification": { 
+                                "type": "STRING", 
+                                "description": "Must be 'WORK' or 'GENERAL'." 
+                            },
+                            "english_query": { 
+                                "type": "STRING", 
+                                "description": "The English translation of the query." 
+                            }
+                        },
+                        "propertyOrdering": ["classification", "english_query"]
+                    }
+                }
+            };
+
+            const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`;
+            
+            try {
+                 const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (jsonText) {
+                    // Attempt to clean and parse the JSON
+                    const cleanedJsonText = jsonText.replace(/```json|```/g, '').trim();
+                    const parsed = JSON.parse(cleanedJsonText);
+                    
+                    if (parsed.classification && parsed.english_query) {
+                        return parsed;
+                    }
+                }
+                
+                // Fallback for failed classification
+                console.warn("Gemini Classification parse failed. Defaulting to WORK.");
+                return { 
+                    classification: 'WORK', // Default to work to prioritize internal search
+                    english_query: message 
+                };
+
+            } catch (error) {
+                console.error("Gemini Classification API call failed:", error);
+                // On API failure, default to assuming it's work and use the original message
+                return { 
+                    classification: 'WORK',
+                    english_query: message 
+                };
+            }
+        }
+
+
         
         // ⭐️ NEW FUNCTION: Force transition to active chat state ⭐️
         function forceToActiveState() {
@@ -682,6 +860,7 @@
                 timelineReports = []; 
             }
         }
+        window.fetchReportTimeline = fetchReportTimeline;
         
         // --- Report Flow Functions (Adapted from report.html) ---
 
@@ -838,7 +1017,70 @@
              autoResizeTextarea(document.getElementById("main-user-input"));
         }
         window.handleReportOptionClick = handleReportOptionClick;
-        
+
+        // ⭐️ UPDATED: General Chat Handler using Gemini API ⭐️
+        // Now accepts existingId to reuse the classification placeholder
+        async function handleGeneralChat(message, existingId) {
+            
+            const tempIndicatorId = existingId; // Reuse the classification ID
+            
+            const systemPrompt = "You are the VDM Search Assistant. Your primary goal is to be friendly and helpful for general questions, but always try to gently redirect the user back to VDM-related topics (like reports, status issues, maintenance, or technical solutions) at the end of your response. Keep your answers concise and professional. Reply in the same language the user used.";
+            
+            const geminiResponse = await callGeminiApi(message, systemPrompt);
+            
+            const tempElement = document.getElementById(tempIndicatorId);
+            if (tempElement && tempElement.parentElement) {
+                // Use the typing effect for the response
+                tempElement.innerHTML = `<p class="typing-indicator-placeholder"></p>`;
+                await typeMessage(tempIndicatorId, geminiResponse, 20);
+            }
+        }
+        window.handleGeneralChat = handleGeneralChat;
+
+        // --- Solution Selection Helpers ---
+        function getRandomNonRepeatingSolutions(allSolutions) {
+            if (allSolutions.length === 0) return [];
+            
+            const numToSelect = 3;
+            const availableIndices = [];
+            
+            // Find all indices that were NOT in the previous random set
+            for (let i = 0; i < allSolutions.length; i++) {
+                if (!previousRandomSolutionIndices.includes(i)) {
+                    availableIndices.push(i);
+                }
+            }
+
+            // If there aren't enough non-repeating solutions, reset the exclusion list
+            if (availableIndices.length < numToSelect) {
+                console.warn("Not enough unique solutions for non-repeating random sample. Resetting exclusion list.");
+                previousRandomSolutionIndices = [];
+                for (let i = 0; i < allSolutions.length; i++) {
+                    availableIndices.push(i);
+                }
+            }
+            
+            // Shuffle the available indices (Fisher-Yates)
+            for (let i = availableIndices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [availableIndices[i], availableIndices[j]] = [availableIndices[j], availableIndices[i]];
+            }
+
+            // Select the first 'numToSelect' indices
+            const selectedIndices = availableIndices.slice(0, numToSelect);
+            
+            // Prepare results and update the global state
+            const randomSolutions = selectedIndices.map(index => ({
+                ...allSolutions[index],
+                similarity: 0.01 // Assign a minimal similarity to differentiate
+            }));
+            
+            // Update the global state with the indices used this round
+            previousRandomSolutionIndices = selectedIndices;
+
+            return randomSolutions;
+        }
+
         // --- Data Processing Logic (Group by Plant) (kept from original) ---
 
         function processData(rawData) {
@@ -1050,53 +1292,77 @@
             });
         }
         
-        // ⭐️ NEW FUNCTION: Typing Simulation for Conversational Feel ⭐️
-        function typeMessage(elementId, fullText, delay = 20) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
+        // --- Toggle Chart Visibility Function (kept from original) ---
+        function toggleChart() {
+            const content = document.getElementById('chartSection'); // Target the wrapper div now
             
-            let charIndex = 0;
-            element.innerHTML = ''; // Clear placeholder text
-
-            function type() {
-                if (charIndex < fullText.length) {
-                    // Check for HTML tags to skip typing animation over them (e.g., <div>, <strong>)
-                    const char = fullText.charAt(charIndex);
-                    if (char === '<') {
-                        const tagEnd = fullText.indexOf('>', charIndex);
-                        if (tagEnd !== -1) {
-                            element.innerHTML += fullText.substring(charIndex, tagEnd + 1);
-                            charIndex = tagEnd + 1;
-                        } else {
-                            // If tag is somehow malformed, just print the character
-                            element.innerHTML += char;
-                            charIndex++;
-                        }
-                    } else {
-                        element.innerHTML += char;
-                        charIndex++;
-                    }
-                    
-                    // Scroll to bottom periodically to follow text
-                    if (charIndex % 10 === 0) {
-                         window.scrollTo(0, document.body.scrollHeight);
-                    }
-                    
-                    // Add a typing indicator class if not present
-                    if (!element.classList.contains('typing-indicator')) {
-                         element.classList.add('typing-indicator');
-                    }
-
-                    setTimeout(type, delay);
-                } else {
-                    // Remove typing indicator class when done
-                    element.classList.remove('typing-indicator');
-                     window.scrollTo(0, document.body.scrollHeight);
-                }
+            // Toggle visibility classes for the popover
+            content.classList.toggle('popover-hidden');
+            content.classList.toggle('popover-visible');
+            
+            // ⭐️ FIX: Toggle the 'hidden' class based on 'popover-hidden' status ⭐️
+            if (content.classList.contains('popover-hidden')) {
+                // Wait for the transition (300ms) before hiding completely
+                setTimeout(() => content.classList.add('hidden'), 300);
+            } else {
+                // Show immediately before transition starts
+                content.classList.remove('hidden');
             }
-            type();
         }
-        window.typeMessage = typeMessage; 
+        window.toggleChart = toggleChart; 
+
+        // --- Execution Function (kept from original) ---
+
+        async function initDashboard() { // <-- ADDED ASYNC HERE
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error-message');
+
+            loadingElement.classList.remove('hidden');
+            errorElement.classList.add('hidden');
+
+            try {
+                // Fetch data from the GAS API (Chart Data)
+                const rawData = await fetchWithRetry(GAS_API_URL, { cache: 'no-cache' }); 
+                
+                // Process the raw data into chart-ready format
+                const chartData = processData(rawData);
+
+                // Render the chart
+                renderChart(chartData);
+                
+            } catch (error) {
+                console.error("Failed to initialize dashboard:", error);
+                const errorDetails = document.getElementById('error-message');
+                errorDetails.textContent = `Error fetching data: ${error.message}`;
+                errorElement.classList.remove('hidden');
+            } finally {
+                loadingElement.classList.add('hidden');
+            }
+        }
+        window.initDashboard = initDashboard;
+
+
+        // Start the process when the window loads
+        window.onload = function() {
+            initDashboard(); // For Chart
+            fetchSolutionsForChat(); // For VDM Search Assistant (Solutions API)
+            fetchReportTimeline(); // ⭐️ NEW: Fetch Report Timeline Data ⭐️
+            
+            // Add click listener to close popover when clicking outside
+            document.addEventListener('click', (event) => {
+                const popup = document.getElementById('chartSection');
+                const button = document.getElementById('statusChartButton');
+                
+                // Check if the click is outside the popup and outside the button, AND the popup is currently visible
+                if (popup && button && 
+                    !popup.contains(event.target) && 
+                    !button.contains(event.target) && 
+                    popup.classList.contains('popover-visible')) {
+                    
+                    toggleChart();
+                }
+            });
+        };
 
         // --- VDM Search Assistant Logic (kept from original) ---
 
@@ -1123,7 +1389,7 @@
             content.className = `max-w-full md:max-w-[70%] p-3 rounded-xl mb-2 shadow-md text-sm transition-all duration-300 ${bgColor} ${margin}`;
             
             messageElement.appendChild(content);
-            chatLog.appendChild(messageElement);
+            chatLog.appendChild(content); // Append content element directly for reuse
             
             // ⭐️ After first user message, transition to active state ⭐️
             if (chatLog.children.length === 1 && isBot === false) { 
@@ -1180,8 +1446,10 @@
                 console.error("Failed to fetch solutions for chat:", error);
             }
         }
+        window.fetchSolutionsForChat = fetchSolutionsForChat;
 
-        // ⭐️ MODIFIED mainSendMessage FUNCTION ⭐️
+
+        // ⭐️ MODIFIED mainSendMessage FUNCTION - IMPLEMENTS GEMINI-FIRST CLASSIFICATION ⭐️
         async function mainSendMessage() {
             const userInputElement = document.getElementById("main-user-input");
             let message = userInputElement.value.trim();
@@ -1191,14 +1459,42 @@
             // 1. Add user message and clear input
             mainAddMessage("You", message, false);
             userInputElement.value = "";
-             // Reset textarea height
             autoResizeTextarea(userInputElement);
             
-            // --- ⭐️ NEW REPORT KEYWORD CHECK ⭐️ ---
-            const normalizedMessage = message.toLowerCase();
-            const isReportQuery = REPORT_KEYWORDS.some(keyword => normalizedMessage.includes(keyword));
-            const isBack = normalizedMessage.includes('back') || normalizedMessage.includes('ย้อนกลับ') || normalizedMessage.includes('cancel');
+            // Reset flags and variables
+            let queryForSearch = message; // Holds the English query
+            let isGeneralQuery = false;
+            let tempIndicatorId = null;
+
+            // --- ⭐️ NEW GEMINI-FIRST CLASSIFICATION FLOW ⭐️ ---
             
+            // 2. Add 'Classifying' placeholder
+            const classificationIndicatorId = mainAddMessage("Bot", `<span class="typing-indicator">Classifying query...</span>`, true);
+            await new Promise(resolve => setTimeout(resolve, 800)); // Simulate minimum latency
+
+            // 3. Call Gemini for classification and translation
+            const classificationResult = await classifyQueryWithGemini(message);
+            
+            isGeneralQuery = classificationResult.classification === 'GENERAL';
+            queryForSearch = classificationResult.english_query; // Use the English query for internal search/keywords
+            
+            // 4. *** REMOVED EXPLICIT CLASSIFICATION ANNOUNCEMENT ***
+            // The classificationIndicatorId element will now be reused for the next step.
+
+            // 5. Decide action based on classification
+            if (isGeneralQuery) {
+                // GENERAL: Use original message for Gemini to respond naturally (might be Thai/foreign)
+                handleGeneralChat(message, classificationIndicatorId); 
+                return; 
+            }
+            
+            // WORK-RELATED FLOW STARTS HERE
+            
+            // Check if the original message contains direct report/back command (using native language keywords)
+            const normalizedOriginalMessage = message.toLowerCase();
+            const isReportQuery = REPORT_KEYWORDS.some(keyword => normalizedOriginalMessage.includes(keyword));
+            const isBack = normalizedOriginalMessage.includes('back') || normalizedOriginalMessage.includes('ย้อนกลับ') || normalizedOriginalMessage.includes('cancel');
+
             if (isBack) {
                  handleReportOptionClick('Back');
                  return;
@@ -1206,40 +1502,57 @@
             
             if (isReportQuery && !isInReportFlow) {
                 // If it's a report query and we are NOT already in the report flow, show initial prompt
+                tempIndicatorId = classificationIndicatorId;
+                
                 const responseHtml = `
-                    Do you want to see the Operational Timeline Report?<br>
+                    Query is related to Reports. Do you want to see the Operational Timeline Report?<br>
                     <div class="chat-option-container mt-3">
                         <button onclick="handleReportOptionClick('InitialPrompt')" class="chat-option-button">Yes, show report</button>
                     </div>
                 `;
-                mainAddMessage("Bot", responseHtml, true);
+                // Replace classification message with report prompt
+                const elementToReplace = document.getElementById(tempIndicatorId);
+                if (elementToReplace) { elementToReplace.innerHTML = responseHtml; }
                 return;
             }
-            // --- ⭐️ END REPORT KEYWORD CHECK ⭐️ ---
-
-
+            
+            // --- SOLUTIONS SEARCH FLOW ---
+            
             if (solutions.length === 0) {
-                mainAddMessage("Bot", "Solution data is still loading or failed to load. Please wait a moment and try again.", true);
+                const elementToReplace = document.getElementById(classificationIndicatorId);
+                if (elementToReplace) {
+                     elementToReplace.innerHTML = "Solution data is still loading or failed to load. Please wait a moment and try again.";
+                }
                 return;
             }
 
-
-            // Show a minimal searching indicator 
-            const placeholderText = 'Searching...';
-            // Add a temporary message container with typing indicator
-            const tempIndicatorId = mainAddMessage("Bot", `<span class="typing-indicator">${placeholderText}</span>`, true); 
+            // Replace classification message with 'Searching...' placeholder for the Solution search
+            const placeholderText = 'Searching VDM Solutions...';
+            const elementToReplace = document.getElementById(classificationIndicatorId);
+            if (elementToReplace) {
+                 elementToReplace.innerHTML = `<span class="typing-indicator">${placeholderText}</span>`;
+            }
+            tempIndicatorId = classificationIndicatorId;
+            // Simulate internal search delay
+            await new Promise(resolve => setTimeout(resolve, 800));
             
             // 2. Perform search - always gets the top 3 matches
-            const relevantSolutions = findSolutionMatch(message);
+            let relevantSolutions = findSolutionMatch(queryForSearch); // Use queryForSearch (English, from classification)
 
-            // Simulate network delay to make the typing effect noticeable (0.8 seconds)
-            await new Promise(resolve => setTimeout(resolve, 800));
-
+            // ⭐️ UPDATED LOGIC: Random non-repeating suggestions if similarity is very low ⭐️
+            const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
+            
+            if (bestSimilarity < 0.05 && solutions.length >= 3) {
+                 // If similarity is very low, force random, non-repeating suggestions
+                 relevantSolutions = getRandomNonRepeatingSolutions(solutions);
+            }
+            // ⭐️ END UPDATED LOGIC ⭐️
+            
+            
             // 3. Construct the detailed response
             let botResponseHTML = ""; // New variable for immediate HTML insertion
             const textToType = []; // Array of { id: 'uniqueId', text: 'fullText' }
             
-            const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
             
             if (relevantSolutions.length > 0) {
                 
@@ -1276,7 +1589,7 @@
                 let introText;
                 if (bestSimilarity >= 0.3) {
                     introText = `Based on your query, here are the 3 most relevant solutions:`;
-                } else if (bestSimilarity > 0) {
+                } else if (bestSimilarity > 0.05) {
                      introText = `Related solutions were found, but accuracy is low. Here are the 3 closest solutions:`;
                 } else {
                     introText = `No direct solutions were found for your query in the database. However, we present 3 general related solutions as the best current matches:`;
@@ -1288,7 +1601,7 @@
                 botResponseHTML = `${introText}<br>${listItems}<br><br><em class="text-xs text-gray-400">${footerText}</em>`;
 
             } else {
-                botResponseHTML = "Error processing search results. Please try again or check the database source.";
+                botResponseHTML = "No relevant VDM solutions or reports found for your specific query. Can you try rephrasing or asking about a report/status issue?";
             }
 
             // 4. Replace temporary message with structural HTML immediately
@@ -1311,12 +1624,185 @@
                 }
             }
         }
-        window.mainSendMessage = mainSendMessage; 
+        window.mainSendMessage = mainSendMessage;
+
+
+        // --- Chart Rendering Logic (kept from original) ---
+
+        function renderChart(data) {
+            const chartCanvas = document.getElementById('workStatusChart');
+            const chartCard = chartCanvas.closest('.dashboard-card');
+
+            if (data.plants.length === 0) {
+                chartCanvas.style.display = 'none';
+                
+                const noDataMessage = document.createElement('p');
+                noDataMessage.textContent = 'No task data found for the required statuses (In process or Completed).';
+                noDataMessage.className = 'text-center text-lg text-gray-400 py-4';
+                
+                const container = chartCanvas.closest('.chart-container') || chartCanvas.parentElement;
+                container.innerHTML = '';
+                container.appendChild(noDataMessage);
+                return;
+            }
+
+            // Destroy previous chart instance if it exists to prevent overlap
+            if (window.myChartInstance) {
+                window.myChartInstance.destroy();
+            }
+
+            const ctx = chartCanvas.getContext('2d');
+            
+            window.myChartInstance = new Chart(ctx, {
+                type: 'bar', // Vertical Bar Chart
+                data: {
+                    labels: data.plants, // X-axis: Plant
+                    datasets: [
+                        {
+                            label: 'In Process',
+                            data: data.inProcess, // Y-axis: In Process Count
+                            backgroundColor: 'rgba(0, 255, 255, 0.9)', 
+                            borderColor: '#00FFFF', 
+                            borderWidth: 2,
+                            borderRadius: 6, 
+                            borderSkipped: false, 
+                            hoverBackgroundColor: 'rgba(0, 255, 255, 1.0)',
+                            hoverBorderColor: '#FFFFFF',
+                            barThickness: 18, 
+                            categoryPercentage: 0.8,
+                            barPercentage: 0.9,
+                        },
+                        {
+                            label: 'Completed',
+                            data: data.completed, // Y-axis: Completed Count
+                            backgroundColor: 'rgba(16, 185, 129, 0.9)', 
+                            borderColor: '#10B981', 
+                            borderWidth: 2,
+                            borderRadius: 6, 
+                            borderSkipped: false, 
+                            hoverBackgroundColor: 'rgba(16, 185, 129, 1.0)',
+                            hoverBorderColor: '#FFFFFF',
+                            barThickness: 18, 
+                            categoryPercentage: 0.8,
+                            barPercentage: 0.9,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#E2E8F0',
+                                font: {
+                                    size: 10 
+                                },
+                                boxWidth: 10, 
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Status Work Issue by Plant',
+                            color: '#00FFFF',
+                            font: {
+                                size: 14, 
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                            titleColor: '#1A202C',
+                            bodyColor: '#1A202C',
+                            borderColor: '#00FFFF',
+                            borderWidth: 1,
+                            cornerRadius: 6,
+                            padding: 8, 
+                        },
+                        datalabels: { 
+                            align: 'end', 
+                            anchor: 'end',
+                            offset: 2, 
+                            color: '#E2E8F0', 
+                            font: {
+                                size: 10 
+                            },
+                            formatter: function(value, context) {
+                                return value > 0 ? value : ''; 
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: false, 
+                            ticks: {
+                                color: '#A0AEC0',
+                                font: {
+                                    weight: 'bold',
+                                    size: 8 
+                            }
+                            },
+                            grid: {
+                                display: false 
+                            },
+                            title: {
+                                display: true,
+                                text: 'Plant (X-Axis)',
+                                color: '#E2E8F0',
+                                font: {
+                                    weight: 'bold',
+                                    size: 10 
+                                }
+                            }
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#A0AEC0', 
+                                precision: 0,
+                                size: 8 
+                            },
+                            grid: {
+                                color: 'rgba(74, 85, 104, 0.2)'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Tasks Count (Y-Axis)',
+                                color: '#E2E8F0',
+                                font: {
+                                    weight: 'bold',
+                                    size: 10 
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
         
+        // --- Toggle Chart Visibility Function (kept from original) ---
+        function toggleChart() {
+            const content = document.getElementById('chartSection'); // Target the wrapper div now
+            
+            // Toggle visibility classes for the popover
+            content.classList.toggle('popover-hidden');
+            content.classList.toggle('popover-visible');
+            
+            // ⭐️ FIX: Toggle the 'hidden' class based on 'popover-hidden' status ⭐️
+            if (content.classList.contains('popover-hidden')) {
+                // Wait for the transition (300ms) before hiding completely
+                setTimeout(() => content.classList.add('hidden'), 300);
+            } else {
+                // Show immediately before transition starts
+                content.classList.remove('hidden');
+            }
+        }
+        window.toggleChart = toggleChart; 
 
         // --- Execution Function (kept from original) ---
 
-        async function initDashboard() {
+        async function initDashboard() { // <-- ADDED ASYNC HERE
             const loadingElement = document.getElementById('loading');
             const errorElement = document.getElementById('error-message');
 
@@ -1342,25 +1828,8 @@
                 loadingElement.classList.add('hidden');
             }
         }
+        window.initDashboard = initDashboard;
 
-        // --- Toggle Chart Visibility Function (kept from original) ---
-        function toggleChart() {
-            const content = document.getElementById('chartSection'); // Target the wrapper div now
-            
-            // Toggle visibility classes for the popover
-            content.classList.toggle('popover-hidden');
-            content.classList.toggle('popover-visible');
-            
-            // ⭐️ FIX: Toggle the 'hidden' class based on 'popover-hidden' status ⭐️
-            if (content.classList.contains('popover-hidden')) {
-                // Wait for the transition (300ms) before hiding completely
-                setTimeout(() => content.classList.add('hidden'), 300);
-            } else {
-                // Show immediately before transition starts
-                content.classList.remove('hidden');
-            }
-        }
-        window.toggleChart = toggleChart; 
 
         // Start the process when the window loads
         window.onload = function() {
