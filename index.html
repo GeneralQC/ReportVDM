@@ -956,6 +956,7 @@ Your output MUST be a JSON object with two keys:
             const fullResponse = `
                 ${messageText}<br>
                 <div class="chat-option-container mt-3">
+                    <button onclick="handleReportOptionClick('InitialPrompt')" class="chat-option-button">Yes, show report</button>
                     ${dateOptionsHTML}
                     <button onclick="handleReportOptionClick('Back')" class="chat-option-button bg-gray-600 hover:bg-gray-500 text-white">Back (Cancel)</button>
                 </div>
@@ -1539,14 +1540,17 @@ Your output MUST be a JSON object with two keys:
             // 2. Perform search - always gets the top 3 matches
             let relevantSolutions = findSolutionMatch(queryForSearch); // Use queryForSearch (English, from classification)
 
-            // ⭐️ UPDATED LOGIC: Random non-repeating suggestions if similarity is very low ⭐️
+            // ⭐️ MODIFIED LOGIC: REMOVED AUTOMATIC RANDOM FALLBACK. If similarity is very low, we show the low-similarity matches instead. ⭐️
             const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
             
+            /*
+            // Original code to force random solutions if similarity is too low (causing the issue reported by the user)
             if (bestSimilarity < 0.05 && solutions.length >= 3) {
                  // If similarity is very low, force random, non-repeating suggestions
                  relevantSolutions = getRandomNonRepeatingSolutions(solutions);
             }
-            // ⭐️ END UPDATED LOGIC ⭐️
+            */
+            // ⭐️ END MODIFIED LOGIC ⭐️
             
             
             // 3. Construct the detailed response
@@ -1592,7 +1596,8 @@ Your output MUST be a JSON object with two keys:
                 } else if (bestSimilarity > 0.05) {
                      introText = `Related solutions were found, but accuracy is low. Here are the 3 closest solutions:`;
                 } else {
-                    introText = `No direct solutions were found for your query in the database. However, we present 3 general related solutions as the best current matches:`;
+                    // Adjusted text to clarify it's the *closest* match, not a random one.
+                    introText = `The search found very few matching keywords. Here are the 3 closest (though weak) solutions found in the database:`;
                 }
 
                 const footerText = `You can try using other keywords for a more precise search.`;
