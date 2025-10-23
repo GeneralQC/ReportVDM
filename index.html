@@ -205,6 +205,16 @@
             max-height: 450px;
             overflow-y: auto;
         }
+        
+        /* ⭐️ FIX: Ensure Chart Popover is above all elements ⭐️ */
+        /* Note: For it to float truly above ALL elements, it should be a direct child of body (see HTML structure changes) */
+        #chartSection {
+            z-index: 9999 !important; /* Extremely high Z-index to ensure visibility */
+            position: fixed; /* Use fixed positioning for absolute floating relative to viewport */
+            right: 20px; /* Adjust right position slightly */
+            top: 70px; /* Position below the fixed header */
+        }
+
 
         /* ⭐️ NEW: Typing Indicator for Conversational Feel ⭐️ */
         @keyframes blink {
@@ -270,7 +280,7 @@
             </a>
 
             
-            <!-- ⭐️ CHART POPOVER CONTAINER (Relative to Nav Item) ⭐️ -->
+            <!-- ⭐️ CHART POPOVER CONTAINER BUTTON ⭐️ -->
             <div class="relative">
                 <!-- Status Work Issue button -->
                 <!-- UPDATED: Use icon only on mobile, icon + text on md+ -->
@@ -278,27 +288,6 @@
                      <i class="fas fa-tasks text-lg md:text-sm mr-0 md:mr-1"></i>
                      <span class="hidden sm:inline">Status Work Issue</span>
                 </button>
-                
-                <!-- Chart Popup Content (Absolute) -->
-                <div id="chartSection" class="absolute right-0 top-full mt-2 w-96 max-w-xs sm:max-w-md z-50 transform origin-top-right transition-all duration-300 popover-hidden bg-[#2D3748] rounded-xl shadow-2xl border border-[#00FFFF33] p-4">
-                     <h3 class="text-base font-semibold text-white mb-2 border-b border-gray-600 pb-1">Status Work Issue by Plant</h3>
-                     
-                     <div class="chart-popup-content">
-                         <!-- Data Loading Indicator and Error Message -->
-                         <div id="loading" class="text-center text-sm text-yellow-400 my-4">
-                             <div class="animate-spin inline-block w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full mr-1"></div>
-                             Fetching data...
-                         </div>
-
-                         <div id="error-message" class="hidden text-center text-sm text-red-500 my-4 p-2 rounded-lg bg-red-900/50">
-                             Error fetching data.
-                         </div>
-
-                         <div class="chart-container">
-                             <canvas id="workStatusChart" style="max-height: 250px;"></canvas>
-                         </div>
-                     </div>
-                </div>
             </div>
             
             <!-- ⭐️ MOVED: Google Translate Position (After Status Work Issue) ⭐️ -->
@@ -356,6 +345,28 @@
             </div>
         </div>
     </div>
+
+    <!-- ⭐️ CHART POPUP CONTENT - MOVED TO THE END OF BODY ⭐️ -->
+    <div id="chartSection" class="absolute right-0 top-full mt-2 w-96 max-w-xs sm:max-w-md z-50 transform origin-top-right transition-all duration-300 popover-hidden bg-[#2D3748] rounded-xl shadow-2xl border border-[#00FFFF33] p-4 hidden">
+         <h3 class="text-base font-semibold text-white mb-2 border-b border-gray-600 pb-1">Status Work Issue by Plant</h3>
+         
+         <div class="chart-popup-content">
+             <!-- Data Loading Indicator and Error Message -->
+             <div id="loading" class="text-center text-sm text-yellow-400 my-4">
+                 <div class="animate-spin inline-block w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full mr-1"></div>
+                 Fetching data...
+             </div>
+
+             <div id="error-message" class="hidden text-center text-sm text-red-500 my-4 p-2 rounded-lg bg-red-900/50">
+                 Error fetching data.
+             </div>
+
+             <div class="chart-container">
+                 <canvas id="workStatusChart" style="max-height: 250px;"></canvas>
+             </div>
+         </div>
+    </div>
+    <!-- ⭐️ END CHART POPUP CONTENT ⭐️ -->
     
 
     <!-- START JAVASCRIPT FOR DATA FETCHING AND CHART RENDERING -->
@@ -449,6 +460,11 @@
              
              // Scroll the main window to the bottom on initial load to show prompt
              window.scrollTo(0, document.body.scrollHeight);
+             
+             // ⭐️ FIX: Ensure chart is hidden on initial load ⭐️
+             if (chartSection) {
+                chartSection.classList.add('hidden', 'popover-hidden');
+             }
         });
         
         // Google Apps Script API URL provided by the user (Chart Data)
@@ -503,6 +519,7 @@
         function forceToActiveState() {
              const inputContainer = document.getElementById('fixed-input-container');
              const newChatBtn = document.getElementById('newChatButton');
+             const chartSection = document.getElementById('chartSection');
              
              // 1. Transition Input Bar from Center Absolute to Fixed Bottom
              inputContainer.style.position = 'fixed';
@@ -525,6 +542,13 @@
                 newChatBtn.classList.remove('hidden');
              }
              
+             // ⭐️ FIX: Hide the chart section when entering active chat mode ⭐️
+             if (chartSection.classList.contains('popover-visible')) {
+                 toggleChart(); // Call toggle to hide it gracefully
+             } else {
+                 chartSection.classList.add('hidden', 'popover-hidden'); // Ensure it's hidden if not visible
+             }
+             
              // Remove transition after use to prevent conflicts
              setTimeout(() => { inputContainer.style.transition = 'none'; }, 500);
         }
@@ -543,6 +567,7 @@
             const welcomeHeader = document.getElementById('input-welcome-text');
             const inputContainer = document.getElementById('fixed-input-container');
             const newChatBtn = document.getElementById('newChatButton');
+            const chartSection = document.getElementById('chartSection');
 
             welcomeHeader.style.display = 'block'; // Use block to match HTML structure
             welcomeHeader.style.opacity = '1';
@@ -555,6 +580,12 @@
             if (newChatBtn) {
                 newChatBtn.classList.add('hidden');
             }
+            
+            // Ensure chart is hidden on reset
+            if (chartSection) {
+                 chartSection.classList.add('hidden', 'popover-hidden');
+            }
+
 
             // Reset Input Bar to Center Absolute
             inputContainer.style.position = 'absolute';
@@ -1319,6 +1350,15 @@
             // Toggle visibility classes for the popover
             content.classList.toggle('popover-hidden');
             content.classList.toggle('popover-visible');
+            
+            // ⭐️ FIX: Toggle the 'hidden' class based on 'popover-hidden' status ⭐️
+            if (content.classList.contains('popover-hidden')) {
+                // Wait for the transition (300ms) before hiding completely
+                setTimeout(() => content.classList.add('hidden'), 300);
+            } else {
+                // Show immediately before transition starts
+                content.classList.remove('hidden');
+            }
         }
         window.toggleChart = toggleChart; 
 
