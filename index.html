@@ -237,26 +237,31 @@
         </div>
 
         <!-- Right Side: Menu Buttons (Operational Modules & Status) -->
-        <nav class="flex space-x-4 items-center text-sm font-medium flex-shrink-0 ml-auto">
+        <!-- UPDATED: Reduced space-x to 2 on mobile, 4 on medium screens -->
+        <nav class="flex space-x-2 md:space-x-4 items-center text-sm font-medium flex-shrink-0 ml-auto">
              <!-- ⭐️ MOVED: New Chat Button (Now before Reports) ⭐️ -->
+             <!-- UPDATED: Reduced padding and explicitly hidden on mobile -->
             <button id="newChatButton" onclick="newChat()" 
-                class="text-gray-300 hover:text-red-400 transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-red-400 whitespace-nowrap hidden active-chat-content">
+                class="text-gray-300 hover:text-red-400 transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-red-400 whitespace-nowrap hidden sm:inline-block active-chat-content">
                 New Chat
             </button>
             
             <!-- Operational Modules (REPORTS) -->
-            <a href="report.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
+            <!-- UPDATED: Reduced padding on mobile -->
+            <a href="report.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
                 Reports
             </a>
             <!-- NEW: Support & Guides (SOLUTIONS) -->
-            <a href="solutions.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
+            <!-- UPDATED: Reduced padding on mobile -->
+            <a href="solutions.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
                 Support & Guides
             </a>
             
             <!-- ⭐️ CHART POPOVER CONTAINER (Relative to Nav Item) ⭐️ -->
             <div class="relative">
                 <!-- Status Work Issue button -->
-                <button id="statusChartButton" onclick="toggleChart()" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
+                <!-- UPDATED: Reduced padding on mobile -->
+                <button id="statusChartButton" onclick="toggleChart()" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
                     Status Work Issue
                 </button>
                 
