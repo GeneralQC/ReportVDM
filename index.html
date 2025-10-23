@@ -10,6 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <!-- Load Chart.js Data Labels Plugin for showing values on bars -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
         /* --- CORE AI THEME STYLES (Space/Neon Cyan Dark Theme) --- */
@@ -247,22 +249,25 @@
             </button>
             
             <!-- Operational Modules (REPORTS) -->
-            <!-- UPDATED: Reduced padding on mobile -->
-            <a href="report.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
-                Reports
+            <!-- UPDATED: Use icon only on mobile, icon + text on md+ -->
+            <a href="report.html" title="Reports" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap flex items-center">
+                <i class="fas fa-file-alt text-lg md:text-sm mr-0 md:mr-1"></i>
+                <span class="hidden md:inline">Reports</span>
             </a>
             <!-- NEW: Support & Guides (SOLUTIONS) -->
-            <!-- UPDATED: Reduced padding on mobile -->
-            <a href="solutions.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
-                Support & Guides
+            <!-- UPDATED: Use icon only on mobile, icon + text on md+ -->
+            <a href="solutions.html" title="Support & Guides" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap flex items-center">
+                <i class="fas fa-book-open text-lg md:text-sm mr-0 md:mr-1"></i>
+                <span class="hidden md:inline">Support & Guides</span>
             </a>
             
             <!-- ⭐️ CHART POPOVER CONTAINER (Relative to Nav Item) ⭐️ -->
             <div class="relative">
                 <!-- Status Work Issue button -->
-                <!-- UPDATED: Reduced padding on mobile -->
-                <button id="statusChartButton" onclick="toggleChart()" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
-                    Status Work Issue
+                <!-- UPDATED: Use icon only on mobile, icon + text on md+ -->
+                <button id="statusChartButton" onclick="toggleChart()" title="Status Work Issue" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-1 md:p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap flex items-center">
+                     <i class="fas fa-tasks text-lg md:text-sm mr-0 md:mr-1"></i>
+                     <span class="hidden sm:inline">Status Work Issue</span>
                 </button>
                 
                 <!-- Chart Popup Content (Absolute) -->
@@ -288,6 +293,7 @@
             </div>
             
             <!-- ⭐️ MOVED: Google Translate Position (After Status Work Issue) ⭐️ -->
+            <!-- UPDATED: Hidden on mobile (hidden sm:block) -->
             <div id="google_translate_element" class="text-xs hidden sm:block"></div>
         </nav>
     </div>
