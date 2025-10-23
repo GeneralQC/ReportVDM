@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE >
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VDM Platform Main</title>
+    <title>VDM Platform Main - Full Assistant</title>
     <!-- Load Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Load Chart.js for creating charts -->
@@ -13,453 +13,547 @@
     
     <style>
         /* --- CORE AI THEME STYLES (Space/Neon Cyan Dark Theme) --- */
+        
+        /* ⭐️ NEW: Hide Scrollbar (Keep Scrolling Functional) ⭐️ */
+        /* Webkit (Chrome, Safari, newer Edge) */
+        ::-webkit-scrollbar {
+            display: none;
+            width: 0px;
+        }
+
+        html { } 
         body {
             font-family: 'Inter', sans-serif;
-            color: #E2E8F0; /* Light text for contrast */
-            min-height: 100vh;
+            color: #E2E8F0; 
+            min-height: 100vh; 
             margin: 0;
-            padding: 20px;
-            /* DEEPER SPACE BACKGROUND EFFECT */
+            padding: 0; 
+            /* ⭐️ KEY FIX: SIMPLIFY BACKGROUND TO UNIFORM COLOR ⭐️ */
             background-color: #1A202C; 
-            background: radial-gradient(circle at 50% 10%, #2c3748 0%, #1A202C 50%, #10141a 100%);
-        }
-
-        /* Header Text Glow Effect */
-        .neon-cyan {
-            color: #00FFFF; /* Neon Cyan Text */
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.6); /* Stronger text glow */
-            letter-spacing: 2px;
-        }
-        @keyframes subtle-pulse {
-            0%, 100% {
-                text-shadow: 0 0 5px rgba(0, 255, 255, 0.4), 0 0 10px rgba(0, 255, 255, 0.2);
-            }
-            50% {
-                text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
-            }
-        }
-        .header-text-glow {
-            animation: subtle-pulse 3s infinite ease-in-out;
-        }
-
-        /* Card Link Base Style */
-        .card-link {
-            background-color: #2D3748; /* Dark Card Background */
-            color: #E2E8F0;
-            border: 1px solid #4A5568; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 5px rgba(0, 0, 0, 0.2); /* Added inner shadow */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-        /* Card Hover Effect: Stronger Neon Border Glow */
-        .card-link:hover {
-            transform: translateY(-5px);
-            border-color: #00FFFF; /* Solid neon border on hover */
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4), inset 0 0 10px rgba(0, 255, 255, 0.1); 
+            
+            /* Hide scrollbar visual for Firefox/IE/Edge but keep scrolling functional */
+            overflow-y: scroll; /* Allow body scrolling */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            
+            display: block; 
         }
         
-        /* Icon Background Styles */
-        .icon-bg-cyan { background-color: #00FFFF33; }
-        .icon-bg-blue { background-color: #1D4ED833; }
-        .icon-bg-green { background-color: #10B98133; }
+        /* Header Text Glow Effect */
+        .neon-cyan {
+            color: #00FFFF;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.6); 
+            letter-spacing: 2px;
+        }
+        .header-text-glow {
+            animation: none; /* No pulsing in this minimal style */
+        }
 
-        /* Chart-specific styles */
+        /* Chart/Dashboard Styles */
         .dashboard-card {
-            background-color: #2D3748; /* Dark Card Background (Applied only to Chart now) */
+            background-color: #2D3748; 
             border: 1px solid #4A5568; 
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
-        .chart-container {
-            overflow-x: auto;
-            padding-bottom: 1rem;
-        }
-        #workStatusChart {
-            /* Retain mini size height */
-            min-height: 150px; 
-            min-width: 100%;
-        }
-        /* Styles for Collapse/Expand transition */
+        
+        /* Styles for Collapse/Expand transition for Chart (REMOVED) */
         .collapse-transition {
-            transition: all 0.3s ease-in-out;
-            max-height: 500px; /* Max height to enable transition effect */
-            overflow: hidden;
-            /* Ensure the log is visible when expanded */
-            padding-top: 1rem;
-            padding-bottom: 1rem;
+            /* Now managed by scale-y and opacity classes in JS */
         }
         .collapsed {
-            max-height: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-        }
-        /* Style for the chevron icon rotation */
-        .chevron {
-            transition: transform 0.3s ease-in-out;
-            transform: rotate(0deg);
-        }
-        .chevron.up {
-            transform: rotate(180deg);
+            /* Now managed by scale-y and opacity classes in JS */
         }
 
-        /* --- VDM Search Assistant Styles (ADJUSTED) --- */
-        .chat-input input {
-            /* Input field styling */
-            background: #1A202C;
+        /* --- VDM Search Assistant Styles (ADJUSTED FOR GEMINI INPUT) --- */
+        
+        /* ⭐️ NEW GEMINI INPUT BAR STYLE ⭐️ */
+        .gemini-input-style {
+            background: #2D3748; /* Darker than body for contrast */
             color: #E2E8F0;
-            /* ทำให้ขอบเด่นชัดขึ้น */
-            border: 2px solid #00FFFF; 
-            border-radius: 9999px; 
-            padding: 0.75rem 1rem; 
+            border: none; 
+            border-radius: 20px; /* Rounded pill shape */
+            padding: 1rem 1.5rem; 
             flex: 1;
-            margin-right: 0.5rem;
             font-size: 1rem;
-            /* เพิ่มเงาพื้นฐานเพื่อให้ดูเด่นขึ้น */
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
             transition: all 0.3s ease;
+            resize: none; /* Prevent manual resize */
+            height: 56px; /* Initial fixed height */
+            line-height: 1.25;
         }
-        /* ปรับสไตล์เมื่อโฟกัสให้สว่างและขยายเล็กน้อย */
-        .chat-input input:focus {
-            border-color: #FFFFFF; /* ขอบขาวเมื่อโฟกัส */
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), inset 0 0 5px rgba(0, 255, 255, 0.5); /* เงาเด่นชัดขึ้น */
-            transform: scale(1.01); /* ขยายเล็กน้อยเพื่อเน้น */
-            outline: none; /* ลบเส้นกรอบสีน้ำเงินเริ่มต้นของเบราว์เซอร์ */
+        .gemini-input-style:focus {
+            background: #374151;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.1); 
+            outline: none; 
         }
+        
+        /* Send Button - minimal */
         .chat-input button {
             transition: all 0.2s;
-            background: #00FFFF; /* Neon Cyan button */
-            color: #1A202C; /* Dark text on neon */
-            font-weight: 700;
-            border-radius: 9999px;
-            padding: 0.75rem 1rem; 
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            background: transparent;
+            color: #00FFFF; 
+            border-radius: 50%;
+            padding: 0.5rem; 
         }
         .chat-input button:hover {
-            background: #00D0D0;
-            transform: translateY(-1px) scale(1.02);
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.8);
+            background: #00FFFF22;
+            color: #FFFFFF;
         }
-        .chat-input input:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            border-color: #4A5568 !important;
-            box-shadow: none !important;
-        }
-        .chat-input button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            background: #4A5568 !important;
-            box-shadow: none !important;
-        }
+
         .bot-message {
-            background: #4A5568; /* Dark Gray for bot */
+            background: #2D3748; /* Dark Gray for bot */
             color: #E2E8F0;
-            border: 1px solid #00FFFF33;
+            border: 1px solid #4A5568;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            /* Add space for options */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         .user-message {
-            background: #00A3A3; /* Muted Cyan for user */
+            background: #00A3A3; 
             color: #1A202C;
             font-weight: 500;
         }
-
-        /* --- ⭐️ แก้ไข GOOGLE TRANSLATE WIDGET STYLES (เพื่อแก้ปัญหาพื้นหลังสีขาว) ⭐️ --- */
         
-        /* 1. Main Widget Container - Transparent background */
-        #google_translate_element .goog-te-gadget {
-            font-family: inherit;
-            color: #E2E8F0; 
-            background-color: transparent !important; 
+        /* New: Styling for Chat Options */
+        .chat-option-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .chat-option-button {
+            background-color: #00FFFF;
+            color: #1A202C;
+            padding: 6px 12px;
             border-radius: 8px;
-            padding: 5px;
-            display: inline-block;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            text-align: center;
+            border: none;
+            flex: 1 1 auto; /* Allows buttons to grow/shrink but maintain min size */
+            max-width: 100%; /* Ensure it wraps nicely */
+            font-size: 0.875rem; /* text-sm */
+        }
+        .chat-option-button:hover {
+            background-color: #fff;
+            transform: translateY(-1px);
         }
 
-        /* 2. Style the select box (dropdown) itself - Transparent background, White text, Neon border */
-        #google_translate_element .goog-te-combo {
-            background-color: #374151 !important; /* ใช้สีเทาเข้มแทนโปร่งใสเพื่อให้มีคอนทราสต์ */
-            color: #FFFFFF !important; /* Forces White text */
-            border: 1px solid #00FFFF !important; /* Neon border */
-            border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 1rem;
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+
+        /* ⭐️ Chat Log Area - Flowing content ⭐️ */
+        #main-chat-log {
+            overflow-y: visible; 
+            padding: 0 0 1rem 0; /* Add padding to the bottom */
+            min-height: 200px; /* Ensure space on initial load */
         }
         
-        /* 3. Ensure the main widget wrapper is also transparent and borderless */
-        .goog-te-gadget-simple {
-            background-color: transparent !important;
-            border: none !important;
+        /* Main Content Wrapper (Centered and Flexible) */
+        #mainContent {
+            display: block; 
+            margin: 0 auto;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 2.5rem; 
+            padding-top: 80px; 
+            padding-bottom: 120px; 
+        }
+        
+        /* ⭐️ KEY: Hide chat content initially ⭐️ */
+        .active-chat-content {
+            display: none; 
+        }
+        /* ⭐️ END STARTING STATE ⭐️ */
+
+        /* ⭐️ KEY FIX: Fixed Input Bar (Always at the bottom of the viewport) ⭐️ */
+        #fixed-input-container {
+            /* Managed by JS in Idle State */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #1A202C; 
+            padding: 1rem 0;
+            z-index: 30;
+            background: linear-gradient(to top, #1A202C 50%, #1A202C00 100%);
+        }
+        .fixed-input-inner {
+            background: #1A202C;
+            padding: 0 2.5rem; /* Match main content horizontal padding */
         }
 
-        /* Hide the default banner/footer */
-        .goog-te-banner-frame {
-            display: none !important;
-        }
+        
+        /* Google Translate Styles (Keep) */
+        .goog-te-banner-frame { display: none !important; }
         body { top: 0 !important; }
         
-        /* --- HIDE SCROLLBAR FOR CHAT LOG (main-chat-log) --- */
-        #main-chat-log {
-            /* For IE and Edge */
-            -ms-overflow-style: none;
-            /* For Firefox */
-            scrollbar-width: none;
+        /* ⭐️ NEW POPOVER STYLES ⭐️ */
+        .popover-hidden {
+            transform: scaleY(0) translateY(-10px);
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when hidden */
         }
-        /* For Chrome, Safari, and Opera */
-        #main-chat-log::-webkit-scrollbar {
-            display: none;
+        .popover-visible {
+            transform: scaleY(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when visible */
+        }
+        .chart-popup-content {
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        /* ⭐️ NEW: Typing Indicator for Conversational Feel ⭐️ */
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .typing-indicator::after {
+            content: '|';
+            animation: blink 1s step-start infinite;
+            display: inline-block;
+        }
+        /* Placeholder to reserve space while typing */
+        .typing-indicator-placeholder {
+            min-height: 1.5rem;
         }
     </style>
 </head>
-<body>
 
-    <!-- Main Container -->
-    <div class="w-full max-w-5xl mx-auto py-10">
+<body class="relative">
+    
+    <!-- ⭐️ 1. TOP NAVBAR (FIXED POSITION) ⭐️ -->
+    <div id="top-bar" class="fixed top-0 left-0 right-0 h-16 bg-[#1A202C] border-b border-gray-700 shadow-lg z-20 flex items-center px-4 md:px-8">
         
-        <!-- Header Section: Modified to place translate widget top-right -->
-        <header class="mb-10 flex flex-col items-center">
+        <!-- Left Side: VDM Logo/Title (Minimal) -->
+        <div class="flex items-center space-x-4 flex-shrink-0">
+            <h1 class="text-2xl font-extrabold neon-cyan uppercase">
+                VDM | HUB
+            </h1>
+            <!-- ⭐️ MOVED: Copyright to Navbar (Visible in all states) ⭐️ -->
+            <span class="text-gray-600 text-sm hidden sm:block">
+                &copy; 2025 VDM Platform.
+            </span>
+        </div>
+
+        <!-- Right Side: Menu Buttons (Operational Modules & Status) -->
+        <nav class="flex space-x-4 items-center text-sm font-medium flex-shrink-0 ml-auto">
+             <!-- ⭐️ MOVED: New Chat Button (Now before Reports) ⭐️ -->
+            <button id="newChatButton" onclick="newChat()" 
+                class="text-gray-300 hover:text-red-400 transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-red-400 whitespace-nowrap hidden active-chat-content">
+                New Chat
+            </button>
             
-            <!-- ⭐️ GOOGLE TRANSLATE ELEMENT: Positioned Top-Right ⭐️ -->
-            <div class="w-full flex justify-end mb-4">
-                <div id="google_translate_element"></div>
+            <!-- Operational Modules (REPORTS) -->
+            <a href="report.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
+                Reports
+            </a>
+            <!-- NEW: Support & Guides (SOLUTIONS) -->
+            <a href="solutions.html" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
+                Support & Guides
+            </a>
+            
+            <!-- ⭐️ CHART POPOVER CONTAINER (Relative to Nav Item) ⭐️ -->
+            <div class="relative">
+                <!-- Status Work Issue button -->
+                <button id="statusChartButton" onclick="toggleChart()" class="text-gray-300 hover:text-[#00FFFF] transition duration-200 p-2 rounded-lg border border-gray-700 hover:border-[#00FFFF] whitespace-nowrap">
+                    Status Work Issue
+                </button>
+                
+                <!-- Chart Popup Content (Absolute) -->
+                <div id="chartSection" class="absolute right-0 top-full mt-2 w-96 max-w-xs sm:max-w-md z-50 transform origin-top-right transition-all duration-300 popover-hidden bg-[#2D3748] rounded-xl shadow-2xl border border-[#00FFFF33] p-4">
+                     <h3 class="text-base font-semibold text-white mb-2 border-b border-gray-600 pb-1">Status Work Issue by Plant</h3>
+                     
+                     <div class="chart-popup-content">
+                         <!-- Data Loading Indicator and Error Message -->
+                         <div id="loading" class="text-center text-sm text-yellow-400 my-4">
+                             <div class="animate-spin inline-block w-4 h-4 border-2 border-yellow-500 border-t-transparent rounded-full mr-1"></div>
+                             Fetching data...
+                         </div>
+
+                         <div id="error-message" class="hidden text-center text-sm text-red-500 my-4 p-2 rounded-lg bg-red-900/50">
+                             Error fetching data.
+                         </div>
+
+                         <div class="chart-container">
+                             <canvas id="workStatusChart" style="max-height: 250px;"></canvas>
+                         </div>
+                     </div>
+                </div>
             </div>
-            <!-- END GOOGLE TRANSLATE ELEMENT -->
             
-            <!-- Header Text (Centered below translate) -->
-            <div class="text-center w-full">
-                <!-- Adjusted text size for responsiveness -->
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-3 neon-cyan uppercase header-text-glow">
-                    VDM Oversea | Hub
+            <!-- ⭐️ MOVED: Google Translate Position (After Status Work Issue) ⭐️ -->
+            <div id="google_translate_element" class="text-xs hidden sm:block"></div>
+        </nav>
+    </div>
+
+    <!-- 2. MAIN CONTENT AREA (Scrollable, Centered) -->
+    <div class="flex-grow"> 
+        <main id="mainContent">
+            
+            <!-- ⭐️ Chat Log Area (Hidden initially) ⭐️ -->
+            <div id="main-chat-log" class="mx-auto w-full max-w-4xl flex flex-col p-2 overflow-y-visible active-chat-content">
+                <!-- Chat messages will be dynamically added here -->
+            </div>
+            
+        </main>
+        
+        <!-- ⭐️ REMOVED: Page Footer is now removed as content moved to Navbar ⭐️ -->
+        <!-- <footer class="mt-8 text-center text-gray-600 text-sm active-chat-content">
+            &copy; 2025 VDM Platform. All systems operational.
+        </footer> -->
+    </div>
+    
+    <!-- ⭐️ 4. FIXED INPUT BAR (Trims the bottom of the page) ⭐️ -->
+    <div id="fixed-input-container">
+        <div class="mx-auto w-full max-w-4xl px-4">
+            
+            <!-- ⭐️ WELCOME TEXT LOCATION (Above the Prompt Bar) ⭐️ -->
+            <header id="input-welcome-text" class="mb-8 text-center">
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white text-center">
+                    Hello, Oversea
                 </h1>
-                <!-- Adjusted subtitle size for responsiveness -->
-                <p class="text-lg sm:text-xl text-gray-400 font-light mt-4 mb-4">
-                    Select your required operational module
+                <p class="text-sm sm:text-lg text-gray-400 font-light mt-2 text-center">
+                    I'm your VDM Search Assistant. How can I help you today?
                 </p>
-            </div>
+            </header>
+            <!-- END NEW WELCOME TEXT LOCATION -->
             
-        </header>
+            <!-- ⭐️ NEW INPUT FIELD (TEXTAREA) ⭐️ -->
+            <div class="chat-input flex items-center bg-transparent pt-0 flex-shrink-0 relative">
+                <textarea id="main-user-input"
+                    class="gemini-input-style w-full pl-6 pr-16"
+                    placeholder="Ask VDM Assistant anything..."
+                    rows="1"
+                    onkeypress="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); mainSendMessage(); }"
+                    oninput="autoResizeTextarea(this)"></textarea>
 
-        <!-- === START OF VDM SEARCH ASSISTANT (CHATBAR) SECTION === -->
-        <div class="p-6 rounded-xl mb-8">
-            <div class="flex items-center justify-between border-b border-gray-600 pb-2 mb-4">
-                <h2 class="2xl font-semibold text-gray-100 flex items-center">
-                    <!-- Icon for Chatbot/Assistant -->
-                    <svg class="w-6 h-6 mr-2 text-[#00FFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
-                    VDM Search Assistant
-                </h2>
-                <div class="flex space-x-3 items-center">
-                    <!-- New Chat Button -->
-                    <button onclick="newChat()" 
-                            class="text-xs font-semibold text-gray-400 hover:text-red-400 transition duration-200 p-1 rounded-md border border-gray-700 hover:border-red-400">
-                        New Chat
-                    </button>
-                    <!-- Collapse Button -->
-                    <button onclick="toggleChatLog()" id="collapse-button"
-                            class="text-xs font-semibold text-gray-400 hover:text-cyan-400 transition duration-200 p-1 rounded-md border border-gray-700 hover:border-cyan-400">
-                        Collapse
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Chat Log (Normal flow: New messages appear at the bottom) -->
-            <div id="main-chat-log" class="flex flex-col collapse-transition p-4 mb-4 rounded-lg overflow-y-auto max-h-96">
-                <!-- Initial welcome message (Set to English default) -->
-                <div class="bot-message max-w-full p-3 rounded-xl mb-2 bg-gray-600 text-gray-200 self-start shadow-md mr-auto text-sm transition-all duration-300" id="initial-welcome-message">
-                    Welcome! Describe your problem (e.g., 'My printer is offline') and I'll find the best solutions for you.
-                </div>
-            </div>
-
-            <!-- Chat Input Section - MOVED TO BOTTOM -->
-            <div class="chat-input flex items-center bg-transparent" id="main-chat-input-bar">
-                <!-- input และ button จะถูก disabled ระหว่างการโหลดข้อมูล -->
-                <input type="text" id="main-user-input"
-                    class=""
-                    placeholder="Loading solution database..."
-                    disabled
-                    onkeypress="if(event.key === 'Enter') { mainSendMessage(); }"/>
                 <button onclick="mainSendMessage()"
-                    class="transition duration-300 shadow-lg p-3 flex items-center justify-center active:scale-[0.95]"
-                    disabled>
-                    <!-- Send Icon -->
-                    <svg class="w-5 h-5 transform rotate-45 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                    class="transition duration-300 absolute right-1 top-1/2 transform -translate-y-1/2">
+                    <!-- Send Icon (Styled for Gemini look) -->
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 12a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm2 0a6 6 0 1 1-12 0 6 6 0 0 1 12 0z"/></svg>
                 </button>
             </div>
         </div>
-        <!-- === END OF VDM SEARCH ASSISTANT (CHATBAR) SECTION === -->
-
-        <!-- === START OF CHART/DASHBOARD SECTION === -->
-        <div class="dashboard-card p-6 rounded-xl mb-12">
-            
-            <!-- Chart Header with Toggle Button -->
-            <button id="chartToggle" onclick="toggleChart()" class="w-full text-left focus:outline-none border-b border-gray-600 pb-2 flex items-center justify-between group">
-                <h2 id="chart" class="text-2xl font-semibold text-gray-100 flex items-center">
-                    <svg class="w-6 h-6 mr-2 text-[#00FFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    Status Work Issue by Plant
-                </h2>
-                <!-- Chevron Icon for Collapse/Expand (DEFAULT TO UP/COLLAPSED) -->
-                <svg id="chevronIcon" class="chevron w-6 h-6 text-[#00FFFF] group-hover:text-white up" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            
-            <!-- Chart Content (Collapsible) (DEFAULT TO COLLAPSED) -->
-            <div id="chartContent" class="collapse-transition pt-4 collapsed">
-
-                <!-- Data Loading Indicator and Error Message (in English) -->
-                <div id="loading" class="text-center text-lg text-yellow-400 mb-4">
-                    <div class="animate-spin inline-block w-6 h-6 border-3 border-yellow-500 border-t-transparent rounded-full mr-2"></div>
-                    Fetching data and preparing chart...
-                </div>
-
-                <div id="error-message" class="hidden text-center text-lg text-red-500 mb-4 p-3 rounded-lg bg-red-900/50">
-                    Error fetching data: <span id="error-details" class="font-mono"></span>
-                </div>
-                
-                <div class="chart-container">
-                    <canvas id="workStatusChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <!-- === END OF CHART/DASHBOARD SECTION === -->
-
-        <h2 class="text-2xl font-bold text-gray-300 mb-6 uppercase tracking-wider border-b border-gray-700 pb-2">
-            Operational Modules
-        </h2>
-
-        <!-- Menu Cards Container: 3 columns for large screens -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
-            <!-- Card 1: Reports and Notifications (Neon Cyan - #00FFFF) -->
-            <button onclick="window.location.href='report.html'" class="card-link block p-6 rounded-xl border-t-4 border-[#00FFFF] transform text-left">
-                <div class="flex items-start mb-4">
-                    <!-- Icon for Report/Data -->
-                    <div class="icon-bg-cyan p-3 rounded-full shadow-lg border border-[#00FFFF] mr-4 flex-shrink-0">
-                        <svg class="w-8 h-8 text-[#00FFFF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-white uppercase">Reports</h2>
-                        <span class="text-sm text-gray-500">Real-time Metrics</span>
-                    </div>
-                </div>
-                <p class="text-gray-400 text-sm mb-4">Access the latest performance metrics, operational alerts, and timeline reports (Report VDM).</p>
-                <div class="flex justify-end">
-                    <span class="text-sm font-medium text-[#00FFFF] flex items-center transition-colors duration-200">
-                        View Dashboard
-                        <svg class="w-4 h-4 ml-1 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </span>
-                </div>
-            </button>
-
-            <!-- Card 2: Guides and Troubleshooting (Electric Blue - #1D4ED8) -->
-            <button onclick="window.location.href='solutions.html'" class="card-link block p-6 rounded-xl border-t-4 border-[#1D4ED8] transform text-left">
-                <div class="flex items-start mb-4">
-                    <!-- Icon for Solutions/Support -->
-                    <div class="icon-bg-blue p-3 rounded-full shadow-lg border border-[#1D4ED8] mr-4 flex-shrink-0">
-                        <svg class="w-8 h-8 text-[#1D4ED8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-white uppercase">Support & Guides</h2>
-                        <span class="text-sm text-gray-500">Self-Service Solutions</span>
-                    </div>
-                </div>
-                <p class="text-gray-400 text-sm mb-4">Find technical solutions, user manuals, and use the AI assistant for troubleshooting (VDM Solutions).</p>
-                <div class="flex justify-end">
-                    <span class="text-sm font-medium text-[#1D4ED8] flex items-center transition-colors duration-200">
-                        View Support
-                        <svg class="w-4 h-4 ml-1 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </span>
-                </div>
-            </button>
-            
-            <!-- Card 3: PM and Calibration (Teal/Green - #10B981) -->
-            <button onclick="window.location.href='https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA62PQQ6CMBRE7zLrnqBbdGEMJkbDxrKo9JM0QktoQUnTu1uIRNfE5Z_Je5kfMGp6XrysHuC38L2ONIEjCFynjgS4QGaN720jwAROsl3DtpM9Fbt9dOdMICKWbLV4cuBhi4T_YwmDVmS8rjX1s3Hmk-lDp3pml-CXRGRoBy_vDS0vJDLGlNW2GhypIs3aPMcdzP7VSaNyq5K4lo2j-AaS989FgwEAAA==&view=CompareVDMvsQC'" class="card-link block p-6 rounded-xl border-t-4 border-[#10B981] transform text-left">
-                <div class="flex items-start mb-4">
-                    <!-- Icon for Maintenance/Calibration (Wrench and Checkmark) -->
-                    <div class="icon-bg-green p-3 rounded-full shadow-lg border border-[#10B981] mr-4 flex-shrink-0">
-                        <svg class="w-8 h-8 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-6s-1.5 1-2 1h-2c-.5 0-2-1-2-1"></path></svg>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-white uppercase">Maintenance</h2>
-                        <span class="text-sm text-gray-500">PM & Calibration</span>
-                    </div>
-                </div>
-                <p class="text-gray-400 text-sm mb-4">Manage Preventative Maintenance schedules, check calibration, Inform Issue</p>
-                <div class="flex justify-end">
-                    <span class="mt-4 text-sm font-medium text-[#10B981] flex items-center transition-colors duration-200">
-                        View Schedules
-                        <svg class="w-4 h-4 ml-1 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </span>
-                </div>
-            </button>
-
-        </div>
-        
-        <!-- Footer / Contact Info -->
-        <footer class="mt-16 text-center text-gray-600 text-sm">
-            &copy; 2025 VDM Platform. All systems operational.
-        </footer>
-        
     </div>
+    
 
     <!-- START JAVASCRIPT FOR DATA FETCHING AND CHART RENDERING -->
     <script>
+        // --- TEXTAREA AUTO-RESIZE FOR GEMINI INPUT STYLE ---
+        function autoResizeTextarea(element) {
+            // Reset height to collapse it and re-calculate scroll height
+            element.style.height = 'auto'; 
+            // Set height based on scrollHeight, up to a max (e.g., 5 rows for max 140px)
+            const maxHeight = 140; 
+            element.style.height = Math.min(element.scrollHeight, maxHeight) + 'px';
+            
+            // ⭐️ IMPORTANT: Recalculate scroll position after resizing ⭐️
+            if (document.getElementById('main-chat-log').children.length > 0) {
+                 window.scrollTo(0, document.body.scrollHeight);
+            }
+        }
+
         // --- ⭐️ GOOGLE TRANSLATE INITIALIZATION (ADJUSTED) ⭐️ ---
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
-                pageLanguage: 'th' // เปลี่ยนจาก 'en' เป็น 'th' เพื่อให้เหมือน report.html
+                pageLanguage: 'th' 
             }, 'google_translate_element');
         }
+        
+        // Function to handle the state change (Idle -> Active Chat)
+        function setActiveChatState() {
+            // 1. Hide Welcome Header (now inside input container)
+            const welcomeHeader = document.getElementById('input-welcome-text'); 
+            welcomeHeader.style.opacity = '0';
+            setTimeout(() => { welcomeHeader.style.display = 'none'; }, 300); // Wait for transition
 
+            // 2. Show Active Chat Content (Chart wrapper, chat log, New Chat button)
+            document.querySelectorAll('.active-chat-content').forEach(el => {
+                el.style.display = 'block';
+            });
+        }
+        
+        // ⭐️ NEW FUNCTION: Add initial greeting to chat log ⭐️
+        function addActiveChatGreeting() {
+             const chatLog = document.getElementById('main-chat-log');
+             if (chatLog.children.length === 0) {
+                 const welcomeMessage = document.createElement('div');
+                 welcomeMessage.className = 'block w-full flex justify-start';
+                 
+                 const content = document.createElement('div');
+                 // Styled to be prominent at the start of conversation
+                 content.className = 'max-w-full md:max-w-[70%] p-3 rounded-xl mb-6 shadow-md text-xl font-bold text-white mr-auto';
+                 content.innerHTML = "Hello, I'm your VDM Search Assistant. How can I help you today?"; 
+                 
+                 welcomeMessage.appendChild(content);
+                 chatLog.appendChild(welcomeMessage);
+             }
+        }
+
+        // Ensure chart starts collapsed
+        document.addEventListener('DOMContentLoaded', () => {
+             const chartSection = document.getElementById('chartSection');
+             
+             // ⭐️ KEY FIX: If chat is empty, set initial positioning for fixed input to center it ⭐️
+             const chatLog = document.getElementById('main-chat-log');
+             const inputContainer = document.getElementById('fixed-input-container');
+             const welcomeHeader = document.getElementById('input-welcome-text'); 
+             const newChatBtn = document.getElementById('newChatButton');
+             
+             if (chatLog.children.length === 0) {
+                 // Idle state: center the input bar vertically on the screen
+                 inputContainer.style.position = 'absolute';
+                 inputContainer.style.top = '50%';
+                 inputContainer.style.transform = 'translateY(-50%)';
+                 inputContainer.style.padding = '0'; 
+                 
+                 // Hide active chat elements
+                 document.querySelectorAll('.active-chat-content').forEach(el => {
+                    el.style.display = 'none';
+                 });
+                 if (newChatBtn) {
+                    newChatBtn.classList.add('hidden');
+                 }
+                 
+                 // Ensure header is visible
+                 welcomeHeader.style.display = 'block'; // Use block for flow control
+                 
+             } else {
+                 // Active state: ensure fixed position and visible chat content
+                 setActiveChatState();
+                 if (newChatBtn) {
+                    newChatBtn.classList.remove('hidden');
+                 }
+             }
+             
+             // Scroll the main window to the bottom on initial load to show prompt
+             window.scrollTo(0, document.body.scrollHeight);
+        });
+        
         // Google Apps Script API URL provided by the user (Chart Data)
         const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbzDTO0biyndbrxLnJUb4yOORgYytoX1ZlANMNiZsM-RoexobcDMZP16un2PGZLDdnHmCA/exec';
 
         // --- VDM Search Assistant Globals (Solutions Data) ---
         const SOLUTIONS_API_URL = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
         let solutions = []; // Solutions data array
-        let isSolutionsReady = false; // New global status check
 
+        // --- ⭐️ NEW REPORT TIMELINE GLOBALS ⭐️ ---
+        const REPORT_API_URL = 'https://script.google.com/macros/s/AKfycbxZLUhugbl6GfvRTsVAJKXoUhpbnsHXOR-EpKN9W_eBR14fy7Iqmic9p9ptRHbYIpYNOA/exec';
+        let timelineReports = []; // Report data array
+        
+        // ⭐️ UPDATED: Expanded REPORT_KEYWORDS list (FIXED: Added 'cáo' for Vietnamese) ⭐️
+        const REPORT_KEYWORDS = [
+            'report', 'รายงาน', 'timeline', 'เหตุการณ์', 'event', 'สรุป', 'summary', 'info',
+            
+            // Vietnamese
+            'báo cáo', 'tổng kết', 'thời gian biểu', 'cáo', 'báo',
+            
+            // Burmese (Myanmar)
+            'အစီရင်ခံစာ', 'အနှစ်ချုပ်', 'si yin hkan', 'si yin hkan sa',
+            
+            // Bengali (Bangladesh)
+            'প্রতিবেদন', 'সংক্ষেপ', 'khobor', 'khabar',
+            
+            // Khmer (Cambodia)
+            'របាយការណ៍', 'សង្ខេប', 'phsaiphu', 'karn',
+            
+            // Chinese
+            '报告', '摘要', '汇报', 'huibao', 'baogao',
+            
+            // Filipino (Tagalog)
+            'ulat', 'buod', 'balita', 'reporta', 'pahayag',
+            
+            // Lao
+            'ບົດລາຍງານ', 'ສະຫຼຸບ', 'laingan', 'bot laing',
+            
+            // Hindi/Indian (Comprehensive)
+            'रिपोर्ट', 'सारांश', 'विवरण', 'khabar', 'jaankaari', 'karyavahi',
+        ];
+        
+        // Global state to track if we are in a report flow
+        let isInReportFlow = false;
+        
         // Register the DataLabels plugin globally
         Chart.register(ChartDataLabels);
-
-        // --- Helper functions for language and UI control (Simplified for Google Translate) ---
         
-        // New: Toggle Chat Log Visibility Function
-        function toggleChatLog() {
-            const chatLog = document.getElementById('main-chat-log');
-            const collapseButton = document.getElementById('collapse-button');
-            
-            chatLog.classList.toggle('collapsed');
+        // ⭐️ REMOVED: The simulateNavigation function is now removed as links are handled by anchor tags ⭐️
+        
+        // ⭐️ NEW FUNCTION: Force transition to active chat state ⭐️
+        function forceToActiveState() {
+             const inputContainer = document.getElementById('fixed-input-container');
+             const newChatBtn = document.getElementById('newChatButton');
+             
+             // 1. Transition Input Bar from Center Absolute to Fixed Bottom
+             inputContainer.style.position = 'fixed';
+             inputContainer.style.top = 'auto';
+             inputContainer.style.bottom = '0';
+             inputContainer.style.transform = 'none';
+             inputContainer.style.padding = '1rem 0';
+             inputContainer.style.transition = 'all 0.4s ease-in-out';
+             
+             // 2. Set Active Chat State
+             setActiveChatState();
+             
+             // 3. Add greeting to the conversation log
+             if (document.getElementById('main-chat-log').children.length === 0) {
+                 addActiveChatGreeting();
+             }
 
-            // Use simple English text for the button, relying on GTranslate for user's language
-            if (chatLog.classList.contains('collapsed')) {
-                collapseButton.textContent = 'Expand';
-            } else {
-                collapseButton.textContent = 'Collapse';
-            }
+             // 4. Show New Chat button
+             if (newChatBtn) {
+                newChatBtn.classList.remove('hidden');
+             }
+             
+             // Remove transition after use to prevent conflicts
+             setTimeout(() => { inputContainer.style.transition = 'none'; }, 500);
         }
-        window.toggleChatLog = toggleChatLog;
 
-        // New: Clear Chat History Function
+        // New: Clear Chat History Function (kept from original)
         function newChat() {
             const chatLog = document.getElementById('main-chat-log');
             
             // Clear all children
             chatLog.innerHTML = '';
             
-            // Re-add the initial welcome message in the default English language
-            const welcomeMessage = document.createElement('div');
-            welcomeMessage.className = 'bot-message max-w-full p-3 rounded-xl mb-2 bg-gray-600 text-gray-200 self-start shadow-md mr-auto text-sm transition-all duration-300';
-            welcomeMessage.id = 'initial-welcome-message';
-            welcomeMessage.innerHTML = "Welcome! Describe your problem (e.g., 'My printer is offline') and I'll find the best solutions for you.";
+            // Reset report flow state
+            isInReportFlow = false;
+            
+            // ⭐️ Revert to Idle State ⭐️
+            const welcomeHeader = document.getElementById('input-welcome-text');
+            const inputContainer = document.getElementById('fixed-input-container');
+            const newChatBtn = document.getElementById('newChatButton');
 
-            chatLog.appendChild(welcomeMessage);
+            welcomeHeader.style.display = 'block'; // Use block to match HTML structure
+            welcomeHeader.style.opacity = '1';
 
-            // Ensure the chat log is expanded and scrolled to the bottom (new flow)
-            chatLog.classList.remove('collapsed');
-            document.getElementById('collapse-button').textContent = 'Collapse';
-            chatLog.scrollTop = chatLog.scrollHeight; // Scroll to bottom
+            document.querySelectorAll('.active-chat-content').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Hide New Chat button
+            if (newChatBtn) {
+                newChatBtn.classList.add('hidden');
+            }
+
+            // Reset Input Bar to Center Absolute
+            inputContainer.style.position = 'absolute';
+            inputContainer.style.top = '50%';
+            inputContainer.style.transform = 'translateY(-50%)';
+            inputContainer.style.padding = '0';
+            inputContainer.style.transition = 'none'; // Ensure no transition on reset
+
+            // Reset textarea height and value
+            const input = document.getElementById('main-user-input');
+            input.value = '';
+            autoResizeTextarea(input);
+
+            // Scroll to the top to see the centered input
+            window.scrollTo(0, 0);
         }
         window.newChat = newChat;
-
-        // --- Helper functions for Exponential Backoff (API retry logic) ---
+        
+        // --- Helper functions for Exponential Backoff (API retry logic) (kept from original) ---
         const MAX_RETRIES = 3;
         const INITIAL_DELAY_MS = 1000;
 
@@ -469,7 +563,22 @@
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                return await response.json();
+                // Check if the response is JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    return await response.json();
+                } else {
+                    // Assume plain text if not JSON, but for this app we expect JSON
+                    const text = await response.text();
+                    try {
+                        // Attempt to parse text as JSON just in case
+                        return JSON.parse(text);
+                    } catch {
+                        // If it fails, return the text, or throw error depending on expected format
+                        // For the Report API, we MUST have an array.
+                        throw new Error("API returned non-JSON data."); 
+                    }
+                }
             } catch (error) {
                 if (retries < MAX_RETRIES) {
                     const delay = INITIAL_DELAY_MS * Math.pow(2, retries);
@@ -482,8 +591,204 @@
                 }
             }
         }
+        
+        // --- ⭐️ NEW REPORT TIMELINE FETCHING AND PROCESSING ⭐️ ---
 
-        // --- Data Processing Logic (Group by Plant) ---
+        async function fetchReportTimeline() {
+            try {
+                const rawData = await fetchWithRetry(REPORT_API_URL, { cache: 'no-cache' });
+
+                if (!Array.isArray(rawData)) {
+                    throw new Error('Report API returned non-array data.');
+                }
+
+                // Process and sort data (Logic adapted from report.html)
+                const parsedData = rawData.map(item => {
+                    // Date format is DD/MM/YYYY
+                    const [day, month, year] = item.date.split('/');
+                    let formattedDate = null;
+                    if (day && month && year) {
+                        // Create a sortable date string YYYY-MM-DD
+                        formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                    }
+
+                    return {
+                        ...item,
+                        sortDate: formattedDate,
+                        displayDate: item.date || 'N/A' // e.g., "01/10/2025"
+                    };
+                });
+
+                // Filter out items without a valid date, sort descending, and take the latest 30
+                timelineReports = parsedData
+                    .filter(item => item.sortDate)
+                    .sort((a, b) => new Date(b.sortDate) - new Date(a.sortDate));
+
+                console.log(`[Chatbot] Fetched ${timelineReports.length} timeline reports.`);
+            } catch (error) {
+                console.error("Failed to fetch timeline reports:", error);
+                // Set to empty array on failure
+                timelineReports = []; 
+            }
+        }
+        
+        // --- Report Flow Functions (Adapted from report.html) ---
+
+        // Utility for creating a clean summary of a single date's reports
+        function generateDateSummary(date) {
+            const reports = timelineReports.filter(item => item.displayDate === date);
+
+            if (reports.length === 0) {
+                return `Sorry, no reports were found for **${date}**.`; // English
+            }
+
+            let reportsContent = '';
+            
+            const reportsByZone = reports.reduce((acc, item) => {
+                const zone = item.zone || 'Unknown Zone'; // English
+                if (!acc[zone]) {
+                    acc[zone] = [];
+                }
+                
+                // ⭐️ NEW: Create HTML for the report item including a clickable thumbnail ⭐️
+                let imageHtml = '';
+                if (item.image && item.image !== 'N/A' && item.image.startsWith('http')) {
+                    imageHtml = `
+                        <a href="${item.image}" target="_blank" title="Click to view image" class="flex-shrink-0 ml-2">
+                            <img src="${item.image}" alt="Report Image" class="w-10 h-10 object-cover rounded-md border border-cyan-400 hover:opacity-80 transition duration-150 cursor-pointer" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A5568/E2E8F0?text=IMG';">
+                        </a>
+                    `;
+                } else {
+                    // Placeholder icon for no image
+                    imageHtml = `<span class="flex-shrink-0 ml-2 text-gray-400 text-xl" title="No Image"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg></span>`;
+                }
+
+                // Ensure detail text is clean and use a structured div for layout
+                const detailText = item.detail.replace(/<br>/g, ' ').replace(/\n/g, ' ');
+
+                acc[zone].push(`
+                    <div class="flex items-center justify-between p-2 my-1 border-b border-gray-700/50 last:border-b-0">
+                        <span class="flex-1 text-gray-300 pr-2 leading-tight">
+                            ${detailText} 
+                            <span class="text-xs text-gray-400 block mt-0.5">Posted by: ${item.postby || 'System'}</span>
+                        </span>
+                        ${imageHtml}
+                    </div>
+                `);
+                // ⭐️ END NEW IMAGE HTML ⭐️
+                return acc;
+            }, {});
+
+            
+            for (const zone in reportsByZone) {
+                reportsContent += `<strong class="text-cyan-400 mt-3 block">[Zone: ${zone}]</strong>`;
+                // Reports are now joined directly as HTML divs
+                reportsContent += `<div class="mt-1 border border-gray-700/50 rounded-lg overflow-hidden">${reportsByZone[zone].join('')}</div>`;
+            }
+
+            let summaryHtml = `
+                <span class="text-lg font-bold">Summary Report for ${date} (${reports.length} items):</span>
+                ${reportsContent}
+                <p class="mt-4 text-sm text-gray-400">Is there anything else I can help summarize or search for? Or type <strong>'Back'</strong> to select a new date.</p>
+            `;
+
+            return summaryHtml; 
+        }
+
+        // Action function to show unique date options (10 latest days)
+        function showReportDateOptions() {
+            isInReportFlow = true; // Set state
+            
+            if (timelineReports.length === 0) {
+                 const message = "Report data is currently loading, or there was an error fetching the data. Please try again later, or type 'Back' to cancel."; // English
+                 mainAddMessage("Bot", message.replace(/\n/g, '<br>'), true);
+                 return;
+            }
+            
+            // Get unique dates from the timeline data (sorted by fetchReportTimeline)
+            const uniqueDates = Array.from(new Set(timelineReports.map(item => item.displayDate)));
+            
+            if (uniqueDates.length === 0) {
+                 const message = "Sorry, no report dates were found in the system."; // English
+                 mainAddMessage("Bot", message.replace(/\n/g, '<br>'), true);
+                 return;
+            }
+
+            // Create option parts (limit to 10 latest dates)
+            const dateOptionsHTML = uniqueDates.slice(0, 10).map(date => {
+                // Return a button element string
+                return `<button onclick="handleReportOptionClick('ShowSummary','${date}')" class="chat-option-button">${date}</button>`;
+            }).join('');
+            
+            const messageText = "Do you want to see the Operational Timeline Report? Please select the date you wish to view (showing the latest 10 days):"; // English
+            
+            const fullResponse = `
+                ${messageText}<br>
+                <div class="chat-option-container mt-3">
+                    ${dateOptionsHTML}
+                    <button onclick="handleReportOptionClick('Back')" class="chat-option-button bg-gray-600 hover:bg-gray-500 text-white">Back (Cancel)</button>
+                </div>
+            `;
+            
+            mainAddMessage("Bot", fullResponse, true);
+        }
+        window.showReportDateOptions = showReportDateOptions;
+
+        // Action function to show the actual report summary
+        function showReportSummary(date) {
+            const summaryText = generateDateSummary(date);
+            
+            const fullResponse = `${summaryText}
+                <div class="chat-option-container mt-3">
+                    <button onclick="handleReportOptionClick('ShowOptions')" class="chat-option-button bg-gray-600 hover:bg-gray-500 text-white">Back to Date Selection</button>
+                    <button onclick="handleReportOptionClick('Back')" class="chat-option-button bg-gray-600 hover:bg-gray-500 text-white">Cancel</button>
+                </div>
+            `;
+            mainAddMessage("Bot", fullResponse, true);
+        }
+        window.showReportSummary = showReportSummary;
+        
+        // Unified Handler for Report Flow Clicks
+        function handleReportOptionClick(actionType, date = null) {
+             let userMessage = '';
+             let nextAction = null;
+             
+             switch (actionType) {
+                 case 'InitialPrompt':
+                     userMessage = 'Yes, I want to see the Timeline Report.'; // English
+                     nextAction = () => showReportDateOptions();
+                     break;
+                 case 'ShowSummary':
+                     userMessage = `Selected date ${date}`; // English
+                     nextAction = () => showReportSummary(date);
+                     break;
+                 case 'ShowOptions':
+                      userMessage = 'Back to Date Selection'; // English
+                      nextAction = () => showReportDateOptions();
+                      break;
+                 case 'Back':
+                     userMessage = 'Back (Cancel)'; // English
+                     nextAction = () => {
+                         isInReportFlow = false;
+                         mainAddMessage("Bot", "Report mode canceled. How else can I assist you?", true); // English
+                     };
+                     break;
+                 default:
+                     return;
+             }
+             
+             // 1. Add user message
+             mainAddMessage("You", userMessage, false);
+             // 2. Execute next action
+             nextAction();
+             // 3. Clear input just in case
+             document.getElementById("main-user-input").value = '';
+             autoResizeTextarea(document.getElementById("main-user-input"));
+        }
+        window.handleReportOptionClick = handleReportOptionClick;
+        
+        // --- Data Processing Logic (Group by Plant) (kept from original) ---
 
         function processData(rawData) {
             let dataArray = rawData;
@@ -540,7 +845,7 @@
             return { plants, inProcess, completed };
         }
         
-        // --- Chart Rendering Logic (World Class Aesthetics & Mini Size) ---
+        // --- Chart Rendering Logic (kept from original) ---
 
         function renderChart(data) {
             const chartCanvas = document.getElementById('workStatusChart');
@@ -551,9 +856,9 @@
                 
                 const noDataMessage = document.createElement('p');
                 noDataMessage.textContent = 'No task data found for the required statuses (In process or Completed).';
-                noDataMessage.className = 'text-center text-lg text-gray-400 py-10';
+                noDataMessage.className = 'text-center text-lg text-gray-400 py-4';
                 
-                const container = chartCard.querySelector('.chart-container') || chartCard;
+                const container = chartCanvas.closest('.chart-container') || chartCanvas.parentElement;
                 container.innerHTML = '';
                 container.appendChild(noDataMessage);
                 return;
@@ -574,30 +879,28 @@
                         {
                             label: 'In Process',
                             data: data.inProcess, // Y-axis: In Process Count
-                            // Pseudo 3D/Glow effect colors
                             backgroundColor: 'rgba(0, 255, 255, 0.9)', 
                             borderColor: '#00FFFF', 
                             borderWidth: 2,
-                            borderRadius: 8, // More rounded edges
-                            borderSkipped: false, // Ensures full rectangle drawing
+                            borderRadius: 6, 
+                            borderSkipped: false, 
                             hoverBackgroundColor: 'rgba(0, 255, 255, 1.0)',
                             hoverBorderColor: '#FFFFFF',
-                            barThickness: 20, // Slightly thicker for visual impact
+                            barThickness: 18, 
                             categoryPercentage: 0.8,
                             barPercentage: 0.9,
                         },
                         {
                             label: 'Completed',
                             data: data.completed, // Y-axis: Completed Count
-                            // Pseudo 3D/Glow effect colors
                             backgroundColor: 'rgba(16, 185, 129, 0.9)', 
                             borderColor: '#10B981', 
                             borderWidth: 2,
-                            borderRadius: 8, // More rounded edges
-                            borderSkipped: false, // Ensures full rectangle drawing
+                            borderRadius: 6, 
+                            borderSkipped: false, 
                             hoverBackgroundColor: 'rgba(16, 185, 129, 1.0)',
                             hoverBorderColor: '#FFFFFF',
-                            barThickness: 20, // Slightly thicker for visual impact
+                            barThickness: 18, 
                             categoryPercentage: 0.8,
                             barPercentage: 0.9,
                         }
@@ -611,9 +914,9 @@
                             labels: {
                                 color: '#E2E8F0',
                                 font: {
-                                    size: 12 // ADJUSTED: Bigger legend font
+                                    size: 10 
                                 },
-                                boxWidth: 12, // Bigger legend box
+                                boxWidth: 10, 
                             }
                         },
                         title: {
@@ -621,7 +924,7 @@
                             text: 'Status Work Issue by Plant',
                             color: '#00FFFF',
                             font: {
-                                size: 16, // ADJUSTED: Bigger title font
+                                size: 14, 
                                 weight: 'bold'
                             }
                         },
@@ -632,18 +935,18 @@
                             borderColor: '#00FFFF',
                             borderWidth: 1,
                             cornerRadius: 6,
-                            padding: 10, // Slightly more padding
+                            padding: 8, 
                         },
-                        datalabels: { // Data Labels Plugin Configuration
-                            align: 'end', // Position above the bar
+                        datalabels: { 
+                            align: 'end', 
                             anchor: 'end',
-                            offset: 3, // Slightly bigger offset
-                            color: '#E2E8F0', // Light text color
+                            offset: 2, 
+                            color: '#E2E8F0', 
                             font: {
-                                size: 12 // ADJUSTED: Bigger data label font
+                                size: 10 
                             },
                             formatter: function(value, context) {
-                                return value > 0 ? value : ''; // Only show positive values
+                                return value > 0 ? value : ''; 
                             }
                         }
                     },
@@ -654,11 +957,11 @@
                                 color: '#A0AEC0',
                                 font: {
                                     weight: 'bold',
-                                    size: 10 // ADJUSTED: Bigger X-axis ticks
-                                }
+                                    size: 8 
+                            }
                             },
                             grid: {
-                                display: false // Removed all vertical grid lines (cleaner)
+                                display: false 
                             },
                             title: {
                                 display: true,
@@ -666,7 +969,7 @@
                                 color: '#E2E8F0',
                                 font: {
                                     weight: 'bold',
-                                    size: 12 // ADJUSTED: Bigger X-axis title
+                                    size: 10 
                                 }
                             }
                         },
@@ -676,10 +979,10 @@
                             ticks: {
                                 color: '#A0AEC0', 
                                 precision: 0,
-                                size: 10 // ADJUSTED: Bigger Y-axis ticks
+                                size: 8 
                             },
                             grid: {
-                                color: 'rgba(74, 85, 104, 0.2)' // Adjusted grid opacity (jader)
+                                color: 'rgba(74, 85, 104, 0.2)'
                             },
                             title: {
                                 display: true,
@@ -687,7 +990,7 @@
                                 color: '#E2E8F0',
                                 font: {
                                     weight: 'bold',
-                                    size: 12 // ADJUSTED: Bigger Y-axis title
+                                    size: 10 
                                 }
                             }
                         }
@@ -695,45 +998,95 @@
                 }
             });
         }
+        
+        // ⭐️ NEW FUNCTION: Typing Simulation for Conversational Feel ⭐️
+        function typeMessage(elementId, fullText, delay = 20) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let charIndex = 0;
+            element.innerHTML = ''; // Clear placeholder text
 
-        // --- VDM Search Assistant Logic ---
+            function type() {
+                if (charIndex < fullText.length) {
+                    // Check for HTML tags to skip typing animation over them (e.g., <div>, <strong>)
+                    const char = fullText.charAt(charIndex);
+                    if (char === '<') {
+                        const tagEnd = fullText.indexOf('>', charIndex);
+                        if (tagEnd !== -1) {
+                            element.innerHTML += fullText.substring(charIndex, tagEnd + 1);
+                            charIndex = tagEnd + 1;
+                        } else {
+                            // If tag is somehow malformed, just print the character
+                            element.innerHTML += char;
+                            charIndex++;
+                        }
+                    } else {
+                        element.innerHTML += char;
+                        charIndex++;
+                    }
+                    
+                    // Scroll to bottom periodically to follow text
+                    if (charIndex % 10 === 0) {
+                         window.scrollTo(0, document.body.scrollHeight);
+                    }
+                    
+                    // Add a typing indicator class if not present
+                    if (!element.classList.contains('typing-indicator')) {
+                         element.classList.add('typing-indicator');
+                    }
+
+                    setTimeout(type, delay);
+                } else {
+                    // Remove typing indicator class when done
+                    element.classList.remove('typing-indicator');
+                     window.scrollTo(0, document.body.scrollHeight);
+                }
+            }
+            type();
+        }
+        window.typeMessage = typeMessage; 
+
+        // --- VDM Search Assistant Logic (kept from original) ---
 
         // Function to handle the chat log expansion/message display
-        function mainAddMessage(sender, message, isBot = false) {
+        // Modified to return the unique ID for typing/replacement
+        function mainAddMessage(sender, message, isBot = false, messageId = null) {
             const chatLog = document.getElementById("main-chat-log");
             const messageElement = document.createElement("div");
 
-            // Ensure chat log is expanded if it's the first message after load/collapse
-            if (chatLog.classList.contains('collapsed')) {
-                chatLog.classList.remove('collapsed');
-            }
-
-            // === CHAT ALIGNMENT LOGIC (Bot Left, User Right) ===
-            // Bot messages (isBot=true) should be aligned left (justify-start, self-start)
-            // User messages (isBot=false) should be aligned right (justify-end, self-end)
             const justification = isBot ? 'justify-start' : 'justify-end';
-            const margin = isBot ? 'mr-auto' : 'ml-auto'; // Ensure it only takes up max-width
-            const bgColor = isBot ? 'bg-gray-600 text-gray-200 bot-message' : 'bg-cyan-600 text-white user-message';
+            const margin = isBot ? 'mr-auto' : 'ml-auto'; 
+            const bgColor = isBot ? 'bg-gray-600 text-gray-200 bot-message' : 'bg-cyan-700 text-white user-message';
+            
+            // Generate a unique ID if one is not provided, especially for bot messages
+            const uniqueId = messageId || `msg-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
 
-            // Set the container alignment
             messageElement.className = `block w-full flex ${justification}`;
             
             const content = document.createElement('div');
-            // Apply alignment, color, and max width to the content box itself
+            content.id = uniqueId; // Set the ID here
+            content.innerHTML = message; 
+
+            // Max width adjusted for full screen chat 
             content.className = `max-w-full md:max-w-[70%] p-3 rounded-xl mb-2 shadow-md text-sm transition-all duration-300 ${bgColor} ${margin}`;
-            content.innerHTML = message;
             
-            // APPEND: New messages appear at the bottom (normal flow)
             messageElement.appendChild(content);
             chatLog.appendChild(messageElement);
+            
+            // ⭐️ After first user message, transition to active state ⭐️
+            if (chatLog.children.length === 1 && isBot === false) { 
+                forceToActiveState();
+            }
 
-            // SCROLL: Scroll to the bottom to see the newest message
-            chatLog.scrollTop = chatLog.scrollHeight; 
+            // ⭐️ KEY FIX: Scroll the main window to the bottom to follow the new content ⭐️
+            window.scrollTo(0, document.body.scrollHeight);
+            
+            return uniqueId;
         }
 
         // Utility for similarity calculation
         function tokenize(text) {
-            // Include Thai word breaking if possible, but keep simple tokenization for general use
             return text.toLowerCase().replace(/[^\w\s]/gi, '').trim().split(/\s+/).filter(word => word.length > 2);
         }
 
@@ -754,7 +1107,6 @@
 
             const matches = solutions
                 .map(item => {
-                    // Give more weight to the topic by repeating it
                     const combinedText = `${item.topic} ${item.topic} ${item.detail}`;
                     return {
                         ...item,
@@ -768,161 +1120,154 @@
         }
 
         async function fetchSolutionsForChat() {
-            const inputElement = document.getElementById("main-user-input");
-            const sendButton = inputElement.nextElementSibling;
-
-            // Start loading state
-            inputElement.disabled = true; 
-            sendButton.disabled = true;   
-            inputElement.placeholder = "Loading solution database...";
-            
             try {
-                // Use fetchWithRetry for robust fetching
                 const data = await fetchWithRetry(SOLUTIONS_API_URL, { cache: 'no-cache' }); 
                 solutions = data;
-                isSolutionsReady = true; // Set status to ready
                 console.log(`[Chatbot] Fetched ${solutions.length} solutions for search assistant.`);
-                
-                // End loading state (Success)
-                inputElement.placeholder = "Describe your problem to find solutions (e.g., printer offline)...";
-
             } catch (error) {
-                console.error("[Chatbot] Error fetching solutions for chat:", error);
-                mainAddMessage("Bot", "Solution data failed to load. Please refresh the page.", true);
-                
-                // End loading state (Failure - keep disabled to prevent errors)
-                inputElement.placeholder = "Data load failed. Refresh required.";
-                // We leave isSolutionsReady as false.
-
-            } finally {
-                // Only re-enable if successful
-                if (isSolutionsReady) {
-                    inputElement.disabled = false; 
-                    sendButton.disabled = false;
-                }
+                // Not using mainAddMessage here to avoid cluttering chat on startup failure
+                console.error("Failed to fetch solutions for chat:", error);
             }
         }
 
-        // ⭐️ MODIFIED FUNCTION: Always provides the top 3 matches with typing effect ⭐️
+        // ⭐️ MODIFIED mainSendMessage FUNCTION ⭐️
         async function mainSendMessage() {
             const userInputElement = document.getElementById("main-user-input");
             let message = userInputElement.value.trim();
 
             if (message === "") return;
-            if (!isSolutionsReady) { // Check if data is loaded before proceeding
-                mainAddMessage("Bot", "Solution data is still loading. Please wait until the input field is enabled to send a message.", true);
-                return; 
-            }
-
+            
             // 1. Add user message and clear input
             mainAddMessage("You", message, false);
             userInputElement.value = "";
+             // Reset textarea height
+            autoResizeTextarea(userInputElement);
+            
+            // --- ⭐️ NEW REPORT KEYWORD CHECK ⭐️ ---
+            const normalizedMessage = message.toLowerCase();
+            const isReportQuery = REPORT_KEYWORDS.some(keyword => normalizedMessage.includes(keyword));
+            const isBack = normalizedMessage.includes('back') || normalizedMessage.includes('ย้อนกลับ') || normalizedMessage.includes('cancel');
+            
+            if (isBack) {
+                 handleReportOptionClick('Back');
+                 return;
+            }
+            
+            if (isReportQuery && !isInReportFlow) {
+                // If it's a report query and we are NOT already in the report flow, show initial prompt
+                const responseHtml = `
+                    Do you want to see the Operational Timeline Report?<br>
+                    <div class="chat-option-container mt-3">
+                        <button onclick="handleReportOptionClick('InitialPrompt')" class="chat-option-button">Yes, show report</button>
+                    </div>
+                `;
+                mainAddMessage("Bot", responseHtml, true);
+                return;
+            }
+            // --- ⭐️ END REPORT KEYWORD CHECK ⭐️ ---
 
-            // Show a minimal searching indicator
-            const searchMessage = 'Searching for relevant solutions...';
-            mainAddMessage("Bot", `<div id="temp-indicator">${searchMessage}</div>`, true); 
-            const tempIndicatorContainer = document.getElementById("temp-indicator").parentElement; 
 
-            // 2. Perform search
+            if (solutions.length === 0) {
+                mainAddMessage("Bot", "Solution data is still loading or failed to load. Please wait a moment and try again.", true);
+                return;
+            }
+
+
+            // Show a minimal searching indicator 
+            const placeholderText = 'Searching...';
+            // Add a temporary message container with typing indicator
+            const tempIndicatorId = mainAddMessage("Bot", `<span class="typing-indicator">${placeholderText}</span>`, true); 
+            
+            // 2. Perform search - always gets the top 3 matches
             const relevantSolutions = findSolutionMatch(message);
+
+            // Simulate network delay to make the typing effect noticeable (0.8 seconds)
+            await new Promise(resolve => setTimeout(resolve, 800));
+
+            // 3. Construct the detailed response
+            let botResponseHTML = ""; // New variable for immediate HTML insertion
+            const textToType = []; // Array of { id: 'uniqueId', text: 'fullText' }
+            
             const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
             
-            // 3. Prepare parts of the response
-            let introText = '';
-            let listItemsHtml = '';
-            let footerTextHtml = '';
-
             if (relevantSolutions.length > 0) {
                 
-                listItemsHtml = relevantSolutions.map((sol, index) => {
-                    // Use English for system headers/titles
+                const listItems = relevantSolutions.map((sol, index) => {
+                    const uniqueTextId = `typed-sol-${tempIndicatorId}-${index}`; // Unique ID for the p tag content
                     const solutionHeader = `💡 Solution ${index + 1}: ${sol.topic}`;
                     
-                    return `<div class="p-3 mt-3 rounded-lg border border-cyan-600 bg-gray-700 text-white shadow-md">
-                                <strong class="text-cyan-400">${solutionHeader}</strong><br>
-                                <p class="mt-2 whitespace-pre-wrap text-sm leading-relaxed">${sol.detail}</p>
+                    textToType.push({ id: uniqueTextId, text: sol.detail }); // Queue the text for typing
+
+                    // ⭐️ NEW IMAGE THUMBNAIL LOGIC for Solutions ⭐️
+                    let imageHtml = '';
+                    if (sol.image && sol.image !== 'N/A' && sol.image.startsWith('http')) {
+                        imageHtml = `
+                            <a href="${sol.image}" target="_blank" title="Click to view image" class="flex-shrink-0 ml-3">
+                                <img src="${sol.image}" alt="Solution Image" class="w-10 h-10 object-cover rounded-md border border-cyan-400 hover:opacity-80 transition duration-150 cursor-pointer" 
+                                onerror="this.onerror=null;this.src='https://placehold.co/40x40/4A5568/E2E8F0?text=IMG';">
+                            </a>
+                        `;
+                    } else {
+                        imageHtml = `<span class="flex-shrink-0 ml-3 text-gray-400 text-xl" title="No Image"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg></span>`;
+                    }
+                    // ⭐️ END NEW IMAGE THUMBNAIL LOGIC ⭐️
+
+                    // Return the HTML structure with an empty <p> tag that has a unique ID
+                    return `<div class="p-3 mt-3 rounded-xl border border-cyan-600 bg-gray-700 text-white shadow-md">
+                                <div class="flex justify-between items-center mb-1">
+                                    <strong class="text-cyan-400 text-base flex-1">${solutionHeader}</strong>
+                                    ${imageHtml}
+                                </div>
+                                <p id="${uniqueTextId}" class="mt-2 whitespace-pre-wrap text-sm leading-relaxed typing-indicator-placeholder"></p>
                             </div>`;
                 }).join('');
 
-                // Select appropriate introductory text based on similarity score
+                let introText;
                 if (bestSimilarity >= 0.3) {
                     introText = `Based on your query, here are the 3 most relevant solutions:`;
                 } else if (bestSimilarity > 0) {
                      introText = `Related solutions were found, but accuracy is low. Here are the 3 closest solutions:`;
                 } else {
-                    // MODIFIED: If similarity is 0 (no strong match), update the recommendation text.
-                    introText = `We could not find a direct solution. Please try describing the situation more clearly or specifying the **Tool Name (ENG)** or **Key**. Here are the closest (though potentially unrelated) matches:`;
-                    // listItemsHtml is NOT cleared here, ensuring the top 3 results are always shown.
+                    introText = `No direct solutions were found for your query in the database. However, we present 3 general related solutions as the best current matches:`;
                 }
 
                 const footerText = `You can try using other keywords for a more precise search.`;
-                footerTextHtml = `<em class="text-xs text-gray-400 mt-4 block">${footerText}</em>`;
+
+                // Combine structural HTML
+                botResponseHTML = `${introText}<br>${listItems}<br><br><em class="text-xs text-gray-400">${footerText}</em>`;
 
             } else {
-                // Fallback for an unlikely scenario (e.g., matching logic returns empty array unexpectedly)
-                introText = "Error processing search results. Please try again or check the database source.";
+                botResponseHTML = "Error processing search results. Please try again or check the database source.";
             }
 
-            // --- Typing Logic Implementation ---
-            
-            // A. Remove temporary message (Searching indicator)
-            if (tempIndicatorContainer) {
-                 tempIndicatorContainer.remove();
+            // 4. Replace temporary message with structural HTML immediately
+            const tempElement = document.getElementById(tempIndicatorId);
+            if (tempElement && tempElement.parentElement) {
+                // We are replacing the content of the DIV that holds the message.
+                tempElement.innerHTML = botResponseHTML; 
             }
 
-            // B. Create the final bot message container
-            const chatLog = document.getElementById("main-chat-log");
-            const messageWrapper = document.createElement("div");
-            messageWrapper.className = `block w-full flex justify-start`;
-            
-            const contentHolder = document.createElement('div');
-            // Apply bot message styles
-            contentHolder.className = `max-w-full md:max-w-[70%] p-3 rounded-xl mb-2 shadow-md text-sm transition-all duration-300 bg-gray-600 text-gray-200 bot-message mr-auto`;
-            
-            messageWrapper.appendChild(contentHolder);
-            chatLog.appendChild(messageWrapper);
-            chatLog.scrollTop = chatLog.scrollHeight; 
-
-            // C. Type the introductory text
-            let charIndex = 0;
-            const interval = 30; // 30ms for a lively typing speed
-
-            function typeIntro() {
-                if (charIndex < introText.length) {
-                    // Append text content character by character
-                    contentHolder.textContent += introText[charIndex];
-                    charIndex++;
-                    
-                    // Always scroll to bottom after typing a character
-                    chatLog.scrollTop = chatLog.scrollHeight;
-                    setTimeout(typeIntro, interval);
-                } else {
-                    // D. Once intro is done, inject the structured HTML parts instantly
-                    // We use innerHTML += to preserve the textContent we just typed (now only plain text)
-                    if (listItemsHtml) {
-                        contentHolder.innerHTML += '<br>' + listItemsHtml + '<br>' + footerTextHtml;
-                    } else {
-                        // If no solutions were found at all (relevantSolutions.length === 0, very rare)
-                        contentHolder.innerHTML += '<br>' + footerTextHtml;
+            // 5. Start typing for each dynamic text element sequentially
+            if (textToType.length > 0) {
+                for (const item of textToType) {
+                    // Wait for a small moment between typing each solution title for better conversational flow
+                    // We only need to wait if it's not the first item
+                    if (textToType.indexOf(item) !== 0) {
+                       await new Promise(resolve => setTimeout(resolve, 300));
                     }
-                    
-                    // Final scroll after content is added
-                    chatLog.scrollTop = chatLog.scrollHeight;
+                    // Start typing the detail text into the pre-created <p> tag
+                    await typeMessage(item.id, item.text, 20);
                 }
             }
-
-            // Start typing
-            typeIntro();
         }
-        window.mainSendMessage = mainSendMessage; // Expose to global scope for onclick in HTML
+        window.mainSendMessage = mainSendMessage; 
         
 
-        // --- Execution Function ---
+        // --- Execution Function (kept from original) ---
 
         async function initDashboard() {
             const loadingElement = document.getElementById('loading');
             const errorElement = document.getElementById('error-message');
-            const errorDetails = document.getElementById('error-details');
 
             loadingElement.classList.remove('hidden');
             errorElement.classList.add('hidden');
@@ -939,26 +1284,44 @@
                 
             } catch (error) {
                 console.error("Failed to initialize dashboard:", error);
-                errorDetails.textContent = error.message;
+                const errorDetails = document.getElementById('error-message');
+                errorDetails.textContent = `Error fetching data: ${error.message}`;
                 errorElement.classList.remove('hidden');
             } finally {
                 loadingElement.classList.add('hidden');
             }
         }
 
-        // --- Toggle Chart Visibility Function ---
+        // --- Toggle Chart Visibility Function (kept from original) ---
         function toggleChart() {
-            const content = document.getElementById('chartContent');
-            const chevron = document.getElementById('chevronIcon');
+            const content = document.getElementById('chartSection'); // Target the wrapper div now
             
-            content.classList.toggle('collapsed');
-            chevron.classList.toggle('up');
+            // Toggle visibility classes for the popover
+            content.classList.toggle('popover-hidden');
+            content.classList.toggle('popover-visible');
         }
-        
+        window.toggleChart = toggleChart; 
+
         // Start the process when the window loads
         window.onload = function() {
-            initDashboard(); // สำหรับ Chart
-            fetchSolutionsForChat(); // สำหรับ VDM Search Assistant
+            initDashboard(); // For Chart
+            fetchSolutionsForChat(); // For VDM Search Assistant (Solutions API)
+            fetchReportTimeline(); // ⭐️ NEW: Fetch Report Timeline Data ⭐️
+            
+            // Add click listener to close popover when clicking outside
+            document.addEventListener('click', (event) => {
+                const popup = document.getElementById('chartSection');
+                const button = document.getElementById('statusChartButton');
+                
+                // Check if the click is outside the popup and outside the button, AND the popup is currently visible
+                if (popup && button && 
+                    !popup.contains(event.target) && 
+                    !button.contains(event.target) && 
+                    popup.classList.contains('popover-visible')) {
+                    
+                    toggleChart();
+                }
+            });
         };
 
     </script>
