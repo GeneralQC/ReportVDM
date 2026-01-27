@@ -1790,8 +1790,29 @@
 
         function readAloud(text) {
             const u = new SpeechSynthesisUtterance(text);
-            const langVal = document.querySelector('.goog-te-combo')?.value;
-            u.lang = {'th':'th-TH', 'ja':'ja-JP'}[langVal] || 'en-US';
+            
+            // Get Google Translate selected language
+            const langVal = document.querySelector('.goog-te-combo')?.value || 'en';
+            
+            // Map common codes to full BCP 47 tags for better browser support
+            const langMap = {
+                'th': 'th-TH',
+                'vi': 'vi-VN',
+                'ja': 'ja-JP',
+                'ko': 'ko-KR',
+                'zh-CN': 'zh-CN',
+                'zh-TW': 'zh-TW',
+                'id': 'id-ID', // Indonesian
+                'ms': 'ms-MY', // Malay
+                'hi': 'hi-IN',
+                'fr': 'fr-FR',
+                'de': 'de-DE',
+                'es': 'es-ES'
+            };
+
+            // Use mapped language or fallback to 'en-US' if not found (or let browser decide for known codes like 'en')
+            u.lang = langMap[langVal] || langVal;
+            
             speechSynthesis.cancel();
             speechSynthesis.speak(u);
         }
