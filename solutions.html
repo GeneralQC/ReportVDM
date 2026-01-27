@@ -1789,12 +1789,23 @@
         }
 
         function readAloud(text) {
+            // Ensure voices are loaded
+            let voices = speechSynthesis.getVoices();
+            
             const u = new SpeechSynthesisUtterance(text);
             
-            // Get Google Translate selected language
-            const langVal = document.querySelector('.goog-te-combo')?.value || 'en';
+            // Priority 1: Google Translate Dropdown
+            let langVal = document.querySelector('.goog-te-combo')?.value;
             
-            // Map common codes to full BCP 47 tags for better browser support
+            // Priority 2: HTML Lang attribute (Updated by Google Translate)
+            if (!langVal || langVal === '') {
+                langVal = document.documentElement.lang;
+            }
+
+            // Default
+            if (!langVal) langVal = 'en';
+
+            // Map common codes to full BCP 47 tags
             const langMap = {
                 'th': 'th-TH',
                 'vi': 'vi-VN',
@@ -1802,19 +1813,41 @@
                 'ko': 'ko-KR',
                 'zh-CN': 'zh-CN',
                 'zh-TW': 'zh-TW',
-                'id': 'id-ID', // Indonesian
-                'ms': 'ms-MY', // Malay
+                'id': 'id-ID',
+                'ms': 'ms-MY',
                 'hi': 'hi-IN',
                 'fr': 'fr-FR',
                 'de': 'de-DE',
-                'es': 'es-ES'
+                'es': 'es-ES',
+                'ru': 'ru-RU',
+                'pt': 'pt-PT',
+                'it': 'it-IT'
             };
 
-            // Use mapped language or fallback to 'en-US' if not found (or let browser decide for known codes like 'en')
+            // Set the language
             u.lang = langMap[langVal] || langVal;
-            
-            speechSynthesis.cancel();
-            speechSynthesis.speak(u);
+
+            // Create a function to speak so we can call it after loading voices if needed
+            const speak = () => {
+                const voices = speechSynthesis.getVoices();
+                // Try to find a voice that matches the language exactly or partially
+                const preferredVoice = voices.find(v => v.lang === u.lang) || 
+                                     voices.find(v => v.lang.startsWith(langVal));
+                
+                if (preferredVoice) {
+                    u.voice = preferredVoice;
+                }
+                
+                speechSynthesis.cancel();
+                speechSynthesis.speak(u);
+            };
+
+            // Handle async voice loading (Chrome sometimes needs this)
+            if (speechSynthesis.getVoices().length === 0) {
+                speechSynthesis.onvoiceschanged = speak;
+            } else {
+                speak();
+            }
         }
 
         function googleTranslateElementInit() {
