@@ -7,318 +7,285 @@
     <title>VDM Solutions Platform</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter as the default font, common in modern designs -->
+    <!-- Load Chart.js for beautiful graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Use Inter font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#0EA5E9', // Sky 500
+                        primaryHover: '#0284C7', // Sky 600
+                        bgSoft: '#F1F5F9', // Slate 100 (Softer background)
+                        textMain: '#0F172A', // Slate 900
+                        textSub: '#64748B', // Slate 500
+                        success: '#10B981', // Emerald 500
+                        warning: '#F59E0B', // Amber 500
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* --- AI THEME STYLES (Space/Neon Cyan Dark Theme) --- */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1A202C; /* Deep Space Blue/Black background */
-            color: #E2E8F0; /* Light text for contrast */
+            background-color: #F1F5F9;
+            color: #0F172A;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
-        /* Header and Accent Color */
+
+        /* --- HEADER (Fixed Top Full Width) --- */
         .header-bg {
-            background-color: #2D3748; /* Slightly lighter dark background for header */
-            border-bottom: 3px solid #00FFFF; /* Neon Cyan line */
-        }
-        .header-text {
-            color: #00FFFF; /* Neon Cyan Text */
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 2px;
-            /* Base shadow for the neon look */
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.4); 
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            z-index: 50;
+            height: 64px; /* Fixed height */
         }
 
-        /* New Animation for Header - AI Pulse Glow */
-        @keyframes subtle-pulse {
-            0%, 100% {
-                text-shadow: 0 0 5px rgba(0, 255, 255, 0.4), 0 0 10px rgba(0, 255, 255, 0.2);
+        /* --- LEFT SIDEBAR (Timeline - Under Header) --- */
+        .timeline-sidebar {
+            top: 64px; /* Start below header */
+            width: 70px;
+            background: #FFFFFF;
+            border-right: 1px solid #E2E8F0;
+            z-index: 40;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @media (min-width: 1024px) {
+            .timeline-sidebar:hover { width: 260px; box-shadow: 4px 0 20px rgba(0,0,0,0.03); }
+        }
+        .timeline-sidebar.mobile-open { transform: translateX(0); width: 260px; height: 100%; top: 0; z-index: 60; }
+
+        .timeline-content {
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            margin-left: 36px;
+        }
+        .timeline-sidebar:hover .timeline-content,
+        .timeline-sidebar.mobile-open .timeline-content { opacity: 1; transform: translateX(0); }
+        
+        /* Timeline Nodes */
+        .timeline-node { position: relative; padding-left: 32px; margin-bottom: 24px; cursor: pointer; }
+        .timeline-node::before { content: ''; position: absolute; left: 39px; top: 20px; bottom: -30px; width: 2px; background: #E2E8F0; }
+        .timeline-node:last-child::before { display: none; }
+        .timeline-dot { position: absolute; left: 32px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid #CBD5E1; z-index: 10; transition: all 0.2s; }
+        .timeline-node.latest .timeline-dot { background: #0EA5E9; border-color: #0EA5E9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2); }
+        .timeline-node:hover .timeline-dot { transform: scale(1.2); border-color: #0EA5E9; }
+
+        /* --- RIGHT SIDEBAR (Chatbot - Floating Dock Style) --- */
+        /* Desktop: Floating Panel */
+        @media (min-width: 1024px) {
+            .chat-sidebar {
+                position: fixed;
+                top: 80px; /* Below header with gap */
+                right: 20px; /* Gap from right edge */
+                bottom: 20px; /* Gap from bottom edge */
+                width: 340px;
+                background: #FFFFFF;
+                border-radius: 20px; /* Rounded corners for beauty */
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); /* Soft shadow lift */
+                z-index: 40;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden; /* Clip contents to rounded corners */
+                transform: translateX(0);
             }
-            50% {
-                text-shadow: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.4);
+        }
+
+        /* Mobile: Slide-in Drawer */
+        @media (max-width: 1023px) {
+            .chat-sidebar {
+                position: fixed;
+                top: 0; right: 0; bottom: 0;
+                width: 100%; max-width: 320px;
+                background: #FFFFFF;
+                z-index: 60;
+                display: flex; flex-direction: column;
+                transform: translateX(100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: -10px 0 30px rgba(0,0,0,0.15);
             }
-        }
-        .header-text-glow {
-            animation: subtle-pulse 3s infinite ease-in-out;
+            .chat-sidebar.mobile-open { transform: translateX(0); }
         }
 
-        /* AI Spinner / Loading Animation (Siri/AI Themed) */
-        .ai-spinner {
-            width: 80px;
-            height: 80px;
-            border: 5px solid rgba(0, 255, 255, 0.2);
-            border-top-color: #00FFFF; /* Neon Cyan */
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .chat-header {
+            padding: 1.25rem;
+            background: linear-gradient(to right, #ffffff, #f8fafc);
+            border-bottom: 1px solid #F1F5F9;
         }
         
-        /* Search/Filter Card Container */
-        .search-card {
-            background-color: #2D3748; /* Dark Card Background */
-            border: 1px solid #4A5568; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 1.25rem;
+            background-color: #FFFFFF;
         }
-        .search-input {
-             /* Dark input background, neon border */
-            background-color: #1A202C;
-            color: #E2E8F0;
-            border-color: #00FFFF; /* Neon Cyan border */
-            transition: all 0.2s;
+        
+        .chat-input-area {
+            padding: 1rem;
+            background: #FFFFFF;
+            border-top: 1px solid #F1F5F9;
         }
-        .search-label {
-            color: #00FFFF; /* Neon Cyan for labels */
+
+        /* Message Bubbles - Refined */
+        .msg-bubble { 
+            max-width: 85%; 
+            padding: 0.75rem 1rem; 
+            border-radius: 1.25rem; 
+            font-size: 0.925rem; 
+            line-height: 1.5; 
+            margin-bottom: 0.75rem; 
+            position: relative;
+        }
+        .msg-user { 
+            background: linear-gradient(135deg, #0EA5E9, #2563EB); 
+            color: white; 
+            align-self: flex-end; 
+            border-bottom-right-radius: 0.25rem; 
+            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2);
+        }
+        .msg-bot { 
+            background: #F8FAFC; 
+            color: #334155; 
+            border: 1px solid #E2E8F0; 
+            align-self: flex-start; 
+            border-bottom-left-radius: 0.25rem; 
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .main-layout {
+            transition: padding 0.3s ease;
+            margin: 0;
+        }
+        
+        @media (min-width: 1024px) {
+            .main-layout {
+                padding-left: 90px;  /* Timeline width + gap */
+                padding-right: 380px; /* Chat width + gap */
+                padding-top: 80px; /* Header height + gap */
+            }
+        }
+        @media (max-width: 1023px) {
+            .main-layout {
+                padding-top: 80px;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .ai-spinner { width: 40px; height: 40px; border: 3px solid rgba(14, 165, 233, 0.1); border-top-color: #0EA5E9; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Overlay */
+        .sidebar-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(2px); z-index: 35;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* Utilities */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+        .hidden { display: none !important; }
+        
+        /* Popup */
+        .popup-modal { background: white; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .popup-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
+        
+        /* Search Input Styling */
+        .search-input:focus { border-color: #0EA5E9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
+        
+        /* --- Google Translate Customization --- */
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0 !important; }
+        
+        #google_translate_element {
+            width: 100% !important;
+            height: 100% !important;
+            position: absolute !important;
+            top: 0; left: 0;
+            z-index: 20;
+        }
+
+        .goog-te-gadget-simple {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            cursor: pointer !important;
+            display: block !important;
+        }
+        
+        .goog-te-menu-value { display: none !important; }
+        .goog-te-gadget-icon { display: none !important; }
+        .goog-te-gadget-simple span { display: none !important; }
+
+        /* --- Dashboard Styling --- */
+        .tab-btn.active {
+            background-color: #0EA5E9;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
+        }
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
             font-weight: 600;
         }
-        /* Enhanced Focus/Glow Effect for Inputs */
-        .search-input:focus {
-            border-color: #00FFFF;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), inset 0 0 5px rgba(0, 255, 255, 0.3); /* Stronger glow and inner shadow */
-            transform: scale(1.01);
-        }
-
-        /* Solution Card */
-        .solution {
-            background-color: #2D3748; /* Dark Card */
-            border: 1px solid #4A5568;
-            color: #E2E8F0;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        /* Enhanced hover effect for cards */
-        .solution:hover {
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); /* Stronger glow shadow */
-            border-color: #00FFFF; /* Neon Cyan border on hover */
-            transform: translateY(-4px) scale(1.01); 
-        }
-        .solution-title {
-            color: #00FFFF; /* Neon Cyan Title */
-            font-weight: 700;
-        }
+        .status-completed { background-color: #DCFCE7; color: #166534; }
+        .status-inprocess { background-color: #E0F2FE; color: #075985; }
         
-        /* Pagination Buttons */
-        .pagination button {
+        /* Form Inputs */
+        .filter-input {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: 1px solid #E2E8F0;
+            font-size: 0.875rem;
+            color: #475569;
+            outline: none;
             transition: all 0.2s;
-            border-color: #00FFFF !important;
-            color: #00FFFF !important;
-            background-color: #2D3748 !important; /* Dark background */
         }
-        .pagination button.active {
-            background-color: #00FFFF !important;
-            color: #1A202C !important; /* Dark text on neon */
-            font-weight: bold;
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
-        }
-        .pagination button:hover:not(.active) {
-            background-color: #384254 !important; /* Slightly lighter dark hover */
-            transform: translateY(-1px);
-            box-shadow: 0 0 5px rgba(0, 255, 255, 0.4);
-        }
-
-        /* Google Translate Styling (Dark Theme Friendly) */
-        .translate-dropdown {
-            background-color: #1A202C; /* Input background */
-            border: 2px solid #00FFFF;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-            transition: all 0.2s;
-            /* Ensure the dropdown itself has enough vertical space for easy clicking */
-            padding: 0.5rem 0.75rem !important;
-            height: 48px !important; 
-        }
-        .goog-te-combo {
-            background-color: #1A202C !important; 
-            color: #E2E8F0 !important; /* Light text */
-            /* Ensure the select box takes up all available space */
-            height: 100% !important; 
-            line-height: 1.5rem !important; /* Helps with vertical alignment */
-            padding: 0 !important;
-            width: 100% !important; /* Enforcing 100% width on the select element */
-        }
-        .goog-te-gadget-simple {
-            border: none !important;
-            background: transparent !important;
-            line-height: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-        }
-        .goog-te-gadget-simple * {
-            display: none !important;
-        }
-        .goog-te-combo {
-            display: inline-block !important; 
-            background-color: #1A202C !important; 
-            color: #E2E8F0 !important;
-            border: none !important;
-            box-shadow: none !important;
-            font-size: 1rem !important;
-            cursor: pointer;
-        }
-        .goog-logo-link, .goog-te-banner-frame {
-            display: none !important;
-        }
-        .category-tag {
-            color: #1A202C; /* Dark text on colored tag */
-            font-weight: 500;
-        }
+        .filter-input:focus { border-color: #0EA5E9; ring: 2px solid #0EA5E9; }
         
-        /* --- Chatbot Specific Styles (Space/Neon Theme) --- */
-        .chat-container {
-            background-color: #2D3748; /* Dark body */
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); /* Neon glow shadow on container */
-        }
-        .chat-header {
-            background: linear-gradient(90deg, #00FFFF, #00A3A3); /* Neon Gradient */
-            color: #1A202C; /* Dark text on header */
-            font-weight: 700;
-        }
-        .chat-header:hover { opacity: 1; } /* Remove opacity reduction */
-
-        .chat-log {
-            background: #1A202C; /* Very Dark Log background */
-        }
-        /* User Message Bubble */
-        .user-message {
-            background: #00A3A3; /* Muted Cyan for user */
-            color: #1A202C;
+        /* Create Task Input Styling */
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
             font-weight: 500;
+            color: #334155;
+            margin-bottom: 0.25rem;
         }
-        /* Bot Message Bubble */
-        .bot-message {
-            background: #4A5568; /* Dark Gray for bot */
-            color: #E2E8F0;
-            border: 1px solid #00FFFF33;
-        }
-
-        /* Refined Chat Input Layout (Adjusted padding for smaller profile) */
-        .chat-input {
-            background: #2D3748; /* Input bar background */
-            padding: 0.65rem; /* Reduced padding from 1rem */
-        }
-        .chat-input input {
-            /* Input field styling */
-            background: #1A202C;
-            color: #E2E8F0;
-            border-color: #00FFFF;
-            border-radius: 9999px; 
-            padding: 0.5rem 1rem; /* Slightly reduced vertical and horizontal padding */
-            flex: 1;
-            margin-right: 0.5rem;
-            font-size: 0.95rem; /* Slightly smaller font for better fit */
-        }
-        /* Send button styling (Adjusted padding and icon size in HTML) */
-        .chat-input button {
-            transition: all 0.2s;
-            background: #00FFFF; /* Neon Cyan button */
-            color: #1A202C; /* Dark text on neon */
-            font-weight: 700;
-            border-radius: 9999px;
-            padding: 0.5rem 1rem; /* Reduced padding for smaller footprint */
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-            line-height: 1; /* Ensure vertical centering */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .chat-input button:hover {
-            background: #00D0D0;
-            transform: translateY(-1px) scale(1.02); /* Less aggressive hover */
-            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.8);
-        }
-        .chat-input button:active {
-            transform: translateY(1px) scale(0.95);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-        }
-
-        .hidden { display: none !important; }
-
-        /* FAB Collapsed State Styling */
-        .chat-container.h-16.w-16.rounded-full {
-            background: #00FFFF;
-            box-shadow: 0 0 20px 8px rgba(0, 255, 255, 0.7); /* Stronger Neon Glow */
-        }
-        .chat-container.h-16.w-16.rounded-full:hover {
-            transform: scale(1.1); /* Bigger hover scale */
-            box-shadow: 0 0 30px 10px rgba(0, 255, 255, 0.9);
-        }
-        .chat-container.h-16.w-16.rounded-full:active {
-            transform: scale(0.9);
-        }
-        .chat-container.h-16.w-16.rounded-full .chat-header {
-            background: transparent;
-        }
-        .location-display {
-            color: #00FFFF; /* Neon color for location display */
-        }
-
-        /* FIX: CSS for allowing the popup content (image) to expand outside its container */
-        .popup-content-container {
-            /* Container for the new dynamic popup */
-            position: fixed;
-            top: 0;
-            left: 0;
+        .form-input {
             width: 100%;
-            height: 100%;
-            z-index: 999;
-            pointer-events: none; /* Allows clicks through when modal is closed */
+            padding: 0.625rem;
+            background-color: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #1E293B;
+            outline: none;
+            transition: all 0.2s;
         }
-
-        .popup-overlay {
-            /* Overlay style */
-            position: absolute;
-            inset: 0;
-            background-color: rgba(26, 32, 44, 0.8); /* Dark background with opacity */
-            transition: opacity 0.3s;
-            pointer-events: auto; /* Enable clicks on overlay */
+        .form-input:focus {
+            background-color: #fff;
+            border-color: #0EA5E9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
         }
-
-        .popup-modal {
-            /* Modal style */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 95%;
-            max-width: 600px;
-            background-color: #2D3748;
-            color: #E2E8F0;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.2);
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s, transform 0.3s;
-            pointer-events: auto; /* Enable clicks on modal */
-        }
-        .popup-modal.show {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        /* Image Zoom Styles (Reused) */
-        .popup-modal.expanded {
-            overflow: visible !important;
-        }
-        .popup-image-zoomed {
-            max-width: 150vw !important;
-            width: auto !important;
-            cursor: zoom-out !important;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1001; 
-            border-radius: 0.75rem; 
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-            transition: all 0.3s ease-in-out;
-        }
-        /* Hide google's automatic "Select Language" text */
-        .goog-te-combo+br { display: none; }
     </style>
-    <!-- Google Analytics Tag -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SDQG1N4SSV"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -328,698 +295,1527 @@
     </script>
 </head>
 
-<body class="min-h-screen">
-    <!-- Header Section -->
-    <header class="header-bg p-4 sm:p-6 shadow-md flex items-center justify-between">
-        <!-- Home Button Added Here -->
-        <a href="index.html" aria-label="Go to Home" class="flex items-center space-x-2 text-cyan-400 font-semibold p-2 rounded-lg transition duration-200 hover:bg-cyan-500 hover:text-gray-900 active:scale-95 shadow-md hover:shadow-cyan-400/50">
-            <!-- Home Icon -->
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7-7-7m7 7v10a1 1 0 001 1h3"></path></svg>
-            <span class="inline">Go to Home</span>
-        </a>
-        
-        <!-- Title Section -->
-        <h1 class="text-xl sm:text-4xl font-extrabold text-center header-text tracking-wider uppercase header-text-glow flex-1">
-            VDM Solutions Platform 
-        </h1>
+<body class="min-h-screen relative bg-[#F1F5F9]">
 
-        <!-- Placeholder for symmetry/space -->
-        <div class="w-[70px] sm:w-[100px] h-0"></div>
+    <!-- LEFT SIDEBAR: Timeline -->
+    <div id="timeline-sidebar" class="timeline-sidebar fixed left-0 bottom-0 py-10 flex flex-col group transform -translate-x-full lg:translate-x-0">
+        <div class="flex items-center justify-between px-[22px] mb-6 text-slate-700">
+            <div class="flex items-center">
+                <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-primary">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <span class="font-bold text-base ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap lg:group-hover:opacity-100 tracking-tight">Latest Updates</span>
+            </div>
+            <!-- ADD BUTTON FOR TIMELINE -->
+            <button onclick="openCreateTimelinePopup()" class="p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100" title="Add Update">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            </button>
+        </div>
+        <div id="timeline-items" class="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar pb-10">
+            <div class="flex justify-center py-10"><div class="ai-spinner w-6 h-6 border-2"></div></div>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR: Help Assistant -->
+    <div id="chat-sidebar" class="chat-sidebar">
+        <!-- Chat Header -->
+        <div class="chat-header flex items-center justify-between sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base">Assistant English Version</h3>
+                    <div class="flex items-center gap-1.5">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                        <p class="text-xs text-slate-500 font-medium">Online</p>
+                    </div>
+                </div>
+            </div>
+            <button onclick="toggleMobileChat()" class="lg:hidden p-2 text-slate-400 hover:text-slate-600 bg-slate-50 rounded-lg">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-log" class="chat-messages flex flex-col custom-scrollbar"></div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-area">
+            <div class="flex items-center gap-2 bg-slate-50 rounded-2xl px-4 py-2.5 border border-slate-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-sm">
+                <input type="text" id="user-input" class="flex-1 bg-transparent border-none outline-none text-sm text-slate-700 placeholder-slate-400" placeholder="Ask something..." autocomplete="off">
+                <button onclick="sendMessage()" class="p-2 bg-primary text-white rounded-xl hover:bg-primaryHover transition shadow-md shadow-primary/20 active:scale-95">
+                    <svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div id="mobile-overlay" class="sidebar-overlay" onclick="closeAllMobileSidebars()"></div>
+
+    <!-- HEADER (Fixed Top) -->
+    <header class="header-bg fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6">
+        <div class="flex items-center">
+            <button onclick="toggleMobileTimeline()" class="lg:hidden p-2 mr-3 text-slate-500 hover:bg-slate-100 rounded-lg">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+            </button>
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-9 h-9 bg-gradient-to-tr from-primary to-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20 group-hover:scale-105 transition duration-300">V</div>
+                <span class="font-bold text-xl text-slate-800 tracking-tight">VDM <span class="text-primary font-normal">Solutions For All</span></span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-4">
+            <div onclick="triggerTranslate()" class="relative h-9 w-32 bg-white border border-slate-200 rounded-lg shadow-sm hover:border-slate-300 transition-colors group cursor-pointer overflow-hidden z-0">
+                <div class="absolute inset-0 flex items-center justify-between px-3 pointer-events-none z-10">
+                    <span class="text-sm font-semibold text-slate-700">Language</span>
+                    <svg class="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div id="google_translate_element" class="absolute inset-0 opacity-0 z-20"></div>
+            </div>
+            <button onclick="toggleMobileChat()" class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
+                <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></span>
+            </button>
+        </div>
     </header>
 
-    <!-- Main Content Container (Search & Filter) -->
-    <div class="p-4 sm:p-6 lg:p-8 solution-list-container">
-        <!-- Filter Card -->
-        <div class="flex flex-col md:flex-row justify-between items-center search-card p-4 sm:p-6 rounded-xl shadow-lg mb-8 gap-4">
+    <!-- MAIN CONTENT SCROLLABLE AREA -->
+    <div class="main-layout min-h-screen">
+        <div class="max-w-5xl mx-auto">
             
-            <!-- Search by Topic Group (50%) -->
-            <div class="w-full md:w-6/12">
-                <label for="search" class="block text-sm font-medium search-label mb-2">
-                    <!-- Updated Icon: Search -->
-                    <svg class="inline-block w-4 h-4 mr-1 align-text-top" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    Search by Topic:
-                </label>
-                <input type="text" id="search"
-                    class="w-full p-3 border-2 search-input rounded-lg focus:ring-transparent transition duration-300 shadow-sm active:scale-[0.99]"
-                    placeholder="E.g., printer error, software stuck..."
-                    oninput="filterSolutions()" />
-            </div>
-
-            <!-- Language Selection Group (25%) -->
-            <div class="w-full md:w-3/12">
-                <label for="language" class="block text-sm font-medium search-label mb-2">
-                    <!-- Updated Icon: Globe -->
-                    <svg class="inline-block w-4 h-4 mr-1 align-text-top" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l-7 7-7-7m7 7v10a1 1 0 001 1h3"></path></svg>
-                    Select Language:
-                </label>
-                <!-- Container is now 3/12 for professional layout, height fixed for usability -->
-                <div id="google_translate_element" class="translate-dropdown w-full active:scale-[0.99] h-12"></div>
-            </div>
-            
-             <!-- Spacer for visual balance (25% on MD+) -->
-            <div class="hidden md:block md:w-3/12"></div>
-        </div>
-        
-        <!-- AI Loading Indicator -->
-        <div id="loading-indicator" class="flex justify-center items-center py-20 hidden">
-            <div class="ai-spinner"></div>
-        </div>
-
-        <!-- Solutions List -->
-        <div id="solutions" class="space-y-4">
-            <!-- Solution cards will be inserted here -->
-        </div>
-
-        <!-- Pagination Controls -->
-        <div class="pagination flex justify-center items-center mt-8 mb-20" id="pagination">
-            <!-- Pagination buttons will be inserted here -->
-        </div>
-    </div>
-
-    <!-- Container for the dynamic Popup/Modal -->
-    <div id="popup-container" class="popup-content-container hidden">
-        <!-- The modal and overlay will be generated here -->
-    </div>
-
-
-    <!-- Floating Chat Container (Re-introduced) -->
-    <div class="fixed bottom-4 right-4 z-30" id="chat-wrapper">
-        <div class="chat-container w-full max-w-xs h-[500px] bg-white flex flex-col rounded-xl shadow-2xl overflow-hidden transition-all duration-300"
-            id="chat-container">
-            <!-- Header -->
-            <div class="chat-header bg-gradient-to-r from-cyan-500 to-cyan-600 text-white flex items-center justify-between p-4 cursor-pointer text-lg font-semibold shadow-md rounded-t-xl hover:opacity-95 active:scale-[0.99]"
-                onclick="collapseChat()">
-                <span id="chat-title">VDM Search Assistant</span>
-                <!-- The SVG icon will be set via JavaScript -->
-                <button id="collapse-btn" class="text-2xl font-bold transition-transform duration-300">
-                    <!-- Initial icon set by JS -->
-                </button>
-            </div>
-
-            <!-- Chat Log -->
-            <div class="chat-log flex-1 p-3 overflow-y-auto bg-gray-800" id="chat-log">
-                <!-- Messages go here -->
-            </div>
-
-            <!-- Chat Input (Refined Layout) -->
-            <div class="chat-input flex items-center border-t border-gray-700 bg-gray-800" id="chat-input">
-                <input type="text" id="user-input"
-                    class="flex-1 border-2 border-cyan-400 rounded-full focus:ring-transparent focus:border-cyan-300 outline-none transition duration-200 shadow-inner bg-gray-900 text-white active:scale-[0.99]"
-                    placeholder="Describe your problem..." />
-                <button onclick="sendMessage()"
-                    class="bg-cyan-500 text-gray-900 font-bold rounded-full hover:bg-cyan-400 active:bg-cyan-600 active:scale-[0.90] transition duration-300 shadow-lg">
-                    <!-- Send Icon -->
-                    <svg class="w-5 h-5 transform rotate-45 -mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-    <script>
-        // Data and API configuration
-        // Consolidate API declarations
-        const apiUrlMain = "https://script.google.com/macros/s/AKfycbw2lG6q5IjOf9jvZo7y1yGNUn-Y-8XRbG0jEgLCsCX9LZEC96luvk2G3pFPd4QHSUN2Uw/exec";
-        const apiUrlc = "https://script.google.com/macros/s/AKfycbw8NmBDeYgjcH7R8j_WRkH-b7Y5z3w-T2OxZ85Y9uWj5fWg3ftsocUJx55053Q5k_tc/exec"; 
-
-        // Consolidated variable declarations
-        let solutions = [];
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let conversationHistory = []; // Stores conversation context
-        let currentPopupItem = null; // Store item data for the currently open popup
-
-        // --- Global Popup Management ---
-        let popupObserver = null;
-
-        function closePopup() {
-            const container = document.getElementById('popup-container');
-            const modal = document.querySelector('.popup-modal');
-            const overlay = document.querySelector('.popup-overlay');
-            
-            if (modal) modal.classList.remove('show');
-            if (overlay) overlay.style.opacity = 0;
-
-            speechSynthesis.cancel(); 
-            
-            // Wait for transition before removing from DOM
-            setTimeout(() => {
-                container.classList.add('hidden');
-                container.innerHTML = ''; // Crucial: Remove modal from DOM
-                currentPopupItem = null;
-                
-                // Disconnect observer after closing
-                if (popupObserver) {
-                    popupObserver.disconnect();
-                    popupObserver = null;
-                }
-            }, 300); // Wait for CSS transition time
-        }
-
-        // --- Function to Create and Open Dynamic Popup ---
-        function openPopup(item) {
-            currentPopupItem = item;
-            const container = document.getElementById('popup-container');
-            container.classList.remove('hidden');
-
-            const overlay = document.createElement('div');
-            overlay.className = 'popup-overlay';
-            overlay.onclick = closePopup;
-            overlay.style.opacity = 0;
-            
-            const modal = document.createElement('div');
-            modal.className = 'popup-modal';
-            modal.id = 'dynamic-popup';
-
-            // HTML Structure of the Modal Content
-            modal.innerHTML = `
-                <img id="popupImage" src="${item.image || 'https://placehold.co/600x400/1A202C/00FFFF?text=NO+IMAGE'}" 
-                    alt="Solution Image"
-                    class="w-full h-auto rounded-lg mb-4 cursor-zoom-in transition-all duration-300" 
-                    onclick="window.toggleImageSize(this)">
-
-                <div class="flex justify-between items-start mb-4 border-b pb-2 border-cyan-400">
-                    <h2 id="popupTopic" class="text-2xl font-bold text-cyan-400 flex-1 pr-4">${item.topic}</h2>
-                    <!-- Updated Icon: Speaker (TTS) -->
-                    <button onclick="window.readPopupText()"
-                        class="text-3xl p-1 text-gray-400 hover:text-cyan-400 active:scale-90 transition duration-150" title="Read Aloud">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg>
+            <!-- Tab Navigation & Hero Section -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 mb-8">
+                <!-- Tabs -->
+                <div class="flex items-center gap-2 mb-6 bg-slate-100 p-1 rounded-xl w-fit">
+                    <button onclick="switchTab('solutions')" id="tab-solutions" class="tab-btn active px-4 py-2 rounded-lg text-sm font-bold text-slate-600 transition-all duration-300">
+                        Knowledge Base
+                    </button>
+                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-600 transition-all duration-300">
+                        Operations Dashboard
                     </button>
                 </div>
-                <div class="h-64 overflow-y-auto pr-2">
-                    <p id="popupDetail" class="text-gray-300 leading-relaxed text-base">${item.detail}</p>
+
+                <!-- Search Input (Only for Solutions Tab) -->
+                <div id="search-container">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">How can we help?</h1>
+                        <div class="flex gap-2">
+                            <!-- Translate Button -->
+                            <button onclick="triggerTranslate()" class="p-2 bg-white text-slate-400 hover:text-blue-500 hover:bg-blue-50 border border-slate-200 rounded-xl shadow-sm transition-all group" title="Translate Page">
+                                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                            </button>
+                            <!-- Add Solution Button -->
+                            <button onclick="openCreateSolutionPopup()" class="p-2 bg-white text-slate-400 hover:text-primary hover:bg-slate-50 border border-slate-200 rounded-xl shadow-sm transition-all group" title="Add Solution">
+                                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="relative group">
+                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" id="search" oninput="filterSolutions()" 
+                            class="search-input w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white outline-none transition-all placeholder-slate-400 text-base shadow-sm"
+                            placeholder="Search keywords (e.g. printer, network, slow)...">
+                    </div>
                 </div>
-                <button class="popup-close w-full mt-6 py-2 bg-cyan-500 text-gray-900 font-semibold rounded-lg hover:bg-cyan-400 active:bg-cyan-600 active:scale-[0.99] transition duration-300 shadow-md"
-                    onclick="window.closePopup()">
-                    Close
-                </button>
-            `;
 
-            container.appendChild(overlay);
-            container.appendChild(modal);
+                <!-- Dashboard Header (Only for Dashboard Tab) -->
+                <div id="dashboard-header" class="hidden">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">Operations Overview</h1>
+                            <p class="text-slate-500">Real-time update of ongoing and completed tasks.</p>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <!-- Add a task Button - Opens Popup -->
+                            <button onclick="openCreateTaskPopup()" 
+                               class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-green-200 group active:scale-95">
+                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                Add a task
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            // Trigger show animation
-            setTimeout(() => {
-                overlay.style.opacity = 1;
-                modal.classList.add('show');
-            }, 10);
-            
-            // --- FIX: Force Google Translate to re-scan the new content by simulating selection ---
-            const langSelect = document.querySelector('.goog-te-combo');
-            if (langSelect) {
-                const selectedValue = langSelect.value;
-                
-                // Only force re-translation if a non-English language is selected
-                if (selectedValue && selectedValue !== 'en') {
+            <!-- Loading -->
+            <div id="loading-indicator" class="hidden flex flex-col items-center py-24">
+                <div class="ai-spinner mb-4"></div>
+                <p class="text-slate-400 font-medium animate-pulse">Scanning knowledge base...</p>
+            </div>
+
+            <!-- SOLUTIONS VIEW (Grid) -->
+            <div id="solutions-view">
+                <div id="solutions" class="grid grid-cols-1 md:grid-cols-2 gap-5 pb-20">
+                    <!-- Cards injected here -->
+                </div>
+                <!-- Pagination -->
+                <div class="flex justify-center pb-20 gap-2" id="pagination"></div>
+            </div>
+
+            <!-- DASHBOARD VIEW (New) -->
+            <div id="dashboard-view" class="hidden pb-20 space-y-6">
+                <!-- Filters Toolbar -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-3 items-center flex-wrap">
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <span class="text-sm font-semibold text-slate-500">Date:</span>
+                        <input type="date" id="filter-start" class="filter-input" onchange="filterDashboard()">
+                        <span class="text-slate-400">-</span>
+                        <input type="date" id="filter-end" class="filter-input" onchange="filterDashboard()">
+                    </div>
                     
-                    // Use a short delay to ensure the modal content is fully rendered in the DOM
-                    setTimeout(() => {
-                        // Create a native change event
-                        const changeEvent = new Event('change');
-                        
-                        // Manually re-set the value (even to itself) and dispatch the event
-                        // This is the most reliable way to force the widget to re-read the page.
-                        langSelect.value = selectedValue; 
-                        langSelect.dispatchEvent(changeEvent);
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <span class="text-sm font-semibold text-slate-500">Plant:</span>
+                        <select id="filter-plant" class="filter-input min-w-[120px]" onchange="filterDashboard()">
+                            <option value="">All Plants</option>
+                        </select>
+                    </div>
 
-                        // Add a second, slightly longer delay dispatch as a failsafe
-                        setTimeout(() => {
-                            langSelect.dispatchEvent(changeEvent);
-                        }, 500); 
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <span class="text-sm font-semibold text-slate-500">Status:</span>
+                        <select id="filter-status" class="filter-input min-w-[120px]" onchange="filterDashboard()">
+                            <option value="">All Status</option>
+                            <option value="In Process">In Process</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
 
-                    }, 50); // Small delay to ensure DOM insertion is complete
+                    <!-- Added Refresh Button Here -->
+                    <div class="ml-auto w-full md:w-auto flex gap-2">
+                        <button onclick="fetchTodos()" class="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white text-slate-600 font-bold rounded-lg border border-slate-200 hover:bg-slate-50 hover:text-primary transition group">
+                            <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Refresh
+                        </button>
+                        <button onclick="exportExcel()" class="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-green-50 text-green-600 font-bold rounded-lg border border-green-100 hover:bg-green-100 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Graph Card -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm md:col-span-1 flex flex-col items-center justify-center relative">
+                        <h3 class="font-bold text-slate-700 mb-4 w-full text-left">Status Distribution</h3>
+                        <div class="w-48 h-48 relative">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- KPI Cards -->
+                    <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                </div>
+                                <div>
+                                    <div class="text-slate-400 text-sm font-medium">Total Tasks</div>
+                                    <div id="total-tasks-count" class="text-3xl font-bold text-slate-800">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-center">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-green-50 text-green-500 flex items-center justify-center">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <div>
+                                    <div class="text-slate-400 text-sm font-medium">Completed</div>
+                                    <div id="completed-count" class="text-3xl font-bold text-slate-800">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task List Table -->
+                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-slate-100">
+                        <h3 class="font-bold text-slate-800">Recent Tasks</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-600">
+                            <thead class="bg-slate-50 text-slate-500 font-medium">
+                                <tr>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Plant</th>
+                                    <th class="px-6 py-4">Topic</th>
+                                    <th class="px-6 py-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="task-list-body" class="divide-y divide-slate-100">
+                                <!-- Tasks injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- NEW Pagination for Tasks -->
+                    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center" id="task-pagination">
+                         <button onclick="changeTaskPage(-1)" id="btn-prev-task" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 disabled:opacity-50 text-sm font-medium transition">Previous</button>
+                         <span id="task-page-info" class="text-sm text-slate-500 font-medium">Page 1</span>
+                         <button onclick="changeTaskPage(1)" id="btn-next-task" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 disabled:opacity-50 text-sm font-medium transition">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP CONTAINER (DETAILS) -->
+    <div id="popup-container" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4"></div>
+
+    <!-- CREATE TASK POPUP CONTAINER -->
+    <div id="create-task-popup" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCreateTaskPopup()"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Create New Task</h3>
+                <button onclick="closeCreateTaskPopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar max-h-[70vh]">
+                <form id="create-task-form" onsubmit="event.preventDefault(); submitCreateTask();" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Plant</label>
+                        <select id="input-plant" required class="form-input">
+                            <option value="" disabled selected>Select Plant</option>
+                            <option value="Binh Phuoc">Binh Phuoc</option>
+                            <option value="Xuan Mai">Xuan Mai</option>
+                            <option value="Hai Duong">Hai Duong</option>
+                            <option value="Binh Dinh">Binh Dinh</option>
+                            <option value="Dak Lak">Dak Lak</option>
+                            <option value="Yangon">Yangon</option>
+                            <option value="Mandalay">Mandalay</option>
+                            <option value="Taunggyi">Taunggyi</option>
+                            <option value="Kampot">Kampot</option>
+                            <option value="Pailin">Pailin</option>
+                            <option value="Phnom Penh">Phnom Penh</option>
+                            <option value="Tarlac">Tarlac</option>
+                            <option value="Laos">Laos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Topic</label>
+                        <input type="text" id="input-topic" required class="form-input" placeholder="Task title">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Detail</label>
+                        <textarea id="input-detail" rows="3" class="form-input" placeholder="Describe the task..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Image URL (Optional)</label>
+                        <input type="url" id="input-image" class="form-input" placeholder="https://...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                        <select id="input-status" class="form-input">
+                            <option value="In Process">In Process</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button onclick="closeCreateTaskPopup()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
+                <button onclick="submitCreateTask()" id="btn-submit-task" class="px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 shadow-md shadow-green-200 transition text-sm flex items-center gap-2">
+                    <span>Create Task</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE TIMELINE POPUP CONTAINER -->
+    <div id="create-timeline-popup" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCreateTimelinePopup()"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Add Timeline Update</h3>
+                <button onclick="closeCreateTimelinePopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar max-h-[70vh]">
+                <form id="create-timeline-form" onsubmit="event.preventDefault(); submitCreateTimeline();" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Image URL (Optional)</label>
+                        <input type="url" id="timeline-image" class="form-input" placeholder="https://...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Date</label>
+                        <input type="date" id="timeline-date" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Detail</label>
+                        <textarea id="timeline-detail" required rows="3" class="form-input" placeholder="Update details..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Zone (Optional)</label>
+                        <input type="text" id="timeline-zone" class="form-input" placeholder="oversea">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Post By (Optional)</label>
+                        <input type="text" id="timeline-postby" class="form-input" placeholder="phirawat.api">
+                    </div>
+                </form>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button onclick="closeCreateTimelinePopup()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
+                <button onclick="submitCreateTimeline()" id="btn-submit-timeline" class="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md shadow-blue-200 transition text-sm flex items-center gap-2">
+                    <span>Add Update</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE SOLUTION POPUP CONTAINER -->
+    <div id="create-solution-popup" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCreateSolutionPopup()"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-800">Create New Solution</h3>
+                <button onclick="closeCreateSolutionPopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto custom-scrollbar max-h-[70vh]">
+                <form id="create-solution-form" onsubmit="event.preventDefault(); submitCreateSolution();" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Topic</label>
+                        <input type="text" id="solution-topic" required class="form-input" placeholder="Solution title">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Detail</label>
+                        <textarea id="solution-detail" required rows="4" class="form-input" placeholder="Describe the solution..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Image URL (Optional)</label>
+                        <input type="url" id="solution-image" class="form-input" placeholder="https://...">
+                    </div>
+                </form>
+            </div>
+
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                <button onclick="closeCreateSolutionPopup()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
+                <button onclick="submitCreateSolution()" id="btn-submit-solution" class="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md shadow-blue-200 transition text-sm flex items-center gap-2">
+                    <span>Create Solution</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE ZOOM MODAL -->
+    <div id="image-zoom-modal" class="hidden fixed inset-0 z-[80] bg-black/90 flex items-center justify-center p-4 transition-opacity duration-300" onclick="closeZoomImage()">
+        <img id="zoomed-image" src="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-300">
+        <button class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full backdrop-blur-sm transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
+    <script>
+        // API
+        const apiUrlMain = "https://script.google.com/macros/s/AKfycbx5XQc3czwF4NBji7E2M3pvVmgD2f1LsHt8EVK9-jXVCmqxGL00NNGoOl4D2yk846jN8w/exec";
+        const apiUrlTimeline = "https://script.google.com/macros/s/AKfycbzBV7RGCjrTZGZRxj36Rzr6m3hnv_pjDG7l1XAafWyjBffqkHlDqfi3MqKejgDgQDJP/exec";
+        
+        // NEW API (Supports Create, Update, Delete, and returns row_index) - Used for EVERYTHING related to Tasks
+        const apiUrlCreate = "https://script.google.com/macros/s/AKfycbwd5w1QGef_YeDtY54NvmR3T1jcRHWCWvyP_bgvZNbjd6IPomWHseS7BJn-upLxgYkNbg/exec";
+
+        // Remove old unused API variable to prevent confusion
+        // const apiUrlTodo = ... 
+
+        let solutions = [];
+        let allTodoData = []; // Store raw data
+        let solutionsPage = 1;
+        const itemsPerPage = 8;
+        
+        // NEW: Task Pagination Variables
+        let dashboardPage = 1;
+        const tasksPerPage = 10;
+        let currentFilteredTasks = [];
+
+        let chartInstance = null;
+        let currentTaskData = null; // Store currently viewed task
+        let currentType = ''; // 'task', 'timeline', 'solution'
+
+        // --- UI Interactions ---
+        function switchTab(tab) {
+            const solutionsView = document.getElementById('solutions-view');
+            const dashboardView = document.getElementById('dashboard-view');
+            const searchContainer = document.getElementById('search-container');
+            const dashboardHeader = document.getElementById('dashboard-header');
+            const btnSolutions = document.getElementById('tab-solutions');
+            const btnDashboard = document.getElementById('tab-dashboard');
+
+            if (tab === 'solutions') {
+                solutionsView.classList.remove('hidden');
+                dashboardView.classList.add('hidden');
+                searchContainer.classList.remove('hidden');
+                dashboardHeader.classList.add('hidden');
+                btnSolutions.classList.add('active');
+                btnDashboard.classList.remove('active');
+            } else {
+                solutionsView.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                searchContainer.classList.add('hidden');
+                dashboardHeader.classList.remove('hidden');
+                btnSolutions.classList.remove('active');
+                btnDashboard.classList.add('active');
+                if (allTodoData.length === 0) fetchTodos();
+            }
+        }
+
+        // --- Create Task Popup Functions ---
+        function openCreateTaskPopup() {
+            document.getElementById('create-task-popup').classList.remove('hidden');
+        }
+
+        function closeCreateTaskPopup() {
+            document.getElementById('create-task-popup').classList.add('hidden');
+            document.getElementById('create-task-form').reset();
+        }
+
+        async function submitCreateTask() {
+            const btn = document.getElementById('btn-submit-task');
+            const originalText = btn.innerHTML;
+            
+            // Get values
+            const plant = document.getElementById('input-plant').value;
+            const topic = document.getElementById('input-topic').value;
+            const detail = document.getElementById('input-detail').value;
+            const imageUrl = document.getElementById('input-image').value;
+            const status = document.getElementById('input-status').value;
+
+            if (!plant || !topic) {
+                alert("Please fill in Plant and Topic.");
+                return;
+            }
+
+            // Set loading state
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...`;
+
+            const payload = {
+                action: 'create', // Explicit action
+                plant,
+                topic,
+                detail,
+                image: imageUrl, // Matches params.image in .gs
+                status
+            };
+
+            try {
+                // Use apiUrlCreate for creating tasks
+                const res = await fetch(apiUrlCreate, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' } 
+                });
+
+                closeCreateTaskPopup();
+                fetchTodos();
+            } catch (error) {
+                console.error("Error creating task:", error);
+                alert("Failed to create task. Please try again.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // --- Create Timeline Update Popup Functions ---
+        function openCreateTimelinePopup() {
+            document.getElementById('create-timeline-popup').classList.remove('hidden');
+            // Set default date to today
+            document.getElementById('timeline-date').valueAsDate = new Date();
+        }
+
+        function closeCreateTimelinePopup() {
+            document.getElementById('create-timeline-popup').classList.add('hidden');
+            document.getElementById('create-timeline-form').reset();
+        }
+
+        async function submitCreateTimeline() {
+            const btn = document.getElementById('btn-submit-timeline');
+            const originalText = btn.innerHTML;
+            
+            // Get values
+            const imageUrl = document.getElementById('timeline-image').value;
+            const dateVal = document.getElementById('timeline-date').value;
+            const detail = document.getElementById('timeline-detail').value;
+            const zone = document.getElementById('timeline-zone').value;
+            const postby = document.getElementById('timeline-postby').value;
+
+            if (!detail) {
+                alert("Please fill in Detail.");
+                return;
+            }
+
+            // Set loading state
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Adding...`;
+
+            // Prepare payload matching .gs script expectation
+            // Format date to DD/MM/YYYY if possible, or send as YYYY-MM-DD and let script handle
+            let formattedDate = dateVal;
+            if(dateVal) {
+               const d = new Date(dateVal);
+               formattedDate = d.toLocaleDateString('en-GB'); // DD/MM/YYYY
+            }
+
+            const payload = {
+                image: imageUrl,
+                date: formattedDate,
+                detail: detail,
+                zone: zone,
+                postby: postby
+            };
+
+            try {
+                const res = await fetch(apiUrlTimeline, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' } 
+                });
+
+                closeCreateTimelinePopup();
+                // Refresh timeline
+                fetchTimeline();
+                // Optionally open sidebar to show update
+                const sidebar = document.getElementById('timeline-sidebar');
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    toggleMobileTimeline();
+                }
+            } catch (error) {
+                console.error("Error creating timeline update:", error);
+                alert("Failed to add update. Please try again.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+        
+        // --- Create Solution Popup Functions (New) ---
+        function openCreateSolutionPopup() {
+            document.getElementById('create-solution-popup').classList.remove('hidden');
+        }
+
+        function closeCreateSolutionPopup() {
+            document.getElementById('create-solution-popup').classList.add('hidden');
+            document.getElementById('create-solution-form').reset();
+        }
+
+        async function submitCreateSolution() {
+            const btn = document.getElementById('btn-submit-solution');
+            const originalText = btn.innerHTML;
+            
+            // Get values
+            const topic = document.getElementById('solution-topic').value;
+            const detail = document.getElementById('solution-detail').value;
+            const imageUrl = document.getElementById('solution-image').value;
+
+            if (!topic || !detail) {
+                alert("Please fill in Topic and Detail.");
+                return;
+            }
+
+            // Set loading state
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Creating...`;
+
+            const payload = {
+                topic: topic,
+                detail: detail,
+                image: imageUrl
+            };
+
+            try {
+                // Use apiUrlMain for creating solutions
+                const res = await fetch(apiUrlMain, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' } 
+                });
+
+                closeCreateSolutionPopup();
+                // Refresh solutions list
+                fetchSolutions();
+            } catch (error) {
+                console.error("Error creating solution:", error);
+                alert("Failed to create solution. Please try again.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        }
+
+        function toggleMobileTimeline() {
+            const sidebar = document.getElementById('timeline-sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            const chatSidebar = document.getElementById('chat-sidebar');
+            chatSidebar.classList.remove('mobile-open');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            } else {
+                closeAllMobileSidebars();
+            }
+        }
+
+        function toggleMobileChat() {
+            const chatSidebar = document.getElementById('chat-sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            const timelineSidebar = document.getElementById('timeline-sidebar');
+            timelineSidebar.classList.add('-translate-x-full');
+            timelineSidebar.classList.remove('mobile-open');
+            if (!chatSidebar.classList.contains('mobile-open')) {
+                chatSidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            } else {
+                closeAllMobileSidebars();
+            }
+        }
+
+        function closeAllMobileSidebars() {
+            document.getElementById('timeline-sidebar').classList.add('-translate-x-full');
+            document.getElementById('timeline-sidebar').classList.remove('mobile-open');
+            document.getElementById('chat-sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.remove('active');
+        }
+
+        // --- Data Fetching ---
+        async function fetchSolutions() {
+            document.getElementById("loading-indicator").classList.remove("hidden");
+            try {
+                const res = await fetch(apiUrlMain);
+                solutions = await res.json();
+                renderSolutions();
+                renderPagination();
+            } catch (e) {
+                document.getElementById("solutions").innerHTML = `<div class="col-span-full text-center text-red-500 py-10 bg-white rounded-2xl border border-red-100">Unable to connect to database.</div>`;
+            } finally {
+                document.getElementById("loading-indicator").classList.add("hidden");
+            }
+        }
+
+        async function fetchTimeline() {
+            try {
+                const res = await fetch(apiUrlTimeline);
+                const data = await res.json();
+                const sorted = data.sort((a,b) => {
+                    const [da, ma, ya] = a.date.split('/').map(Number);
+                    const [db, mb, yb] = b.date.split('/').map(Number);
+                    return new Date(yb, mb-1, db) - new Date(ya, ma-1, da);
+                }).slice(0, 10);
+
+                document.getElementById('timeline-items').innerHTML = sorted.map((item, idx) => `
+                    <div class="timeline-node ${idx===0?'latest':''}" onclick='openPopup(${JSON.stringify(item).replace(/'/g, "&#39;")}, "timeline")'>
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <div class="text-sm font-bold text-slate-800">${item.date}</div>
+                            <div class="text-xs text-slate-500 font-medium">${item.detail ? item.detail.substring(0, 25)+'...' : 'Update'}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                document.getElementById('timeline-items').innerHTML = '<div class="text-xs text-center p-4 text-slate-400">Offline</div>';
+            }
+        }
+
+        async function fetchTodos() {
+            const listBody = document.getElementById('task-list-body');
+            // Check if element exists (might be hidden or tab not active)
+            if(!listBody) return;
+            
+            listBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center"><div class="inline-block ai-spinner w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div><span class="ml-3 text-slate-500">Loading tasks...</span></td></tr>`;
+            document.getElementById('total-tasks-count').innerText = "...";
+            document.getElementById('completed-count').innerText = "...";
+
+            try {
+                // *** FIXED: Use apiUrlCreate here ***
+                const res = await fetch(apiUrlCreate);
+                allTodoData = await res.json(); // Store in raw variable
+                populatePlantOptions();
+                filterDashboard(); // Initial render with filters
+            } catch(e) {
+                console.error("Error fetching todos", e);
+                listBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-500">Failed to load data.</td></tr>`;
+            }
+        }
+
+        // --- Helper: Parse ISO Date (Correctly handles timezone roughly) ---
+        function parseDate(dateString) {
+            if(!dateString) return null;
+            
+            // Fix for Buddhist Era years in ISO string (e.g. 2569 -> 2026)
+            if (typeof dateString === 'string') {
+                const match = dateString.match(/^(\d{4})/);
+                if (match) {
+                    const year = parseInt(match[1]);
+                    if (year > 2400) {
+                        const adYear = year - 543;
+                        dateString = dateString.replace(/^\d{4}/, adYear);
+                    }
                 }
             }
+
+            const d = new Date(dateString);
+            return isNaN(d.getTime()) ? null : d;
         }
 
-        function toggleImageSize(imgElement) {
-            const modal = document.getElementById('dynamic-popup');
+        function formatDate(dateString) {
+            const d = parseDate(dateString);
+            if (!d) return dateString;
+            // Use 'en-GB' to force Gregorian Calendar (AD years like 2025, 2026)
+            return d.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        // --- Dashboard Logic ---
+        function populatePlantOptions() {
+            const plantSelect = document.getElementById('filter-plant');
+            // Check for both lowercase and uppercase 'Plant' key
+            const plants = [...new Set(allTodoData.map(item => item.plant || item.Plant).filter(p => p))].sort();
             
-            if (imgElement.classList.contains('cursor-zoom-in')) {
-                // EXPAND / Zoom Out
-                imgElement.classList.remove("cursor-zoom-in");
-                imgElement.classList.add("cursor-zoom-out", "popup-image-zoomed"); // Add custom class for zoom style
-                if (modal) modal.classList.add('expanded'); // Allow overflow
+            // Keep "All Plants" option
+            plantSelect.innerHTML = '<option value="">All Plants</option>';
+            plants.forEach(plant => {
+                const option = document.createElement('option');
+                option.value = plant;
+                option.textContent = plant;
+                plantSelect.appendChild(option);
+            });
+        }
+
+        function filterDashboard() {
+            const startVal = document.getElementById('filter-start').value;
+            const endVal = document.getElementById('filter-end').value;
+            const plantVal = document.getElementById('filter-plant').value;
+            const statusVal = document.getElementById('filter-status').value;
+
+            const startDate = startVal ? new Date(startVal) : null;
+            const endDate = endVal ? new Date(endVal) : null;
+            // Set end date time to end of day
+            if(endDate) endDate.setHours(23, 59, 59, 999);
+
+            const filteredData = allTodoData.filter(item => {
+                // Check for lowercase keys too
+                const itemDateStr = item.date || item.Date;
+                const itemPlant = item.plant || item.Plant;
+                const itemStatus = item.status || item.Status;
+
+                const itemDate = parseDate(itemDateStr);
                 
-                // Set width to a fixed large size relative to viewport for expansion effect
-                imgElement.style.width = '150vw'; 
-                imgElement.style.maxWidth = '150vw'; 
+                // 1. Date Range
+                if (startDate && (!itemDate || itemDate < startDate)) return false;
+                if (endDate && (!itemDate || itemDate > endDate)) return false;
 
-            } else {
-                // COLLAPSE / Zoom In (Fit to popup)
-                imgElement.classList.remove("cursor-zoom-out", "popup-image-zoomed");
-                imgElement.classList.add("cursor-zoom-in");
-                if (modal) modal.classList.remove('expanded'); // Disallow overflow
+                // 2. Plant
+                if (plantVal && itemPlant !== plantVal) return false;
+
+                // 3. Status
+                if (statusVal) {
+                    const currentStatus = (itemStatus || "In Process").toLowerCase();
+                    if (statusVal === "Completed" && !currentStatus.includes("completed")) return false;
+                    if (statusVal === "In Process" && currentStatus.includes("completed")) return false;
+                }
+
+                return true;
+            });
+
+            // Update global filtered data for pagination
+            currentFilteredTasks = filteredData.reverse(); // Newest first
+            dashboardPage = 1; // Reset to page 1
+            renderDashboard();
+        }
+
+        function changeTaskPage(direction) {
+            dashboardPage += direction;
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            // Stats (based on all filtered data)
+            const total = currentFilteredTasks.length;
+            const completed = currentFilteredTasks.filter(t => {
+                const s = t.status || t.Status || '';
+                return s.toLowerCase().includes('completed');
+            }).length;
+            const inProgress = total - completed;
+
+            document.getElementById('total-tasks-count').innerText = total;
+            document.getElementById('completed-count').innerText = completed;
+
+            // Chart
+            renderChart(completed, inProgress);
+
+            // Pagination Logic
+            const totalPages = Math.ceil(total / tasksPerPage);
+            if (dashboardPage < 1) dashboardPage = 1;
+            if (dashboardPage > totalPages && totalPages > 0) dashboardPage = totalPages;
+
+            const start = (dashboardPage - 1) * tasksPerPage;
+            const end = start + tasksPerPage;
+            const pageItems = currentFilteredTasks.slice(start, end);
+
+            // Update Pagination UI
+            const btnPrev = document.getElementById('btn-prev-task');
+            const btnNext = document.getElementById('btn-next-task');
+            const pageInfo = document.getElementById('task-page-info');
+
+            if (btnPrev && btnNext && pageInfo) {
+                btnPrev.disabled = dashboardPage === 1;
+                btnNext.disabled = dashboardPage >= totalPages;
+                pageInfo.innerText = total > 0 ? `Page ${dashboardPage} of ${totalPages}` : 'Page 0 of 0';
+            }
+
+            // List
+            const listBody = document.getElementById('task-list-body');
+            if(pageItems.length === 0) {
+                 listBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">No tasks matches the criteria.</td></tr>`;
+                 return;
+            }
+
+            listBody.innerHTML = pageItems.map(task => {
+                // Normalize keys for display
+                const tDate = task.date || task.Date;
+                const tPlant = task.plant || task.Plant || '-';
+                const tTopic = task.topic || task.Topic;
+                const tDetail = task.detail || task.Detail || '';
+                const tStatus = task.status || task.Status;
+
+                const isCompleted = tStatus && tStatus.toLowerCase().includes('completed');
+                const statusClass = isCompleted ? 'status-completed' : 'status-inprocess';
+                return `
+                <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick='openPopup(${JSON.stringify(task).replace(/'/g, "&#39;")}, "task")'>
+                    <td class="px-6 py-4 whitespace-nowrap text-slate-500">${formatDate(tDate)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-700">${tPlant}</td>
+                    <td class="px-6 py-4">${tTopic} <span class="block text-xs text-slate-400 truncate max-w-[200px]">${tDetail}</span></td>
+                    <td class="px-6 py-4">
+                        <span class="status-pill ${statusClass}">${tStatus || 'In Process'}</span>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function renderChart(completed, inProgress) {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            // Handle empty chart
+            if (completed === 0 && inProgress === 0) {
+                // Render empty grey ring or clear
+                chartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: { labels: ['No Data'], datasets: [{ data: [1], backgroundColor: ['#F1F5F9'], borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+                });
+                return;
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'In Process'],
+                    datasets: [{
+                        data: [completed, inProgress],
+                        backgroundColor: ['#10B981', '#0EA5E9'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 20 } }
+                    },
+                    cutout: '70%',
+                }
+            });
+        }
+
+        function exportExcel() {
+            const startVal = document.getElementById('filter-start').value;
+            const endVal = document.getElementById('filter-end').value;
+            const plantVal = document.getElementById('filter-plant').value;
+            const statusVal = document.getElementById('filter-status').value;
+            const startDate = startVal ? new Date(startVal) : null;
+            const endDate = endVal ? new Date(endVal) : null;
+            if(endDate) endDate.setHours(23, 59, 59, 999);
+
+            const dataToExport = allTodoData.filter(item => {
+                const itemDateStr = item.date || item.Date;
+                const itemPlant = item.plant || item.Plant;
+                const itemStatus = item.status || item.Status;
                 
-                // Reset width to fit container
-                imgElement.style.width = '100%'; 
-                imgElement.style.maxWidth = '100%'; 
+                const itemDate = parseDate(itemDateStr);
+                if (startDate && (!itemDate || itemDate < startDate)) return false;
+                if (endDate && (!itemDate || itemDate > endDate)) return false;
+                if (plantVal && itemPlant !== plantVal) return false;
+                if (statusVal) {
+                    const currentStatus = (itemStatus || "In Process").toLowerCase();
+                    if (statusVal === "Completed" && !currentStatus.includes("completed")) return false;
+                    if (statusVal === "In Process" && currentStatus.includes("completed")) return false;
+                }
+                return true;
+            });
+
+            if (dataToExport.length === 0) {
+                alert("No data to export!");
+                return;
             }
+
+            const header = ["Date", "Plant", "Topic", "Detail", "Status"];
+            const rows = dataToExport.map(item => [
+                formatDate(item.date || item.Date),
+                `"${(item.plant || item.Plant || '').replace(/"/g, '""')}"`,
+                `"${(item.topic || item.Topic || '').replace(/"/g, '""')}"`,
+                `"${(item.detail || item.Detail || '').replace(/"/g, '""')}"`,
+                item.status || item.Status || 'In Process'
+            ]);
+
+            const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
+                + header.join(",") + "\n" 
+                + rows.map(e => e.join(",")).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `operations_report_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
-        
-        window.toggleImageSize = toggleImageSize; // Expose to global scope for onclick in dynamic HTML
-        window.closePopup = closePopup; // Expose to global scope
-        
-        // --- Data Fetching and Display ---
 
-
-        function showLoading() {
-            document.getElementById("loading-indicator").classList.remove("hidden");
-            document.getElementById("solutions").innerHTML = ""; 
-            document.getElementById("pagination").innerHTML = ""; 
-        }
-
-        function hideLoading() {
-            document.getElementById("loading-indicator").classList.add("hidden");
-        }
-
-        async function fetchSolutions() {
-            showLoading(); 
-            try {
-                const response = await fetch(apiUrlMain); // Use apiUrlMain
-                const data = await response.json();
-                solutions = data;
-                currentPage = 1;
-                displayFilteredSolutions(solutions);
-                displayPagination(solutions);
-            } catch (error) {
-                console.error("Error fetching solutions:", error);
-                document.getElementById("solutions").innerHTML = '<p class="text-center text-red-500 mt-8">Error loading solutions. Please check the API connection.</p>';
-            } finally {
-                hideLoading(); 
+        // --- Standard Solutions Logic ---
+        function renderSolutions() {
+            const query = document.getElementById('search').value.toLowerCase().trim();
+            const filtered = solutions.filter(s => s.topic.toLowerCase().includes(query) || s.detail.toLowerCase().includes(query));
+            const start = (solutionsPage - 1) * itemsPerPage;
+            const pageItems = filtered.slice(start, start + itemsPerPage);
+            const container = document.getElementById("solutions");
+            
+            if(pageItems.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-24 text-slate-400 flex flex-col items-center"><svg class="w-12 h-12 mb-4 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>No solutions found.</div>`;
+                return;
             }
+
+            container.innerHTML = pageItems.map(item => `
+                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 cursor-pointer group flex gap-5" onclick='openPopup(${JSON.stringify(item).replace(/'/g, "&#39;")}, "solution")'>
+                    <div class="w-20 h-20 shrink-0 bg-slate-100 rounded-2xl overflow-hidden shadow-inner relative">
+                        <img src="${item.image || 'https://placehold.co/100x100?text=IMG'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/100x100?text=IMG'">
+                    </div>
+                    <div class="min-w-0 flex-1 flex flex-col justify-center">
+                        <h3 class="font-bold text-slate-800 text-lg truncate group-hover:text-primary transition">${item.topic}</h3>
+                        <p class="text-sm text-slate-500 line-clamp-2 mt-1 leading-relaxed">${item.detail}</p>
+                    </div>
+                    <div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                </div>
+            `).join('');
         }
 
+        function renderPagination() {
+            const query = document.getElementById('search').value.toLowerCase().trim();
+            const filtered = solutions.filter(s => s.topic.toLowerCase().includes(query) || s.detail.toLowerCase().includes(query));
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            const container = document.getElementById("pagination");
+            
+            if(totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html = `<button onclick="goToPage(${Math.max(1, solutionsPage-1)})" ${solutionsPage===1?'disabled class="opacity-30 cursor-not-allowed"':''} class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>`;
+            
+            let start = Math.max(1, solutionsPage - 2);
+            let end = Math.min(totalPages, start + 4);
+            if(end - start < 4) start = Math.max(1, end - 4);
+            
+            for(let i=start; i<=end; i++) {
+                if(i>0) html += `<button onclick="goToPage(${i})" class="w-10 h-10 rounded-xl text-sm font-bold transition ${i===solutionsPage ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-600'}">${i}</button>`;
+            }
+            
+            html += `<button onclick="goToPage(${Math.min(totalPages, solutionsPage+1)})" ${solutionsPage===totalPages?'disabled class="opacity-30 cursor-not-allowed"':''} class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>`;
+            container.innerHTML = html;
+        }
+
+        function goToPage(p) {
+            solutionsPage = p;
+            renderSolutions();
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
         function filterSolutions() {
-            const searchQuery = document.getElementById("search").value.toLowerCase().trim();
-
-            let filteredSolutions = solutions.filter(item => {
-                const passesSearch = item.topic.toLowerCase().includes(searchQuery) ||
-                                     item.detail.toLowerCase().includes(searchQuery);
-
-                return passesSearch; 
-            });
-
-            currentPage = 1; 
-            displayFilteredSolutions(filteredSolutions);
-            displayPagination(filteredSolutions);
+            solutionsPage = 1;
+            renderSolutions();
+            renderPagination();
         }
 
+        function openPopup(item, type = 'solution') {
+            const container = document.getElementById('popup-container');
+            container.classList.remove('hidden');
+            
+            // Store Current Task Data Global
+            currentTaskData = item;
+            currentType = type;
 
-        function displayFilteredSolutions(filteredSolutions) {
-            const solutionsContainer = document.getElementById("solutions");
-            solutionsContainer.innerHTML = "";
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const items = filteredSolutions.slice(startIndex, endIndex);
+            // Normalize Data Keys
+            const topic = item.topic || item.Topic;
+            const detail = item.detail || item.Detail || '';
+            const rawDate = item.date || item.Date;
+            const image = item.image || item.Image || 'https://placehold.co/600x400';
+            const plant = item.plant || item.Plant;
+            const status = item.status || item.Status;
+            
+            let contentHtml = '';
 
-            // Use Tailwind classes for card styling
-            items.forEach(item => {
-                const solutionElement = document.createElement("div");
-                solutionElement.className = "solution flex items-start p-4 rounded-xl shadow-md hover:shadow-lg transition duration-300 cursor-pointer border border-gray-700 hover:border-cyan-400 active:scale-[0.995]";
-                solutionElement.onclick = () => openPopup(item);
-                solutionElement.innerHTML = `
-                    <img src="${item.image || 'https://placehold.co/100x100/1A202C/00FFFF?text=IMG'}" alt="Solution Image" class="w-20 h-20 object-cover rounded-lg mr-4 flex-shrink-0" onerror="this.onerror=null; this.src='https://placehold.co/100x100/1A202C/00FFFF?text=IMG';">
-                    <div class="solution-content flex-1 min-w-0">
-                        <h3 class="text-lg font-semibold solution-title truncate mb-1">${item.topic}</h3>
-                        <p class="text-sm text-gray-400 line-clamp-2">${item.detail}</p>
+            // Common plants list for Task & potentially other edits if needed
+            const plantsList = ["Binh Phuoc", "Xuan Mai", "Hai Duong", "Binh Dinh", "Dak Lak", "Yangon", "Mandalay", "Taunggyi", "Kampot", "Pailin", "Phnom Penh", "Tarlac", "Laos"];
+            
+            // --- EDIT MODE FORM GENERATION ---
+            let editFormHtml = '';
+            if (type === 'task') {
+                 const plantOptions = plantsList.map(p => `<option value="${p}" ${plant === p ? 'selected' : ''}>${p}</option>`).join('');
+                 editFormHtml = `
+                    <div class="space-y-4">
+                        <div><label class="form-label">Plant</label><select id="edit-plant" class="form-input"><option value="" disabled ${!plant ? 'selected' : ''}>Select Plant</option>${plantOptions}</select></div>
+                        <div><label class="form-label">Topic</label><input type="text" id="edit-topic" value="${topic || ''}" class="form-input"></div>
+                        <div><label class="form-label">Detail</label><textarea id="edit-detail" rows="4" class="form-input">${detail || ''}</textarea></div>
+                        <div><label class="form-label">Status</label><select id="edit-status" class="form-input"><option value="In Process" ${status === 'In Process' ? 'selected' : ''}>In Process</option><option value="Completed" ${status === 'Completed' ? 'selected' : ''}>Completed</option></select></div>
+                    </div>`;
+            } else if (type === 'timeline') {
+                // Timeline Edit Form
+                editFormHtml = `
+                    <div class="space-y-4">
+                        <div><label class="form-label">Date</label><input type="date" id="edit-date" value="${rawDate ? rawDate.split('/').reverse().join('-') : ''}" class="form-input"></div>
+                        <div><label class="form-label">Detail</label><textarea id="edit-detail" rows="4" class="form-input">${detail || ''}</textarea></div>
+                        <div><label class="form-label">Image URL</label><input type="url" id="edit-image" value="${image}" class="form-input"></div>
+                        <div><label class="form-label">Zone</label><input type="text" id="edit-zone" value="${item.zone || ''}" class="form-input"></div>
+                        <div><label class="form-label">Post By</label><input type="text" id="edit-postby" value="${item.postby || ''}" class="form-input"></div>
+                    </div>`;
+            } else if (type === 'solution') {
+                // Solution Edit Form
+                editFormHtml = `
+                    <div class="space-y-4">
+                         <div><label class="form-label">Topic</label><input type="text" id="edit-topic" value="${topic || ''}" class="form-input"></div>
+                         <div><label class="form-label">Detail</label><textarea id="edit-detail" rows="4" class="form-input">${detail || ''}</textarea></div>
+                         <div><label class="form-label">Image URL</label><input type="url" id="edit-image" value="${image}" class="form-input"></div>
+                    </div>`;
+            }
+
+
+            if (type === 'task') {
+                // --- TYPE: TASK (Clean Text) ---
+                const dateStr = rawDate ? formatDate(rawDate) : '';
+                const statusLower = (status || '').toLowerCase();
+                const isCompleted = statusLower.includes('completed');
+                const statusClass = isCompleted ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-blue-100 text-blue-700 border border-blue-200';
+                
+                contentHtml = `
+                    <!-- View Mode -->
+                    <div id="popup-view-mode" class="relative bg-white w-full max-w-xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
+                        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/80 flex justify-between items-start">
+                            <div class="flex-1 pr-6">
+                                <div class="flex flex-wrap gap-2 mb-3">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wide ${statusClass}">${status || 'In Process'}</span>
+                                    ${plant ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-slate-200 text-slate-600 text-xs font-bold border border-slate-300">${plant}</span>` : ''}
+                                    ${dateStr ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-white text-slate-500 text-xs font-medium border border-slate-200">${dateStr}</span>` : ''}
+                                </div>
+                                <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-snug">${topic || 'Task Details'}</h2>
+                            </div>
+                            <button onclick="closePopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-2 rounded-full transition -mr-2 -mt-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                        </div>
+                        <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-white">
+                            <div class="prose prose-slate prose-sm md:prose-base max-w-none text-slate-600">${detail ? detail.replace(/\n/g, '<br>') : '<span class="text-slate-400 italic">No details provided.</span>'}</div>
+                            ${item.transfercase ? `<div class="mt-4 p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-xs text-indigo-700 font-medium flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg> Transferred to: ${item.transfercase}</div>` : ''}
+                        </div>
+                        
+                        <!-- NEW Transfer Section -->
+                        <div id="transfer-section" class="hidden px-6 py-4 bg-slate-50 border-t border-slate-100 transition-all">
+                            <h4 class="text-sm font-bold text-slate-700 mb-2">Transfer Case To Rhino</h4>
+                            <div class="flex gap-2">
+                                <select id="transfer-email" class="form-input text-sm flex-1">
+                                    <option value="boong@rhino-research.com">boong@rhino-research.com</option>
+                                    <option value="support@rhino-research.com">support@rhino-research.com</option>
+                                </select>
+                                <button onclick="submitTransfer(this)" class="px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-600 text-xs transition whitespace-nowrap shadow-md shadow-indigo-200">Confirm Transfer</button>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-2">This will update the task status and notify the recipient.</p>
+                        </div>
+
+                        <!-- Footer with Edit/Delete/Transfer -->
+                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex flex-wrap justify-between items-center gap-2">
+                            <div class="flex gap-2 flex-wrap">
+                                <button onclick="readCurrentPopup()" class="text-slate-500 hover:text-primary flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Read Aloud"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg></button>
+                                <button onclick="enableEditMode()" class="text-slate-500 hover:text-blue-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Edit Task"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                                <button onclick="deleteCurrentItem()" class="text-slate-500 hover:text-red-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Delete Task"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                                <!-- Transfer Button -->
+                                <button onclick="toggleTransferMode()" class="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg border border-indigo-100 hover:bg-indigo-100 transition text-xs shadow-sm" title="Transfer Case">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                                    Transfer Case To Rhino
+                                </button>
+                            </div>
+                            <button onclick="closePopup()" class="px-5 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-sm transition text-sm">Close</button>
+                        </div>
                     </div>
                 `;
-                solutionsContainer.appendChild(solutionElement);
-            });
+            } else {
+                // --- TYPE: TIMELINE or SOLUTION (Image Popup) ---
+                let titleStr = topic || 'Details';
+                if (type === 'timeline') titleStr = 'Timeline Update';
+                
+                let metaHtml = '';
+                if (type === 'timeline' && rawDate) {
+                    metaHtml = `<span class="inline-block px-2.5 py-1 mb-2 rounded-lg bg-primary/90 backdrop-blur-sm text-white text-xs font-bold shadow-sm">${rawDate}</span>`;
+                }
+                
+                contentHtml = `
+                    <div id="popup-view-mode" class="relative bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
+                        <div class="relative h-64 bg-slate-100 shrink-0 group">
+                            <img src="${image}" onclick="zoomImage('${image}')" class="w-full h-full object-cover cursor-zoom-in transition duration-700 group-hover:scale-105" onerror="this.src='https://placehold.co/600x400'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+                            <button onclick="closePopup()" class="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white p-2 rounded-full transition z-10"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                            <div class="absolute bottom-0 p-6 w-full pointer-events-none">
+                                <div class="pointer-events-auto">
+                                    ${metaHtml}
+                                    <h2 class="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-sm">${titleStr}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-white">
+                            <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed text-base md:text-lg">${detail || '<span class="text-slate-400 italic">No details provided.</span>'}</div>
+                        </div>
+                        <!-- Footer with Edit/Delete for Timeline/Solutions -->
+                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+                             <div class="flex gap-2">
+                                <button onclick="readCurrentPopup()" class="text-slate-500 hover:text-primary flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Read Aloud"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg></button>
+                                <button onclick="enableEditMode()" class="text-slate-500 hover:text-blue-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Edit"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
+                                <button onclick="deleteCurrentItem()" class="text-slate-500 hover:text-red-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Delete"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                             </div>
+                            <button onclick="closePopup()" class="px-5 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-50 hover:border-slate-300 shadow-sm transition">Close</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Append Edit Mode Structure (Hidden by default)
+            contentHtml += `
+                <div id="popup-edit-mode" class="hidden relative bg-white w-full max-w-xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
+                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-slate-800">Edit ${type === 'timeline' ? 'Update' : (type === 'solution' ? 'Solution' : 'Task')}</h3>
+                    </div>
+                    <div class="p-6 overflow-y-auto custom-scrollbar">
+                        ${editFormHtml}
+                    </div>
+                    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+                        <button onclick="cancelEditMode()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
+                        <button onclick="saveEdit()" id="btn-save-edit" class="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md shadow-blue-200 transition text-sm">Save Changes</button>
+                    </div>
+                </div>
+            `;
+
+            container.innerHTML = `
+                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closePopup()"></div>
+                ${contentHtml}
+            `;
         }
 
-        function displayPagination(filteredSolutions) {
-            const paginationContainer = document.getElementById("pagination");
-            paginationContainer.innerHTML = "";
-            const totalPages = Math.ceil(filteredSolutions.length / itemsPerPage);
+        // --- Transfer Case Functions ---
+        function toggleTransferMode() {
+            const section = document.getElementById('transfer-section');
+            if(section) section.classList.toggle('hidden');
+        }
 
-            const navigate = (page) => {
-                currentPage = page;
-                displayFilteredSolutions(filteredSolutions);
-                displayPagination(filteredSolutions);
-                document.getElementById('solutions').scrollIntoView({ behavior: 'smooth' });
+        async function submitTransfer(btn) {
+            const email = document.getElementById('transfer-email').value;
+            const originalText = btn.innerText;
+            
+            if (!currentTaskData.row_index) {
+                alert("Cannot transfer: ID is missing.");
+                return;
+            }
+
+            btn.innerText = "Sending...";
+            btn.disabled = true;
+            
+            // Construct payload to update with transfercase field
+            const payload = {
+                action: 'update',
+                row: currentTaskData.row_index,
+                plant_select: currentTaskData.plant || currentTaskData.Plant,
+                topic: currentTaskData.topic || currentTaskData.Topic,
+                detail: currentTaskData.detail || currentTaskData.Detail,
+                status: currentTaskData.status || currentTaskData.Status,
+                image: currentTaskData.image || currentTaskData.Image || "",
+                transfercase: email // NEW FIELD
             };
 
-            // Previous Button
-            if (currentPage > 1) {
-                const prevButton = document.createElement("button");
-                prevButton.innerText = "Previous";
-                prevButton.className = "px-4 py-2 mx-1 border border-cyan-500 text-cyan-400 rounded-lg hover:bg-cyan-500 hover:text-gray-900 transition duration-200 hover:shadow-md active:scale-95";
-                prevButton.onclick = () => navigate(currentPage - 1);
-                paginationContainer.appendChild(prevButton);
-            }
-
-            // Page Number Buttons (Simplified display logic for space)
-            const maxVisiblePages = 5;
-            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-            if (endPage - startPage + 1 < maxVisiblePages) {
-                startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            }
-
-
-            for (let i = startPage; i <= endPage; i++) {
-                const pageButton = document.createElement("button");
-                pageButton.innerText = i;
-                pageButton.className = `px-4 py-2 mx-1 border rounded-lg transition duration-200 hover:shadow-md active:scale-95 ${i === currentPage ? 'bg-cyan-500 text-gray-900 font-bold border-cyan-500 shadow-md' : 'bg-gray-700 text-cyan-400 border-gray-600 hover:bg-gray-600'}`;
-                pageButton.onclick = () => navigate(i);
-                paginationContainer.appendChild(pageButton);
-            }
-
-            // Next Button
-            if (currentPage < totalPages) {
-                const nextButton = document.createElement("button");
-                nextButton.innerText = "Next";
-                nextButton.className = "px-4 py-2 mx-1 border border-cyan-500 text-cyan-400 rounded-lg hover:bg-cyan-500 hover:text-gray-900 transition duration-200 hover:shadow-md active:scale-95";
-                nextButton.onclick = () => navigate(currentPage + 1);
-                paginationContainer.appendChild(nextButton);
+            try {
+                await fetch(apiUrlCreate, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' }
+                });
+                
+                alert(`Case successfully transferred to ${email}`);
+                closePopup();
+                fetchTodos(); // Refresh list
+            } catch (e) {
+                console.error(e);
+                alert("Failed to transfer case.");
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
             }
         }
 
-        // --- Google Translate Integration ---
-
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+        // --- Edit Mode Logic ---
+        function enableEditMode() {
+            document.getElementById('popup-view-mode').classList.add('hidden');
+            document.getElementById('popup-edit-mode').classList.remove('hidden');
         }
 
-        // --- Text-to-Speech (TTS) Logic ---
-        
-        window.readPopupText = function() {
-            const modal = document.getElementById('dynamic-popup');
-            if (modal) {
-                const topic = modal.querySelector("#popupTopic").innerText;
-                const detail = modal.querySelector("#popupDetail").innerText;
-                const textToRead = `Topic: ${topic}. Details: ${detail}`;
-                readAloud(textToRead);
+        function cancelEditMode() {
+            document.getElementById('popup-edit-mode').classList.add('hidden');
+            document.getElementById('popup-view-mode').classList.remove('hidden');
+        }
+
+        async function saveEdit() {
+            const btn = document.getElementById('btn-save-edit');
+            const originalText = btn.innerHTML;
+            
+            // Check ID
+            let id = currentTaskData.row_index; 
+            if (!id && currentType === 'timeline') id = currentTaskData.date; 
+
+            btn.disabled = true;
+            btn.innerHTML = 'Saving...';
+
+            let payload = { action: 'update', row: currentTaskData.row_index };
+            let targetApi = '';
+
+            if (currentType === 'task') {
+                targetApi = apiUrlCreate;
+                payload.plant_select = document.getElementById('edit-plant').value;
+                payload.topic = document.getElementById('edit-topic').value;
+                payload.detail = document.getElementById('edit-detail').value;
+                payload.status = document.getElementById('edit-status').value;
+                payload.image = currentTaskData.image || ""; 
+            } else if (currentType === 'timeline') {
+                targetApi = apiUrlTimeline;
+                payload.date = document.getElementById('edit-date').value; 
+                payload.detail = document.getElementById('edit-detail').value;
+                payload.image = document.getElementById('edit-image').value;
+                payload.zone = document.getElementById('edit-zone').value;
+                payload.postby = document.getElementById('edit-postby').value;
+            } else if (currentType === 'solution') {
+                targetApi = apiUrlMain;
+                payload.topic = document.getElementById('edit-topic').value;
+                payload.detail = document.getElementById('edit-detail').value;
+                payload.image = document.getElementById('edit-image').value;
+            }
+
+            try {
+                await fetch(targetApi, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' }
+                });
+                closePopup();
+                if (currentType === 'task') fetchTodos();
+                else if (currentType === 'timeline') fetchTimeline();
+                else if (currentType === 'solution') fetchSolutions();
+            } catch(e) {
+                console.error(e);
+                alert('Update failed');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             }
         }
 
-        function getSelectedLanguage() {
-            const langCodeElement = document.querySelector('.goog-te-combo');
-            const selectedLang = langCodeElement ? langCodeElement.value : 'en';
+        async function deleteCurrentItem() {
+            // 1. Confirm deletion intent
+            if (!confirm("Are you sure you want to delete this item?")) return;
+            
+            // 2. Check Passcode for protected sections (Timeline & Solution)
+            if (currentType === 'timeline' || currentType === 'solution') {
+                const passcode = prompt("Security Check: Enter Admin Passcode");
+                if (passcode !== "admin101") {
+                    alert("Incorrect Passcode! Action denied.");
+                    return;
+                }
+            }
 
-            const langMap = {
-                'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', 'th': 'th-TH', 'ja': 'ja-JP',
-                'ko': 'ko-KR', 'vi': 'vi-VN', 'km': 'km-KH', 'my': 'my-MM',
-                'fil': 'fil-PH', 'en': 'en-US', 'fr': 'fr-FR', 'es': 'es-ES'
-            };
-            return langMap[selectedLang] || 'en-US';
+            // Determine API
+            let targetApi = '';
+            if (currentType === 'task') targetApi = apiUrlCreate;
+            else if (currentType === 'timeline') targetApi = apiUrlTimeline;
+            else if (currentType === 'solution') targetApi = apiUrlMain;
+
+            try {
+                await fetch(targetApi, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'delete', row: currentTaskData.row_index }), // Use row index
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain' }
+                });
+                closePopup();
+                // Refresh UI
+                if (currentType === 'task') fetchTodos();
+                else if (currentType === 'timeline') fetchTimeline();
+                else if (currentType === 'solution') fetchSolutions();
+            } catch(e) {
+                console.error(e);
+                alert('Delete failed');
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('popup-container').classList.add('hidden');
+            speechSynthesis.cancel();
+        }
+
+        // Zoom Image Functions
+        function zoomImage(src) {
+            const modal = document.getElementById('image-zoom-modal');
+            const img = document.getElementById('zoomed-image');
+            img.src = src;
+            modal.classList.remove('hidden');
+            // Animation
+            setTimeout(() => {
+                img.classList.remove('scale-95');
+                img.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeZoomImage() {
+            const modal = document.getElementById('image-zoom-modal');
+            const img = document.getElementById('zoomed-image');
+            
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                img.src = '';
+            }, 300); // Match transition duration
+        }
+
+        // New Helper to Read current popup content
+        function readCurrentPopup() {
+            const container = document.getElementById('popup-container');
+            if (container.classList.contains('hidden')) return;
+            
+            const title = container.querySelector('h2')?.innerText || '';
+            const content = container.querySelector('.prose')?.innerText || '';
+            readAloud(`${title}. ${content}`);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if(!text) return;
+            addChatMessage(text, 'user');
+            input.value = '';
+            showTyping();
+            setTimeout(() => {
+                const matches = findMatches(text);
+                let response = "";
+                if(matches.length > 0) {
+                    response = `I found ${matches.length} possible solutions:<br>`;
+                    matches.forEach((m, i) => {
+                        response += `<div class="mt-2 p-3 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-primary/50 hover:shadow-sm transition group" onclick='openPopup(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
+                            <div class="font-bold text-slate-700 text-xs mb-1 group-hover:text-primary">${i+1}. ${m.topic}</div>
+                            <div class="text-xs text-slate-500 line-clamp-1">${m.detail}</div>
+                        </div>`;
+                    });
+                } else {
+                    response = "I couldn't find a direct match. Could you describe it differently?";
+                }
+                removeTyping();
+                addChatMessage(response, 'bot');
+            }, 800);
+        }
+
+        function findMatches(text) {
+            const tokens = text.toLowerCase().split(/\s+/).filter(t => t.length > 2);
+            if(tokens.length === 0) return [];
+            return solutions.map(s => {
+                const content = (s.topic + " " + s.detail).toLowerCase();
+                let score = 0;
+                tokens.forEach(t => { if(content.includes(t)) score++; });
+                return { ...s, score };
+            }).filter(s => s.score > 0).sort((a,b) => b.score - a.score).slice(0, 3);
+        }
+
+        function addChatMessage(html, sender) {
+            const log = document.getElementById('chat-log');
+            const div = document.createElement('div');
+            div.className = `msg-bubble ${sender === 'user' ? 'msg-user' : 'msg-bot'}`;
+            div.innerHTML = html;
+            log.appendChild(div);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function showTyping() {
+            const log = document.getElementById('chat-log');
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            div.className = 'msg-bubble msg-bot flex gap-1 items-center py-4 px-4 w-16';
+            div.innerHTML = '<span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></span>';
+            log.appendChild(div);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function removeTyping() {
+            const el = document.getElementById('typing-indicator');
+            if(el) el.remove();
         }
 
         function readAloud(text) {
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            }
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = getSelectedLanguage();
-
-            const voices = speechSynthesis.getVoices();
-            const preferredVoice = voices.find(voice => voice.lang === utterance.lang) || voices[0];
-            if (preferredVoice) {
-                utterance.voice = preferredVoice;
-            }
-
-            speechSynthesis.speak(utterance);
+            const u = new SpeechSynthesisUtterance(text);
+            const langVal = document.querySelector('.goog-te-combo')?.value;
+            u.lang = {'th':'th-TH', 'ja':'ja-JP'}[langVal] || 'en-US';
+            speechSynthesis.cancel();
+            speechSynthesis.speak(u);
         }
 
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({ pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
+        }
 
-        // --- Chatbot Logic (Re-implemented for Similarity Search) ---
-        
-        // Define SVG icons for Chatbot toggle
-        const collapseIconSVG = `<svg class="w-7 h-7" fill="none" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M20 12H4"></path></svg>`; // Minus icon (to close)
-        const chatIconSVG = `<svg class="w-7 h-7" fill="none" stroke="white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>`; // Message Square (to open)
-
-        // Collapses/expands the chat window
-        function collapseChat() {
-            const chatContainer = document.getElementById("chat-container");
-            const chatLog = document.getElementById("chat-log");
-            const chatInput = document.getElementById("chat-input");
-            const collapseBtn = document.getElementById("collapse-btn");
-            const chatTitle = document.getElementById("chat-title"); 
-
-            const isExpanded = chatContainer.classList.contains("h-[500px]");
-
-            if (!isExpanded) {
-                // Expand
-                chatContainer.classList.add("h-[500px]", "w-full", "max-w-xs");
-                chatContainer.classList.remove("h-16", "w-16", "rounded-full"); 
-                chatLog.classList.remove("hidden");
-                chatInput.classList.remove("hidden");
-                collapseBtn.innerHTML = collapseIconSVG; 
-                chatTitle.style.display = 'block'; 
-            } else {
-                // Collapse
-                chatContainer.classList.remove("h-[500px]", "w-full", "max-w-xs");
-                chatContainer.classList.add("h-16", "w-16", "rounded-full"); 
-                chatLog.classList.add("hidden");
-                chatInput.classList.add("hidden");
-                collapseBtn.innerHTML = chatIconSVG; 
-                chatTitle.style.display = 'none'; 
+        function triggerTranslate() {
+            const elem = document.querySelector('.goog-te-gadget-simple');
+            if (!elem) return;
+            if (elem.click) { elem.click(); } else {
+                const evt = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
+                elem.dispatchEvent(evt);
             }
         }
 
-        // Add message to chat log
-        function addMessage(sender, message, className) {
-            const chatLog = document.getElementById("chat-log");
-            const messageElement = document.createElement("div");
-
-            const isUser = className === "user-message";
-            const bgColor = isUser ? 'bg-cyan-600 text-white' : 'bg-gray-600 text-gray-200'; 
-            const alignment = isUser ? 'self-end' : 'self-start';
-            const margin = isUser ? 'ml-auto' : 'mr-auto';
-
-            messageElement.className = `chat-message max-w-[80%] p-3 rounded-xl mb-2 ${bgColor} ${alignment} shadow-md ${margin} text-sm transition-all duration-300`;
-            messageElement.innerHTML = message; 
-
-            // Handle touch/press for text-to-speech
-            let pressTimer;
-            const startPress = () => {
-                pressTimer = setTimeout(() => {
-                    createEmojiPopup(messageElement, messageElement.textContent);
-                }, 800);
-            };
-            const endPress = () => clearTimeout(pressTimer);
-
-            messageElement.addEventListener('mousedown', startPress);
-            messageElement.addEventListener('mouseup', endPress);
-            messageElement.addEventListener('mouseleave', endPress);
-            messageElement.addEventListener('touchstart', startPress);
-            messageElement.addEventListener('touchend', endPress);
-            messageElement.addEventListener('touchcancel', endPress);
-
-            chatLog.appendChild(messageElement);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
-
-        // Function to create the "🔊" emoji pop-up for TTS (kept utility functions)
-        function createEmojiPopup(targetElement, text) {
-            const existingPopup = document.getElementById('emoji-popup');
-            if (existingPopup) existingPopup.remove();
-
-            const popup = document.createElement('div');
-            popup.id = 'emoji-popup';
-            popup.className = 'fixed bg-gray-700 border border-cyan-500 text-cyan-400 rounded-lg p-2 text-2xl shadow-xl cursor-pointer z-[1001] hover:bg-gray-600 transition';
-            popup.textContent = '🔊';
-
-            const rect = targetElement.getBoundingClientRect();
-            popup.style.left = `${rect.left + rect.width / 2 - 15}px`;
-            popup.style.top = `${rect.top - 40}px`;
-
-            document.body.appendChild(popup);
-
-            popup.addEventListener('click', (e) => {
-                e.stopPropagation();
-                readAloud(text);
-                popup.remove();
-            });
-
-            const clickHandler = (e) => {
-                if (!popup.contains(e.target) && e.target !== targetElement) {
-                    popup.remove();
-                    document.removeEventListener('click', clickHandler);
-                }
-            };
-            setTimeout(() => {
-                document.addEventListener('click', clickHandler);
-            }, 0);
-        }
-        
-        // Function to show Bot typing indicator
-        function showTypingIndicator() {
-            const chatLog = document.getElementById("chat-log");
-            const typingIndicator = document.createElement("div");
-            // Updated classes
-            typingIndicator.classList.add("max-w-[80%]", "p-3", "rounded-xl", "mb-2", "bg-gray-600", "text-gray-200", "self-start", "shadow-md", "mr-auto", "text-sm", "bot-message");
-            typingIndicator.textContent = "Typing...";
-            typingIndicator.id = "typing-indicator";
-            chatLog.appendChild(typingIndicator);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
-
-        // Function to hide Bot typing indicator
-        function hideTypingIndicator() {
-            const typingIndicator = document.getElementById("typing-indicator");
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-        
-        // Utility for similarity calculation
-        function tokenize(text) {
-            return text.toLowerCase().replace(/[^\w\s]/gi, '').trim().split(/\s+/).filter(word => word.length > 2);
-        }
-
-        function calculateSimilarity(str1, str2) {
-            const words1 = tokenize(str1);
-            const words2 = tokenize(str2);
-            if (words1.length === 0 || words2.length === 0) return 0;
-
-            const set1 = new Set(words1);
-            const intersection = words2.filter(word => set1.has(word));
-            const union = new Set([...words1, ...words2]);
-            
-            return intersection.length / union.size;
-        }
-
-        function findSolutionMatch(userInput) {
-            const contextText = userInput;
-
-            const matches = solutions
-                .map(item => {
-                    const combinedText = `${item.topic} ${item.topic} ${item.detail}`;
-                    return {
-                        ...item,
-                        similarity: calculateSimilarity(contextText, combinedText)
-                    };
-                })
-                .sort((a, b) => b.similarity - a.similarity);
-
-            return matches.slice(0, 3);
-        }
-        
-        async function sendMessage() {
-            const userInputElement = document.getElementById("user-input");
-            let message = userInputElement.value.trim();
-
-            if (message === "") return;
-
-            // 1. Add user message and clear input
-            addMessage("You", message, "user-message");
-            userInputElement.value = "";
-
-            showTypingIndicator();
-
-            // 2. Perform search
-            const relevantSolutions = findSolutionMatch(message);
-            let botResponse = "";
-
-            // Check the best score to determine the tone of the response
-            const bestSimilarity = relevantSolutions.length > 0 ? relevantSolutions[0].similarity : 0;
-            const fallbackThreshold = 0.1; 
-
-            if (relevantSolutions.length > 0) {
-                // Construct a response with relevant topics and a prompt for action
-                const listItems = relevantSolutions.map((sol, index) => {
-                    return `<div class="p-2 mt-1 rounded-lg border border-cyan-500 bg-gray-700 text-white">
-                                <strong>${index + 1}. ${sol.topic}</strong><br>
-                                <span class="text-xs text-gray-400">${sol.detail.substring(0, 50)}...</span>
-                            </div>`;
-                }).join('<br>');
-
-                // Determine the introductory text based on the best match score
-                let introText;
-                if (bestSimilarity >= fallbackThreshold) {
-                    introText = `Based on your description, here are the top ${relevantSolutions.length} solutions that might help:`;
-                } else {
-                    introText = `I couldn't find very precise matches, but here are the top ${relevantSolutions.length} generally related solutions:`;
-                }
-
-
-                botResponse = `${introText}<br>${listItems}<br><br>You can search for the full topic name in the Search Bar above, or describe your problem in more detail.`;
-
-            } else {
-                botResponse = "I am unable to access the solution database right now. Please check your connection.";
-            }
-
-            hideTypingIndicator();
-            addMessage("Bot", botResponse, "bot-message");
-
-        }
-
-        // Add Enter key listener for sending messages
-        document.addEventListener('DOMContentLoaded', () => {
-            const inputElement = document.getElementById("user-input");
-            if (inputElement) {
-                inputElement.addEventListener("keypress", function (e) {
-                    if (e.key === "Enter") {
-                        sendMessage();
-                    }
-                });
-            }
-            // Initial collapse/greeting logic for chatbot
-            const chatContainer = document.getElementById("chat-container");
-            const chatLog = document.getElementById("chat-log");
-            const chatInput = document.getElementById("chat-input");
-            const collapseBtn = document.getElementById("collapse-btn");
-            const chatTitle = document.getElementById("chat-title"); 
-
-            // Initial state: start collapsed
-            chatContainer.classList.remove("h-[500px]", "w-full", "max-w-xs");
-            chatContainer.classList.add("h-16", "w-16", "rounded-full");
-            chatLog.classList.add("hidden");
-            chatInput.classList.add("hidden");
-            collapseBtn.innerHTML = chatIconSVG; 
-            chatTitle.style.display = 'none'; 
-            
-            // Add a friendly greeting message once (with slight delay for UI setup)
-            setTimeout(() => {
-                 addMessage("Bot", "Welcome! Describe your problem (e.g., 'My printer is offline') and I'll find the best solutions for you.", "bot-message");
-            }, 500);
-
-        });
-
-
-        // --- Initial Setup ---
-
-        // Fetch solutions when the page loads
-        window.onload = function () {
+        document.getElementById('user-input').addEventListener('keypress', e => e.key==='Enter' && sendMessage());
+        window.onload = () => {
             fetchSolutions();
-
-            // Geolocation logic (retained)
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    function (position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        console.log("🌍 Geolocation retrieved:", lat, lon);
-
-                        // Send to GA
-                        gtag('event', 'user_location', {
-                            'latitude': lat,
-                            'longitude': lon
-                        });
-
-                        // Optionally display location (Styled with Tailwind)
-                        const locationDisplay = document.createElement("div");
-                        locationDisplay.id = "location-display";
-                        locationDisplay.className = "text-center text-xs text-cyan-400 mt-2 location-display"; 
-                        document.body.prepend(locationDisplay);
-                    },
-                    function (error) {
-                        console.warn("❌ Geolocation access denied or unavailable:", error.message);
-                    }
-                );
-            } else {
-                console.warn("Geolocation is not supported by this browser.");
-            }
+            fetchTimeline();
+            setTimeout(() => addChatMessage("Hi! 👋 I'm here to help you solve problems. What's wrong?", 'bot'), 600);
         };
     </script>
-    <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
-
 </html>
