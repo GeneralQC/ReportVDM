@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VDM Solutions Platform</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,1860 +15,573 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
-                        primary: '#0EA5E9', // Sky 500
-                        primaryHover: '#0284C7', // Sky 600
-                        bgSoft: '#F1F5F9', // Slate 100 (Softer background)
-                        textMain: '#0F172A', // Slate 900
-                        textSub: '#64748B', // Slate 500
-                        success: '#10B981', // Emerald 500
-                        warning: '#F59E0B', // Amber 500
+                        primary: '#3B82F6', 
+                        primaryHover: '#2563EB', 
+                        secondary: '#60A5FA', 
+                        bgSoft: '#F8FAFC', 
+                        glass: 'rgba(255, 255, 255, 0.7)',
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.3)',
+                    },
+                    animation: { 
+                        'float': 'float 3s ease-in-out infinite',
+                        'fadeIn': 'fadeIn 0.3s ease-out'
                     }
                 }
             }
         }
     </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F1F5F9;
-            color: #0F172A;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-        }
-
-        /* --- HEADER (Fixed Top Full Width) --- */
-        .header-bg {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            z-index: 50;
-            height: 64px; /* Fixed height */
-        }
-
-        /* --- LEFT SIDEBAR (Timeline - Under Header) --- */
-        .timeline-sidebar {
-            top: 64px; /* Start below header */
-            width: 70px;
-            background: #FFFFFF;
-            border-right: 1px solid #E2E8F0;
-            z-index: 40;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        @media (min-width: 1024px) {
-            .timeline-sidebar:hover { width: 260px; box-shadow: 4px 0 20px rgba(0,0,0,0.03); }
-        }
-        .timeline-sidebar.mobile-open { transform: translateX(0); width: 260px; height: 100%; top: 0; z-index: 60; }
-
-        .timeline-content {
-            opacity: 0;
-            transform: translateX(10px);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            margin-left: 36px;
-        }
-        .timeline-sidebar:hover .timeline-content,
-        .timeline-sidebar.mobile-open .timeline-content { opacity: 1; transform: translateX(0); }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #F0F9FF 0%, #F8FAFC 100%); color: #1E293B; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Timeline Nodes */
-        .timeline-node { position: relative; padding-left: 32px; margin-bottom: 24px; cursor: pointer; }
-        .timeline-node::before { content: ''; position: absolute; left: 39px; top: 20px; bottom: -30px; width: 2px; background: #E2E8F0; }
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.75); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05); 
+        }
+
+        .header-bg { 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5); 
+            z-index: 50; height: 70px; 
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02); 
+        }
+
+        /* Timeline Sidebar */
+        .timeline-sidebar { 
+            top: 70px; width: 80px; 
+            background: rgba(255,255,255,0.9); 
+            backdrop-filter: blur(10px); 
+            border-right: 1px solid rgba(226, 232, 240, 0.6); 
+            z-index: 40; 
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+        @media (min-width: 1024px) { .timeline-sidebar:hover { width: 280px; box-shadow: 10px 0 40px rgba(0,0,0,0.05); } }
+        .timeline-sidebar.mobile-open { transform: translateX(0); width: 280px; height: 100%; top: 0; z-index: 60; }
+        
+        .timeline-content { opacity: 0; transform: translateX(10px); transition: all 0.3s ease; white-space: nowrap; margin-left: 40px; }
+        .timeline-sidebar:hover .timeline-content, .timeline-sidebar.mobile-open .timeline-content { opacity: 1; transform: translateX(0); }
+        
+        .timeline-node { position: relative; padding-left: 36px; margin-bottom: 28px; cursor: pointer; }
+        .timeline-node::before { content: ''; position: absolute; left: 43px; top: 24px; bottom: -34px; width: 2px; background: linear-gradient(to bottom, #E2E8F0, transparent); }
         .timeline-node:last-child::before { display: none; }
-        .timeline-dot { position: absolute; left: 32px; top: 6px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid #CBD5E1; z-index: 10; transition: all 0.2s; }
-        .timeline-node.latest .timeline-dot { background: #0EA5E9; border-color: #0EA5E9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.2); }
-        .timeline-node:hover .timeline-dot { transform: scale(1.2); border-color: #0EA5E9; }
+        .timeline-dot { position: absolute; left: 36px; top: 8px; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid #CBD5E1; z-index: 10; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* --- RIGHT SIDEBAR (Chatbot - Floating Dock Style) --- */
-        /* Desktop: Floating Panel */
-        @media (min-width: 1024px) {
-            .chat-sidebar {
-                position: fixed;
-                top: 80px; /* Below header with gap */
-                right: 20px; /* Gap from right edge */
-                bottom: 20px; /* Gap from bottom edge */
-                width: 340px;
-                background: #FFFFFF;
-                border-radius: 20px; /* Rounded corners for beauty */
-                border: 1px solid rgba(255, 255, 255, 0.6);
-                box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); /* Soft shadow lift */
-                z-index: 40;
-                display: flex;
-                flex-direction: column;
-                overflow: hidden; /* Clip contents to rounded corners */
-                transform: translateX(0);
-            }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Assistant Sidebar (Togglable) */
+        .chat-sidebar { 
+            position: fixed; top: 70px; right: 0; bottom: 0; width: 380px; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); 
+            border-left: 1px solid rgba(226, 232, 240, 0.6);
+            z-index: 45; display: flex; flex-direction: column; overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @media (min-width: 1024px) { 
+            .chat-sidebar { top: 85px; right: 20px; bottom: 20px; border-radius: 24px; width: 380px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 20px 50px -12px rgba(0,0,0,0.1); } 
+            .chat-sidebar.collapsed { transform: translateX(calc(100% + 40px)); }
+        }
+        @media (max-width: 1023px) { 
+            .chat-sidebar { top: 0; width: 100%; max-width: 320px; z-index: 65; transform: translateX(100%); }
+            .chat-sidebar.open { transform: translateX(0); }
         }
 
-        /* Mobile: Slide-in Drawer */
-        @media (max-width: 1023px) {
-            .chat-sidebar {
-                position: fixed;
-                top: 0; right: 0; bottom: 0;
-                width: 100%; max-width: 320px;
-                background: #FFFFFF;
-                z-index: 60;
-                display: flex; flex-direction: column;
-                transform: translateX(100%);
-                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                box-shadow: -10px 0 30px rgba(0,0,0,0.15);
-            }
-            .chat-sidebar.mobile-open { transform: translateX(0); }
-        }
-
-        .chat-header {
-            padding: 1.25rem;
-            background: linear-gradient(to right, #ffffff, #f8fafc);
-            border-bottom: 1px solid #F1F5F9;
-        }
+        .chat-header { padding: 1.25rem; border-bottom: 1px solid rgba(241, 245, 249, 0.8); }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; position: relative; }
+        .chat-input-area { padding: 1rem; border-top: 1px solid rgba(241, 245, 249, 0.8); background: rgba(255,255,255,0.8); }
         
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem 1.25rem;
-            background-color: #FFFFFF;
+        .msg-bubble { max-width: 90%; padding: 0.85rem 1rem; border-radius: 1.25rem; font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.85rem; position: relative; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
+        .msg-user { background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; align-self: flex-end; border-bottom-right-radius: 0.25rem; }
+        .msg-bot { background: #FFFFFF; color: #334155; border: 1px solid #E2E8F0; align-self: flex-start; border-bottom-left-radius: 0.25rem; }
+
+        .main-layout { transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1); width: 100%; }
+        @media (min-width: 1024px) { 
+            .main-layout { padding-left: 100px; padding-right: 420px; padding-top: 90px; } 
+            .main-layout.no-chat { padding-right: 24px; }
         }
+        @media (max-width: 1023px) { .main-layout { padding-top: 90px; padding-left: 0; padding-right: 0; } }
         
-        .chat-input-area {
-            padding: 1rem;
-            background: #FFFFFF;
-            border-top: 1px solid #F1F5F9;
-        }
-
-        /* Message Bubbles - Refined */
-        .msg-bubble { 
-            max-width: 85%; 
-            padding: 0.75rem 1rem; 
-            border-radius: 1.25rem; 
-            font-size: 0.925rem; 
-            line-height: 1.5; 
-            margin-bottom: 0.75rem; 
-            position: relative;
-        }
-        .msg-user { 
-            background: linear-gradient(135deg, #0EA5E9, #2563EB); 
-            color: white; 
-            align-self: flex-end; 
-            border-bottom-right-radius: 0.25rem; 
-            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.2);
-        }
-        .msg-bot { 
-            background: #F8FAFC; 
-            color: #334155; 
-            border: 1px solid #E2E8F0; 
-            align-self: flex-start; 
-            border-bottom-left-radius: 0.25rem; 
-        }
-
-        /* --- MAIN LAYOUT --- */
-        .main-layout {
-            transition: padding 0.3s ease;
-            margin: 0;
-        }
-        
-        @media (min-width: 1024px) {
-            .main-layout {
-                padding-left: 90px;  /* Timeline width + gap */
-                padding-right: 380px; /* Chat width + gap */
-                padding-top: 80px; /* Header height + gap */
-            }
-        }
-        @media (max-width: 1023px) {
-            .main-layout {
-                padding-top: 80px;
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-        }
-
-        /* Loading Spinner */
-        .ai-spinner { width: 40px; height: 40px; border: 3px solid rgba(14, 165, 233, 0.1); border-top-color: #0EA5E9; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .ai-spinner { width: 32px; height: 32px; border: 3px solid rgba(59, 130, 246, 0.1); border-top-color: #3B82F6; border-radius: 50%; animation: spin 1s infinite linear; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .status-pill { padding: 4px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em; }
+        .status-completed { background-color: #DCFCE7; color: #15803D; }
+        .status-inprocess { background-color: #E0F2FE; color: #0369A1; }
+        .status-transferred { background-color: #F3E8FF; color: #7E22CE; }
+        
+        .form-input { padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #E2E8F0; width: 100%; outline: none; transition: all 0.2s; font-size: 0.875rem; background-color: #fff; }
+        .form-label { display: block; font-size: 0.8rem; font-weight: 700; color: #64748B; margin-bottom: 0.35rem; text-transform: uppercase; }
+        
+        /* Premium Tab Switcher UI (Blue Style) */
+        .premium-tab-container { background: rgba(59, 130, 246, 0.12); padding: 4px; border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.2); }
+        .tab-btn { padding: 10px 32px; border-radius: 12px; font-size: 14px; font-weight: 700; transition: all 0.3s; color: #64748B; }
+        .tab-btn.active { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); transform: scale(1.02); }
 
-        /* Overlay */
-        .sidebar-overlay {
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(2px); z-index: 35;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .sidebar-overlay.active { opacity: 1; pointer-events: auto; }
+        /* Calendar Styles */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #E2E8F0; border-radius: 1rem; overflow: hidden; background: white; }
+        .calendar-header-day { padding: 0.75rem 0.25rem; text-align: center; font-weight: 700; font-size: 0.65rem; color: #94A3B8; text-transform: uppercase; background: #F8FAFC; border-bottom: 1px solid #E2E8F0; }
+        .calendar-day { min-height: 80px; padding: 0.4rem; border-right: 1px solid #F1F5F9; border-bottom: 1px solid #F1F5F9; position: relative; cursor: pointer; }
+        @media (min-width: 768px) { .calendar-day { min-height: 110px; } }
+        .calendar-day.today { background: #EFF6FF; }
+        .day-number { font-weight: 700; font-size: 0.8rem; color: #64748B; margin-bottom: 0.25rem; }
+        .task-dot { width: 100%; padding: 2px 4px; border-radius: 4px; font-size: 0.6rem; font-weight: 600; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
 
-        /* Utilities */
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
-        .hidden { display: none !important; }
-        
-        /* Popup */
-        .popup-modal { background: white; border-radius: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-        .popup-overlay { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); }
-        
-        /* Search Input Styling */
-        .search-input:focus { border-color: #0EA5E9; box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1); }
-        
-        /* --- Google Translate Customization --- */
-        .goog-te-banner-frame { display: none !important; }
-        body { top: 0 !important; }
-        
-        #google_translate_element {
-            width: 100% !important;
-            height: 100% !important;
-            position: absolute !important;
-            top: 0; left: 0;
-            z-index: 20;
-        }
-
-        .goog-te-gadget-simple {
-            background-color: transparent !important;
-            border: none !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            cursor: pointer !important;
-            display: block !important;
-        }
-        
-        .goog-te-menu-value { display: none !important; }
-        .goog-te-gadget-icon { display: none !important; }
-        .goog-te-gadget-simple span { display: none !important; }
-
-        /* --- Dashboard Styling --- */
-        .tab-btn.active {
-            background-color: #0EA5E9;
+        .external-app-btn {
+            background: linear-gradient(135deg, #2563EB, #4F46E5);
             color: white;
-            box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center; gap: 6px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+            transition: all 0.3s;
+            white-space: nowrap;
         }
-        .status-pill {
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .status-completed { background-color: #DCFCE7; color: #166534; }
-        .status-inprocess { background-color: #E0F2FE; color: #075985; }
-        
-        /* Form Inputs */
-        .filter-input {
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            border: 1px solid #E2E8F0;
-            font-size: 0.875rem;
-            color: #475569;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .filter-input:focus { border-color: #0EA5E9; ring: 2px solid #0EA5E9; }
-        
-        /* Create Task Input Styling */
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #334155;
-            margin-bottom: 0.25rem;
-        }
-        .form-input {
-            width: 100%;
-            padding: 0.625rem;
-            background-color: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            color: #1E293B;
-            outline: none;
-            transition: all 0.2s;
-        }
-        .form-input:focus {
-            background-color: #fff;
-            border-color: #0EA5E9;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        @media (max-width: 640px) {
+            .external-app-btn span { display: none; }
+            .external-app-btn { padding: 10px; border-radius: 50%; }
         }
     </style>
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SDQG1N4SSV"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'G-SDQG1N4SSV');
-    </script>
 </head>
 
-<body class="min-h-screen relative bg-[#F1F5F9]">
-
-    <!-- LEFT SIDEBAR: Timeline -->
+<body class="min-h-screen relative">
+    <!-- TIMELINE SIDEBAR -->
     <div id="timeline-sidebar" class="timeline-sidebar fixed left-0 bottom-0 py-10 flex flex-col group transform -translate-x-full lg:translate-x-0">
-        <div class="flex items-center justify-between px-[22px] mb-6 text-slate-700">
+        <div class="flex items-center justify-between px-[26px] mb-8">
             <div class="flex items-center">
-                <div class="w-6 h-6 flex-shrink-0 flex items-center justify-center text-primary">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <span class="font-bold text-base ml-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap lg:group-hover:opacity-100 tracking-tight">Latest Updates</span>
+                <div class="w-7 h-7 flex-shrink-0 flex items-center justify-center text-primary bg-blue-50 rounded-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                <span class="font-bold text-lg ml-4 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-slate-800 uppercase tracking-tighter">Latest Updates</span>
             </div>
-            <!-- ADD BUTTON FOR TIMELINE -->
-            <button onclick="openCreateTimelinePopup()" class="p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100" title="Add Update">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-            </button>
+            <button onclick="window.openCreateTimelinePopup()" class="p-2 rounded-full hover:bg-blue-50 text-slate-400 hover:text-primary transition opacity-0 group-hover:opacity-100 relative z-30"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
         </div>
-        <div id="timeline-items" class="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar pb-10">
-            <div class="flex justify-center py-10"><div class="ai-spinner w-6 h-6 border-2"></div></div>
-        </div>
+        <div id="timeline-items" class="flex-1 overflow-y-auto no-scrollbar px-2"></div>
     </div>
 
-    <!-- RIGHT SIDEBAR: Help Assistant -->
+    <!-- ASSISTANT SIDEBAR -->
     <div id="chat-sidebar" class="chat-sidebar">
-        <!-- Chat Header -->
-        <div class="chat-header flex items-center justify-between sticky top-0 z-10">
+        <div class="chat-header flex items-center justify-between sticky top-0 z-10 glass-panel border-none rounded-none">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-blue-200">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
-                </div>
-                <div>
-                    <h3 class="font-bold text-slate-800 text-base">Assistant English Version</h3>
-                    <div class="flex items-center gap-1.5">
-                        <span class="relative flex h-2 w-2">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                        </span>
-                        <p class="text-xs text-slate-500 font-medium">Online</p>
-                    </div>
-                </div>
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg></div>
+                <div class="flex flex-col"><span class="font-bold text-slate-800 text-sm">VDM Assistant</span><span class="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">Online</span></div>
             </div>
-            <button onclick="toggleMobileChat()" class="lg:hidden p-2 text-slate-400 hover:text-slate-600 bg-slate-50 rounded-lg">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="window.startNewChat()" class="px-2.5 py-1.5 text-[9px] font-bold text-primary bg-blue-50 hover:bg-blue-100 rounded-lg transition border border-blue-100 uppercase">New Chat</button>
+                <button onclick="window.toggleAssistant()" class="p-2 text-slate-400 hover:text-red-500 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
         </div>
-
-        <!-- Chat Messages -->
         <div id="chat-log" class="chat-messages flex flex-col custom-scrollbar"></div>
-
-        <!-- Chat Input -->
         <div class="chat-input-area">
-            <div class="flex items-center gap-2 bg-slate-50 rounded-2xl px-4 py-2.5 border border-slate-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition-all shadow-sm">
-                <input type="text" id="user-input" class="flex-1 bg-transparent border-none outline-none text-sm text-slate-700 placeholder-slate-400" placeholder="Ask something..." autocomplete="off">
-                <button onclick="sendMessage()" class="p-2 bg-primary text-white rounded-xl hover:bg-primaryHover transition shadow-md shadow-primary/20 active:scale-95">
-                    <svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-                </button>
+            <div class="flex items-center gap-2 bg-slate-50 rounded-xl px-3 py-2.5 border border-slate-200 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                <input type="text" id="user-input" class="flex-1 bg-transparent border-none outline-none text-sm placeholder-slate-400" placeholder="Describe the issue...">
+                <button onclick="window.sendMessage()" class="p-1.5 bg-primary text-white rounded-lg hover:bg-primaryHover transition"><svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></button>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Overlay -->
-    <div id="mobile-overlay" class="sidebar-overlay" onclick="closeAllMobileSidebars()"></div>
+    <div id="mobile-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-35 opacity-0 pointer-events-none transition-opacity" onclick="window.closeAllMobileSidebars()"></div>
 
-    <!-- HEADER (Fixed Top) -->
-    <header class="header-bg fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6">
+    <header class="header-bg fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-8">
         <div class="flex items-center">
-            <button onclick="toggleMobileTimeline()" class="lg:hidden p-2 mr-3 text-slate-500 hover:bg-slate-100 rounded-lg">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-            </button>
-            <a href="#" class="flex items-center gap-3 group">
-                <div class="w-9 h-9 bg-gradient-to-tr from-primary to-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-md shadow-blue-500/20 group-hover:scale-105 transition duration-300">V</div>
-                <span class="font-bold text-xl text-slate-800 tracking-tight">VDM <span class="text-primary font-normal">Solutions For All</span></span>
-            </a>
+            <button onclick="window.toggleMobileTimeline()" class="lg:hidden p-2 mr-2 bg-slate-50 rounded-xl"><svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" stroke="currentColor" stroke-width="2"></path></svg></button>
+            <div class="font-bold text-lg sm:text-xl text-slate-800 tracking-tight">VDM <span class="text-primary font-normal">Solutions</span></div>
         </div>
-
-        <div class="flex items-center gap-2 sm:gap-4">
-            <div onclick="triggerTranslate()" class="relative h-9 w-32 bg-white border border-slate-200 rounded-lg shadow-sm hover:border-slate-300 transition-colors group cursor-pointer overflow-hidden z-0">
-                <div class="absolute inset-0 flex items-center justify-between px-3 pointer-events-none z-10">
-                    <span class="text-sm font-semibold text-slate-700">Language</span>
-                    <svg class="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </div>
-                <div id="google_translate_element" class="absolute inset-0 opacity-0 z-20"></div>
-            </div>
-            <button onclick="toggleMobileChat()" class="lg:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg relative">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
-                <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></span>
+        <div class="flex items-center gap-2 sm:gap-3">
+            <a href="https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?refresh=1&platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA63PPQ_CIBAG4L_S3MwvYG0cjB-DGhdxuMI1IVJogKoN4b9L_Yibix15uTz3XoKrpts-orwAP6Xva0UjcEgCDmNPAriA2tnonRHABGyxe4U7ks6rqkajG49RO1utHapKkimTGfKZfcxIAXj6n-Tzt2SgFdmoW01-8ietuG-rfE9SCX45kBl0Q8TG0PPY4uRcstbJIZA6lsozVQ1Lu7j3aNXGqbKmRRMoPwCfwSVCyQEAAA==&view=Record%20Calibration%20Load%20cell" 
+               target="_blank" class="external-app-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                <span>Smart VDM record APP</span>
+            </a>
+            <div onclick="window.triggerTranslate()" class="cursor-pointer bg-white border border-slate-200 px-3 py-2 rounded-xl text-[9px] font-bold text-slate-600 shadow-sm hover:border-primary/30 transition uppercase">Language</div>
+            <div id="google_translate_element" class="hidden"></div>
+            <button onclick="window.toggleAssistant()" class="p-2 bg-blue-50 text-primary rounded-xl hover:bg-blue-100 transition flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
             </button>
         </div>
     </header>
 
-    <!-- MAIN CONTENT SCROLLABLE AREA -->
-    <div class="main-layout min-h-screen">
-        <div class="max-w-5xl mx-auto">
-            
-            <!-- Tab Navigation & Hero Section -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-100 mb-8">
-                <!-- Tabs -->
-                <div class="flex items-center gap-2 mb-6 bg-slate-100 p-1 rounded-xl w-fit">
-                    <button onclick="switchTab('solutions')" id="tab-solutions" class="tab-btn active px-4 py-2 rounded-lg text-sm font-bold text-slate-600 transition-all duration-300">
-                        Knowledge Base
-                    </button>
-                    <button onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-600 transition-all duration-300">
-                        Operations Dashboard
-                    </button>
-                </div>
+    <main id="main-content" class="main-layout min-h-screen relative px-4 sm:px-0">
+        <div class="max-w-6xl mx-auto py-6 sm:py-8">
+            <div class="glass-panel rounded-2xl sm:rounded-3xl p-6 sm:p-10 mb-6 sm:mb-8 relative overflow-hidden">
+                <!-- Background decorations -->
+                <div class="absolute -top-24 -right-24 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-blue-50 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
 
-                <!-- Search Input (Only for Solutions Tab) -->
-                <div id="search-container">
-                    <div class="flex items-center justify-between mb-6">
-                        <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">How can we help?</h1>
-                        <div class="flex gap-2">
-                            <!-- Translate Button -->
-                            <button onclick="triggerTranslate()" class="p-2 bg-white text-slate-400 hover:text-blue-500 hover:bg-blue-50 border border-slate-200 rounded-xl shadow-sm transition-all group" title="Translate Page">
-                                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
-                            </button>
-                            <!-- Add Solution Button -->
-                            <button onclick="openCreateSolutionPopup()" class="p-2 bg-white text-slate-400 hover:text-primary hover:bg-slate-50 border border-slate-200 rounded-xl shadow-sm transition-all group" title="Add Solution">
-                                <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            </button>
-                        </div>
+                <div class="relative z-10 flex flex-wrap items-center gap-2 mb-8 bg-slate-100/80 premium-tab-container w-fit border border-slate-200/50">
+                    <button id="tab-solutions" onclick="window.switchTab('solutions')" class="tab-btn active transition-all">Knowledge Base</button>
+                    <button id="tab-dashboard" onclick="window.switchTab('dashboard')" class="tab-btn transition-all">Operations Dashboard</button>
+                </div>
+                
+                <div id="search-container" class="relative z-20">
+                    <div class="flex justify-between items-center mb-6 sm:mb-8 text-slate-800">
+                        <div><h1 class="text-2xl sm:text-4xl font-bold tracking-tight">How can we help?</h1><p class="text-xs sm:text-sm text-slate-500 mt-1 font-medium">Verified solutions and troubleshooting guide.</p></div>
+                        <button onclick="window.openCreateSolutionPopup()" class="p-3 bg-white text-primary border border-slate-200 rounded-xl shadow-sm hover:shadow-md relative z-30 transition-transform hover:scale-110"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
                     </div>
                     <div class="relative group">
-                        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        <input type="text" id="search" oninput="filterSolutions()" 
-                            class="search-input w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:bg-white outline-none transition-all placeholder-slate-400 text-base shadow-sm"
-                            placeholder="Search keywords (e.g. printer, network, slow)...">
+                        <input type="text" id="search" oninput="window.filterSolutions()" class="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-xl outline-none text-base shadow-sm focus:border-primary/50 transition-all" placeholder="Search keywords...">
+                        <div class="absolute inset-y-0 left-4 flex items-center"><svg class="w-6 h-6 text-slate-300 group-focus-within:text-primary transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke="currentColor" stroke-width="2"></path></svg></div>
                     </div>
                 </div>
 
-                <!-- Dashboard Header (Only for Dashboard Tab) -->
-                <div id="dashboard-header" class="hidden">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                        <div>
-                            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-1">Operations Overview</h1>
-                            <p class="text-slate-500">Real-time update of ongoing and completed tasks.</p>
-                        </div>
-                        <div class="flex flex-wrap gap-3">
-                            <!-- Add a task Button - Opens Popup -->
-                            <button onclick="openCreateTaskPopup()" 
-                               class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-2.5 rounded-xl font-bold transition shadow-lg shadow-green-200 group active:scale-95">
-                                <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                                Add a task
-                            </button>
-                        </div>
+                <div id="dashboard-header" class="hidden relative z-20 text-slate-800">
+                    <div class="flex justify-between items-center">
+                        <div><h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-slate-800">Operations Overview</h1><p class="text-xs sm:text-sm text-slate-500 mt-1 font-medium">Monitor tasks and schedules.</p></div>
+                        <button onclick="window.openCreateTaskPopup()" class="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-5 sm:px-8 py-3 rounded-xl font-bold shadow-lg shadow-emerald-100 transition-all active:scale-95 flex items-center gap-2 relative z-30 text-xs sm:text-sm"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Add Task</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Loading -->
-            <div id="loading-indicator" class="hidden flex flex-col items-center py-24">
-                <div class="ai-spinner mb-4"></div>
-                <p class="text-slate-400 font-medium animate-pulse">Scanning knowledge base...</p>
-            </div>
+            <div id="loading-indicator" class="hidden flex flex-col items-center py-20"><div class="ai-spinner mb-4"></div><p class="text-xs font-bold text-slate-400 animate-pulse uppercase tracking-widest text-center">Syncing Data...</p></div>
 
-            <!-- SOLUTIONS VIEW (Grid) -->
             <div id="solutions-view">
-                <div id="solutions" class="grid grid-cols-1 md:grid-cols-2 gap-5 pb-20">
-                    <!-- Cards injected here -->
-                </div>
-                <!-- Pagination -->
-                <div class="flex justify-center pb-20 gap-2" id="pagination"></div>
+                <div id="solutions" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"></div>
+                <div id="pagination" class="flex justify-center mt-10 gap-2 pb-20"></div>
             </div>
 
-            <!-- DASHBOARD VIEW (New) -->
-            <div id="dashboard-view" class="hidden pb-20 space-y-6">
-                <!-- Filters Toolbar -->
-                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-3 items-center flex-wrap">
-                    <div class="flex items-center gap-2 w-full md:w-auto">
-                        <span class="text-sm font-semibold text-slate-500">Date:</span>
-                        <input type="date" id="filter-start" class="filter-input" onchange="filterDashboard()">
-                        <span class="text-slate-400">-</span>
-                        <input type="date" id="filter-end" class="filter-input" onchange="filterDashboard()">
-                    </div>
+            <div id="dashboard-view" class="hidden space-y-6 sm:space-y-8 pb-20">
+                <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100 shadow-soft flex gap-3 sm:gap-4 flex-wrap items-center">
+                    <div class="flex items-center gap-2"><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Range</span><input type="date" id="filter-start" class="filter-input w-auto text-xs p-2" onchange="window.filterDashboard()"><span>-</span><input type="date" id="filter-end" class="filter-input w-auto text-xs p-2" onchange="window.filterDashboard()"></div>
+                    <select id="filter-plant" class="filter-input w-auto text-xs font-bold p-2" onchange="window.filterDashboard()"><option value="">All Plants</option></select>
                     
-                    <div class="flex items-center gap-2 w-full md:w-auto">
-                        <span class="text-sm font-semibold text-slate-500">Plant:</span>
-                        <select id="filter-plant" class="filter-input min-w-[120px]" onchange="filterDashboard()">
-                            <option value="">All Plants</option>
-                        </select>
+                    <div class="flex bg-slate-100 p-1 rounded-xl w-full sm:w-auto">
+                        <button onclick="window.toggleDashboardView('table')" id="view-btn-table" class="flex-1 sm:flex-none px-4 py-2 text-[10px] font-bold rounded-lg bg-white shadow-sm text-primary transition-all uppercase">Table View</button>
+                        <button onclick="window.toggleDashboardView('calendar')" id="view-btn-calendar" class="flex-1 sm:flex-none px-4 py-2 text-[10px] font-bold rounded-lg text-slate-500 transition-all uppercase tracking-wide">Calendar</button>
                     </div>
 
-                    <div class="flex items-center gap-2 w-full md:w-auto">
-                        <span class="text-sm font-semibold text-slate-500">Status:</span>
-                        <select id="filter-status" class="filter-input min-w-[120px]" onchange="filterDashboard()">
-                            <option value="">All Status</option>
-                            <option value="In Process">In Process</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
-
-                    <!-- Added Refresh Button Here -->
-                    <div class="ml-auto w-full md:w-auto flex gap-2">
-                        <button onclick="fetchTodos()" class="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-white text-slate-600 font-bold rounded-lg border border-slate-200 hover:bg-slate-50 hover:text-primary transition group">
-                            <svg class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                            Refresh
-                        </button>
-                        <button onclick="exportExcel()" class="w-full md:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-green-50 text-green-600 font-bold rounded-lg border border-green-100 hover:bg-green-100 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            Export Excel
-                        </button>
-                    </div>
+                    <div class="flex gap-2 w-full sm:w-auto ml-auto"><button onclick="fetchTodos()" class="flex-1 sm:flex-none px-4 py-2 border border-slate-200 rounded-xl font-bold text-slate-500 text-xs transition">Refresh</button><button onclick="exportExcel()" class="flex-1 sm:flex-none px-4 py-2 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl font-bold text-xs transition">Export</button></div>
                 </div>
 
-                <!-- Stats Row -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Graph Card -->
-                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm md:col-span-1 flex flex-col items-center justify-center relative">
-                        <h3 class="font-bold text-slate-700 mb-4 w-full text-left">Status Distribution</h3>
-                        <div class="w-48 h-48 relative">
-                            <canvas id="statusChart"></canvas>
-                        </div>
-                    </div>
-                    
-                    <!-- KPI Cards -->
-                    <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-center">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                                </div>
-                                <div>
-                                    <div class="text-slate-400 text-sm font-medium">Total Tasks</div>
-                                    <div id="total-tasks-count" class="text-3xl font-bold text-slate-800">0</div>
-                                </div>
+                <div id="dashboard-main-content">
+                    <div id="table-view-content" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-soft flex flex-col items-center"><h3 class="font-bold text-slate-700 mb-6 w-full text-left text-xs uppercase tracking-widest">Distribution</h3><div class="w-48 h-48 sm:w-56 sm:h-56 relative z-10"><canvas id="statusChart"></canvas></div></div>
+                            <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-soft flex flex-col justify-center relative overflow-hidden group"><div class="absolute -right-6 -bottom-6 w-32 h-32 bg-blue-50 rounded-full"></div><div class="flex items-center gap-5 relative z-10"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center shadow-lg"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke="currentColor" stroke-width="2"></path></svg></div><div><div class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Total Tasks</div><div id="total-tasks-count" class="text-3xl font-bold text-slate-800">0</div></div></div></div>
+                                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-soft flex flex-col justify-center relative overflow-hidden group"><div class="absolute -right-6 -bottom-6 w-32 h-32 bg-emerald-50 rounded-full"></div><div class="flex items-center gap-5 relative z-10"><div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-white flex items-center justify-center shadow-lg"><svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2"></path></svg></div><div><div class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Completed</div><div id="completed-count" class="text-3xl font-bold text-emerald-600">0</div></div></div></div>
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-center">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-full bg-green-50 text-green-500 flex items-center justify-center">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </div>
-                                <div>
-                                    <div class="text-slate-400 text-sm font-medium">Completed</div>
-                                    <div id="completed-count" class="text-3xl font-bold text-slate-800">0</div>
+                        <div class="bg-white rounded-2xl border border-slate-100 shadow-soft overflow-hidden">
+                            <div class="overflow-x-auto"><table class="w-full text-left text-sm text-slate-700"><thead class="bg-slate-50 text-slate-500 font-bold uppercase text-[9px] tracking-widest"><tr><th class="px-6 py-4">Date</th><th class="px-6 py-4">Plant</th><th class="px-6 py-4">Topic</th><th class="px-6 py-4 text-center">Status</th></tr></thead><tbody id="task-list-body" class="divide-y divide-slate-100"></tbody></table></div>
+                            <div class="p-4 border-t border-slate-100 flex justify-between items-center bg-slate-50/30 text-[10px] font-bold text-slate-500"><button onclick="window.changeTaskPage(-1)" id="btn-prev-task" class="px-4 py-2 bg-white border border-slate-200 rounded-lg disabled:opacity-50 transition shadow-sm">PREV</button><span id="task-page-info">PAGE 1 OF 1</span><button onclick="window.changeTaskPage(1)" id="btn-next-task" class="px-4 py-2 bg-white border border-slate-200 rounded-lg disabled:opacity-50 transition shadow-sm">NEXT</button></div>
+                        </div>
+                    </div>
+
+                    <div id="calendar-view-content" class="hidden animate-[fadeIn_0.3s]">
+                        <div class="bg-white p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-soft">
+                            <div class="flex items-center justify-between mb-8">
+                                <h3 id="calendar-month-year" class="text-lg font-bold text-slate-800 uppercase tracking-widest">Month Year</h3>
+                                <div class="flex gap-2">
+                                    <button onclick="window.prevMonth()" class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                                    <button onclick="window.nextMonth()" class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                                 </div>
                             </div>
+                            <div id="calendar-grid-container" class="calendar-grid"></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Task List Table -->
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                    <div class="p-6 border-b border-slate-100">
-                        <h3 class="font-bold text-slate-800">Recent Tasks</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm text-slate-600">
-                            <thead class="bg-slate-50 text-slate-500 font-medium">
-                                <tr>
-                                    <th class="px-6 py-4">Date</th>
-                                    <th class="px-6 py-4">Plant</th>
-                                    <th class="px-6 py-4">Topic</th>
-                                    <th class="px-6 py-4">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="task-list-body" class="divide-y divide-slate-100">
-                                <!-- Tasks injected here -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- NEW Pagination for Tasks -->
-                    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center" id="task-pagination">
-                         <button onclick="changeTaskPage(-1)" id="btn-prev-task" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 disabled:opacity-50 text-sm font-medium transition">Previous</button>
-                         <span id="task-page-info" class="text-sm text-slate-500 font-medium">Page 1</span>
-                         <button onclick="changeTaskPage(1)" id="btn-next-task" class="px-4 py-2 bg-white border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-50 disabled:opacity-50 text-sm font-medium transition">Next</button>
-                    </div>
-                </div>
             </div>
+        </div>
+    </main>
+
+    <!-- POPUP CONTAINER (Shared) -->
+    <div id="popup-view-container" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4"></div>
+
+    <!-- CREATE SYSTEM MODALS -->
+    <!-- Task Modal -->
+    <div id="modal-add-task" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.closeCreateTaskPopup()"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[fadeIn_0.2s]">
+            <div class="px-6 py-4 border-b bg-slate-50 flex justify-between items-center"><h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Add New Task</h3><button onclick="window.closeCreateTaskPopup()">✕</button></div>
+            <div class="p-6"><form onsubmit="event.preventDefault(); window.submitCreateTask();" class="space-y-4"><div><label class="form-label">Plant</label><select id="task-plant-input" required class="form-input"><option value="" disabled selected>Select Plant</option><option value="Binh Phuoc">Binh Phuoc</option><option value="Xuan Mai">Xuan Mai</option><option value="Hai Duong">Hai Duong</option><option value="Binh Dinh">Binh Dinh</option><option value="Dak Lak">Dak Lak</option><option value="Yangon">Yangon</option><option value="Mandalay">Mandalay</option><option value="Taunggyi">Taunggyi</option><option value="Kampot">Kampot</option><option value="Pailin">Pailin</option><option value="Phnom Penh">Phnom Penh</option><option value="Tarlac">Tarlac</option><option value="Laos">Laos</option></select></div><div><label class="form-label">Topic</label><input type="text" id="task-topic-input" required class="form-input" placeholder="Enter task topic"></div><div><label class="form-label">Detail</label><textarea id="task-detail-input" rows="3" class="form-input" placeholder="Task description"></textarea></div><div><label class="form-label">Status</label><select id="task-status-input" class="form-input"><option value="In Process">In Process</option><option value="Completed">Completed</option></select></div></form></div>
+            <div class="px-6 py-4 border-t bg-slate-50 flex justify-end gap-2"><button onclick="window.closeCreateTaskPopup()" class="px-4 py-2 font-bold text-slate-500 text-xs">CANCEL</button><button onclick="window.submitCreateTask()" id="btn-task-go" class="px-6 py-2 bg-emerald-500 text-white rounded-lg font-bold text-xs shadow-lg">ADD TASK</button></div>
         </div>
     </div>
 
-    <!-- POPUP CONTAINER (DETAILS) -->
-    <div id="popup-container" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4"></div>
-
-    <!-- CREATE TASK POPUP CONTAINER -->
-    <div id="create-task-popup" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCreateTaskPopup()"></div>
-        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-slate-800">Create New Task</h3>
-                <button onclick="closeCreateTaskPopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-full transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto custom-scrollbar max-h-[70vh]">
-                <form id="create-task-form" onsubmit="event.preventDefault(); submitCreateTask();" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Plant</label>
-                        <select id="input-plant" required class="form-input">
-                            <option value="" disabled selected>Select Plant</option>
-                            <option value="Binh Phuoc">Binh Phuoc</option>
-                            <option value="Xuan Mai">Xuan Mai</option>
-                            <option value="Hai Duong">Hai Duong</option>
-                            <option value="Binh Dinh">Binh Dinh</option>
-                            <option value="Dak Lak">Dak Lak</option>
-                            <option value="Yangon">Yangon</option>
-                            <option value="Mandalay">Mandalay</option>
-                            <option value="Taunggyi">Taunggyi</option>
-                            <option value="Kampot">Kampot</option>
-                            <option value="Pailin">Pailin</option>
-                            <option value="Phnom Penh">Phnom Penh</option>
-                            <option value="Tarlac">Tarlac</option>
-                            <option value="Laos">Laos</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Topic</label>
-                        <input type="text" id="input-topic" required class="form-input" placeholder="Task title">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Detail</label>
-                        <textarea id="input-detail" rows="3" class="form-input" placeholder="Describe the task..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Image URL (Optional)</label>
-                        <input type="url" id="input-image" class="form-input" placeholder="https://...">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
-                        <select id="input-status" class="form-input">
-                            <option value="In Process">In Process</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-
-            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-                <button onclick="closeCreateTaskPopup()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
-                <button onclick="submitCreateTask()" id="btn-submit-task" class="px-4 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600 shadow-md shadow-green-200 transition text-sm flex items-center gap-2">
-                    <span>Create Task</span>
-                </button>
-            </div>
+    <!-- Timeline Modal -->
+    <div id="modal-add-timeline" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.closeCreateTimelinePopup()"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.3s]">
+            <div class="px-6 py-4 border-b bg-slate-50 flex justify-between items-center"><h3 class="font-bold text-slate-800 text-sm uppercase tracking-wider">New Update</h3><button onclick="window.closeCreateTimelinePopup()">✕</button></div>
+            <div class="p-6 overflow-y-auto max-h-[70vh]"><form onsubmit="event.preventDefault(); window.submitCreateTimeline();" class="space-y-4"><div><label class="form-label">Image URL</label><input type="url" id="time-image-input" class="form-input" placeholder="https://..."></div><div><label class="form-label">Date</label><input type="date" id="time-date-input" required class="form-input"></div><div><label class="form-label">Detail</label><textarea id="time-detail-input" required rows="3" class="form-input"></textarea></div><div><label class="form-label">Zone</label><input type="text" id="time-zone-input" class="form-input"></div><div><label class="form-label">Post By</label><input type="text" id="time-postby-input" class="form-input"></div></form></div>
+            <div class="px-6 py-4 border-t bg-slate-50 flex justify-end gap-2"><button onclick="window.closeCreateTimelinePopup()" class="px-4 py-2 font-bold text-slate-500 text-xs">CANCEL</button><button onclick="window.submitCreateTimeline()" id="btn-time-go" class="px-6 py-2 bg-primary text-white rounded-lg font-bold text-xs shadow-lg">SAVE</button></div>
         </div>
     </div>
 
-    <!-- CREATE TIMELINE POPUP CONTAINER -->
-    <div id="create-timeline-popup" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCreateTimelinePopup()"></div>
-        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-slate-800">Add Timeline Update</h3>
-                <button onclick="closeCreateTimelinePopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-full transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto custom-scrollbar max-h-[70vh]">
-                <form id="create-timeline-form" onsubmit="event.preventDefault(); submitCreateTimeline();" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Image URL (Optional)</label>
-                        <input type="url" id="timeline-image" class="form-input" placeholder="https://...">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Date</label>
-                        <input type="date" id="timeline-date" class="form-input">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Detail</label>
-                        <textarea id="timeline-detail" required rows="3" class="form-input" placeholder="Update details..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Zone (Optional)</label>
-                        <input type="text" id="timeline-zone" class="form-input" placeholder="oversea">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Post By (Optional)</label>
-                        <input type="text" id="timeline-postby" class="form-input" placeholder="phirawat.api">
-                    </div>
-                </form>
-            </div>
-
-            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-                <button onclick="closeCreateTimelinePopup()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
-                <button onclick="submitCreateTimeline()" id="btn-submit-timeline" class="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md shadow-blue-200 transition text-sm flex items-center gap-2">
-                    <span>Add Update</span>
-                </button>
-            </div>
+    <!-- Solution Modal -->
+    <div id="modal-add-solution" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.closeCreateSolutionPopup()"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.3s]">
+            <div class="px-6 py-4 border-b bg-slate-50 flex justify-between items-center font-bold text-slate-800 text-sm uppercase tracking-widest">Add Solution<button onclick="window.closeCreateSolutionPopup()">✕</button></div>
+            <div class="p-6"><form onsubmit="event.preventDefault(); window.submitCreateSolution();" class="space-y-4"><div><label class="form-label">Topic</label><input type="text" id="sol-topic-input" required class="form-input" placeholder="Solution title"></div><div><label class="form-label">Detail</label><textarea id="sol-detail-input" required rows="5" class="form-input" placeholder="Solution steps"></textarea></div><div><label class="form-label">Image URL</label><input type="url" id="sol-image-input" class="form-input" placeholder="https://..."></div></form></div>
+            <div class="px-6 py-4 border-t bg-slate-50 flex justify-end gap-2"><button onclick="window.closeCreateSolutionPopup()" class="px-4 py-2 font-bold text-slate-500 text-xs">CANCEL</button><button onclick="window.submitCreateSolution()" id="btn-sol-go" class="px-6 py-2 bg-primary text-white rounded-lg font-bold text-xs shadow-lg">CREATE</button></div>
         </div>
     </div>
 
-    <!-- CREATE SOLUTION POPUP CONTAINER -->
-    <div id="create-solution-popup" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeCreateSolutionPopup()"></div>
-        <div class="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                <h3 class="text-lg font-bold text-slate-800">Create New Solution</h3>
-                <button onclick="closeCreateSolutionPopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-1.5 rounded-full transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto custom-scrollbar max-h-[70vh]">
-                <form id="create-solution-form" onsubmit="event.preventDefault(); submitCreateSolution();" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Topic</label>
-                        <input type="text" id="solution-topic" required class="form-input" placeholder="Solution title">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Detail</label>
-                        <textarea id="solution-detail" required rows="4" class="form-input" placeholder="Describe the solution..."></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Image URL (Optional)</label>
-                        <input type="url" id="solution-image" class="form-input" placeholder="https://...">
-                    </div>
-                </form>
-            </div>
-
-            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-                <button onclick="closeCreateSolutionPopup()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
-                <button onclick="submitCreateSolution()" id="btn-submit-solution" class="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md shadow-blue-200 transition text-sm flex items-center gap-2">
-                    <span>Create Solution</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- IMAGE ZOOM MODAL -->
-    <div id="image-zoom-modal" class="hidden fixed inset-0 z-[80] bg-black/90 flex items-center justify-center p-4 transition-opacity duration-300" onclick="closeZoomImage()">
-        <img id="zoomed-image" src="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl scale-95 transition-transform duration-300">
-        <button class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full backdrop-blur-sm transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-    </div>
+    <div id="image-zoom-modal" class="hidden fixed inset-0 z-[150] bg-black/95 flex items-center justify-center p-4" onclick="window.closeZoomImage()"><img id="zoomed-image" src="" class="max-w-full max-h-full object-contain rounded-lg"></div>
 
     <script>
-        // API
-        const apiUrlMain = "https://script.google.com/macros/s/AKfycbx5XQc3czwF4NBji7E2M3pvVmgD2f1LsHt8EVK9-jXVCmqxGL00NNGoOl4D2yk846jN8w/exec";
-        const apiUrlTimeline = "https://script.google.com/macros/s/AKfycbzBV7RGCjrTZGZRxj36Rzr6m3hnv_pjDG7l1XAafWyjBffqkHlDqfi3MqKejgDgQDJP/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzvoGV69ogQW4dg_mWXAJoSAMnjWDi8_FGpDjqRHQFmlmRtyVh1BfSxj9O3wlweCzat/exec";
         
-        // NEW API (Supports Create, Update, Delete, and returns row_index) - Used for EVERYTHING related to Tasks
-        const apiUrlCreate = "https://script.google.com/macros/s/AKfycbwd5w1QGef_YeDtY54NvmR3T1jcRHWCWvyP_bgvZNbjd6IPomWHseS7BJn-upLxgYkNbg/exec";
-
-        // Remove old unused API variable to prevent confusion
-        // const apiUrlTodo = ... 
-
-        let solutions = [];
-        let allTodoData = []; // Store raw data
-        let solutionsPage = 1;
-        const itemsPerPage = 8;
+        // --- GLOBAL EXPORTS (Binding to window for onclick access) ---
+        window.closePopup = function() {
+            const el = document.getElementById('popup-view-container');
+            if(el) el.classList.add('hidden');
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
+        };
+        window.closeCreateTaskPopup = function() { document.getElementById('modal-add-task').classList.add('hidden'); };
+        window.closeCreateTimelinePopup = function() { document.getElementById('modal-add-timeline').classList.add('hidden'); };
+        window.closeCreateSolutionPopup = function() { document.getElementById('modal-add-solution').classList.add('hidden'); };
         
-        // NEW: Task Pagination Variables
-        let dashboardPage = 1;
-        const tasksPerPage = 10;
-        let currentFilteredTasks = [];
+        window.switchTab = function(t) {
+            document.getElementById('solutions-view').classList.toggle('hidden', t!=='solutions');
+            document.getElementById('dashboard-view').classList.toggle('hidden', t!=='dashboard');
+            document.getElementById('search-container').classList.toggle('hidden', t!=='solutions');
+            document.getElementById('dashboard-header').classList.toggle('hidden', t!=='dashboard');
+            document.getElementById('tab-solutions').classList.toggle('active', t==='solutions');
+            document.getElementById('tab-dashboard').classList.toggle('active', t==='dashboard');
+            if(t==='dashboard') fetchTodos();
+        };
 
-        let chartInstance = null;
-        let currentTaskData = null; // Store currently viewed task
-        let currentType = ''; // 'task', 'timeline', 'solution'
+        window.toggleDashboardView = function(v) {
+            const table = document.getElementById('table-view-content'), calendar = document.getElementById('calendar-view-content');
+            const bT = document.getElementById('view-btn-table'), bC = document.getElementById('view-btn-calendar');
+            if (v === 'calendar') { table.classList.add('hidden'); calendar.classList.remove('hidden'); bC.classList.add('bg-white', 'shadow-sm', 'text-primary'); bC.classList.remove('text-slate-500'); bT.classList.remove('bg-white', 'shadow-sm', 'text-primary'); bT.classList.add('text-slate-500'); renderCalendar(); } 
+            else { calendar.classList.add('hidden'); table.classList.remove('hidden'); bT.classList.add('bg-white', 'shadow-sm', 'text-primary'); bT.classList.remove('text-slate-500'); bC.classList.remove('bg-white', 'shadow-sm', 'text-primary'); bC.classList.add('text-slate-500'); }
+        };
 
-        // --- UI Interactions ---
-        function switchTab(tab) {
-            const solutionsView = document.getElementById('solutions-view');
-            const dashboardView = document.getElementById('dashboard-view');
-            const searchContainer = document.getElementById('search-container');
-            const dashboardHeader = document.getElementById('dashboard-header');
-            const btnSolutions = document.getElementById('tab-solutions');
-            const btnDashboard = document.getElementById('tab-dashboard');
+        window.toggleAssistant = function() {
+            const chat = document.getElementById('chat-sidebar');
+            const main = document.getElementById('main-content');
+            if (window.innerWidth >= 1024) { chat.classList.toggle('collapsed'); main.classList.toggle('no-chat'); } 
+            else { chat.classList.toggle('open'); document.getElementById('mobile-overlay').classList.toggle('opacity-100'); document.getElementById('mobile-overlay').classList.toggle('pointer-events-none'); }
+        };
 
-            if (tab === 'solutions') {
-                solutionsView.classList.remove('hidden');
-                dashboardView.classList.add('hidden');
-                searchContainer.classList.remove('hidden');
-                dashboardHeader.classList.add('hidden');
-                btnSolutions.classList.add('active');
-                btnDashboard.classList.remove('active');
-            } else {
-                solutionsView.classList.add('hidden');
-                dashboardView.classList.remove('hidden');
-                searchContainer.classList.add('hidden');
-                dashboardHeader.classList.remove('hidden');
-                btnSolutions.classList.remove('active');
-                btnDashboard.classList.add('active');
-                if (allTodoData.length === 0) fetchTodos();
-            }
-        }
+        window.openCreateTaskPopup = function(){ document.getElementById('modal-add-task').classList.remove('hidden'); };
+        window.openCreateTimelinePopup = function(){ document.getElementById('modal-add-timeline').classList.remove('hidden'); };
+        window.openCreateSolutionPopup = function(){ document.getElementById('modal-add-solution').classList.remove('hidden'); };
 
-        // --- Create Task Popup Functions ---
-        function openCreateTaskPopup() {
-            document.getElementById('create-task-popup').classList.remove('hidden');
-        }
+        let solutions = [], allTodoData = [], timelineData = [], currentRenderedSolutions = [], currentRenderedTasks = [], chatHistory = []; 
+        let solutionsPage = 1, itemsPerPage = 8, dashboardPage = 1, tasksPerPage = 10, currentFilteredTasks = [], chartInstance = null, currentTaskData = null, currentType = ''; 
+        let currentCalendarDate = new Date();
 
-        function closeCreateTaskPopup() {
-            document.getElementById('create-task-popup').classList.add('hidden');
-            document.getElementById('create-task-form').reset();
-        }
+        function parseDate(dStr) { if (!dStr) return null; if (dStr instanceof Date) return isNaN(dStr.getTime()) ? null : dStr; let str = String(dStr).trim(); if (str.includes('/')) { const p = str.split(' ')[0].split('/'); if (p.length === 3) { let d = parseInt(p[0], 10), m = parseInt(p[1], 10), y = parseInt(p[2], 10); if (y > 2400) y -= 543; const dObj = new Date(y, m - 1, d); if (!isNaN(dObj.getTime())) return dObj; } } const iso = str.match(/^(\d{4})-\d{2}-\d{2}/); if (iso) { let y = parseInt(iso[1], 10); if (y > 2400) str = str.replace(/^\d{4}/, y - 543); } const d = new Date(str); return isNaN(d.getTime()) ? null : d; }
+        function formatDate(dStr) { const d = parseDate(dStr); return d ? d.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }) : dStr; }
 
-        async function submitCreateTask() {
-            const btn = document.getElementById('btn-submit-task');
-            const originalText = btn.innerHTML;
+        // --- DASHBOARD CORE ---
+        window.renderDashboard = function() {
+            let completed = 0, transferred = 0, inProgress = 0;
+            currentFilteredTasks.forEach(t => {
+                let s = (t.Status || t.status || 'In Process').toLowerCase();
+                if (s.includes('completed')) completed++; else if (s.includes('transferred')) transferred++; else inProgress++;
+            });
+            document.getElementById('total-tasks-count').innerText = currentFilteredTasks.length;
+            document.getElementById('completed-count').innerText = completed;
             
-            // Get values
-            const plant = document.getElementById('input-plant').value;
-            const topic = document.getElementById('input-topic').value;
-            const detail = document.getElementById('input-detail').value;
-            const imageUrl = document.getElementById('input-image').value;
-            const status = document.getElementById('input-status').value;
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Done', 'Transferred', 'Process'], datasets: [{ data: [completed, transferred, inProgress], backgroundColor: ['#10B981', '#A855F7', '#3B82F6'], borderWidth: 4, borderColor: '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } } });
 
-            if (!plant || !topic) {
-                alert("Please fill in Plant and Topic.");
-                return;
-            }
-
-            // Set loading state
-            btn.disabled = true;
-            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...`;
-
-            const payload = {
-                action: 'create', // Explicit action
-                plant,
-                topic,
-                detail,
-                image: imageUrl, // Matches params.image in .gs
-                status
-            };
-
-            try {
-                // Use apiUrlCreate for creating tasks
-                const res = await fetch(apiUrlCreate, {
-                    method: 'POST',
-                    body: JSON.stringify(payload),
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' } 
-                });
-
-                closeCreateTaskPopup();
-                fetchTodos();
-            } catch (error) {
-                console.error("Error creating task:", error);
-                alert("Failed to create task. Please try again.");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-
-        // --- Create Timeline Update Popup Functions ---
-        function openCreateTimelinePopup() {
-            document.getElementById('create-timeline-popup').classList.remove('hidden');
-            // Set default date to today
-            document.getElementById('timeline-date').valueAsDate = new Date();
-        }
-
-        function closeCreateTimelinePopup() {
-            document.getElementById('create-timeline-popup').classList.add('hidden');
-            document.getElementById('create-timeline-form').reset();
-        }
-
-        async function submitCreateTimeline() {
-            const btn = document.getElementById('btn-submit-timeline');
-            const originalText = btn.innerHTML;
+            const totalPages = Math.ceil(currentFilteredTasks.length / tasksPerPage);
+            const pageItems = currentFilteredTasks.slice((dashboardPage - 1) * tasksPerPage, dashboardPage * tasksPerPage);
+            window.currentRenderedTasks = pageItems;
             
-            // Get values
-            const imageUrl = document.getElementById('timeline-image').value;
-            const dateVal = document.getElementById('timeline-date').value;
-            const detail = document.getElementById('timeline-detail').value;
-            const zone = document.getElementById('timeline-zone').value;
-            const postby = document.getElementById('timeline-postby').value;
-
-            if (!detail) {
-                alert("Please fill in Detail.");
-                return;
-            }
-
-            // Set loading state
-            btn.disabled = true;
-            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Adding...`;
-
-            // Prepare payload matching .gs script expectation
-            // Format date to DD/MM/YYYY if possible, or send as YYYY-MM-DD and let script handle
-            let formattedDate = dateVal;
-            if(dateVal) {
-               const d = new Date(dateVal);
-               formattedDate = d.toLocaleDateString('en-GB'); // DD/MM/YYYY
-            }
-
-            const payload = {
-                image: imageUrl,
-                date: formattedDate,
-                detail: detail,
-                zone: zone,
-                postby: postby
-            };
-
-            try {
-                const res = await fetch(apiUrlTimeline, {
-                    method: 'POST',
-                    body: JSON.stringify(payload),
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' } 
-                });
-
-                closeCreateTimelinePopup();
-                // Refresh timeline
-                fetchTimeline();
-                // Optionally open sidebar to show update
-                const sidebar = document.getElementById('timeline-sidebar');
-                if (sidebar.classList.contains('-translate-x-full')) {
-                    toggleMobileTimeline();
-                }
-            } catch (error) {
-                console.error("Error creating timeline update:", error);
-                alert("Failed to add update. Please try again.");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-        
-        // --- Create Solution Popup Functions (New) ---
-        function openCreateSolutionPopup() {
-            document.getElementById('create-solution-popup').classList.remove('hidden');
-        }
-
-        function closeCreateSolutionPopup() {
-            document.getElementById('create-solution-popup').classList.add('hidden');
-            document.getElementById('create-solution-form').reset();
-        }
-
-        async function submitCreateSolution() {
-            const btn = document.getElementById('btn-submit-solution');
-            const originalText = btn.innerHTML;
+            document.getElementById('btn-prev-task').disabled = dashboardPage === 1;
+            document.getElementById('btn-next-task').disabled = dashboardPage >= totalPages;
+            document.getElementById('task-page-info').innerText = `Page ${dashboardPage} of ${totalPages || 1}`;
             
-            // Get values
-            const topic = document.getElementById('solution-topic').value;
-            const detail = document.getElementById('solution-detail').value;
-            const imageUrl = document.getElementById('solution-image').value;
+            document.getElementById('task-list-body').innerHTML = pageItems.map((task, idx) => {
+                const status = (task.Status || task.status || 'In Process');
+                const statusClass = status.toLowerCase().includes('completed') ? 'status-completed' : (status.toLowerCase().includes('transferred') ? 'status-transferred' : 'status-inprocess');
+                return `<tr class="hover:bg-blue-50/50 cursor-pointer transition-colors" onclick="window.openItem('task', ${idx})"><td class="px-6 py-4 text-slate-500 text-xs">${formatDate(task.Date || task.date)}</td><td class="px-6 py-4 font-bold text-slate-700 text-xs">${task.Plant || task.plant || '-'}</td><td class="px-6 py-4 font-medium text-slate-800 text-xs">${task.Topic || task.topic || ''}</td><td class="px-6 py-4 text-center"><span class="status-pill ${statusClass}">${status}</span></td></tr>`;
+            }).join('');
+        };
 
-            if (!topic || !detail) {
-                alert("Please fill in Topic and Detail.");
-                return;
-            }
+        window.filterDashboard = function() {
+            const startVal = document.getElementById('filter-start').value, endVal = document.getElementById('filter-end').value, plantVal = document.getElementById('filter-plant').value;
+            const startDate = startVal ? new Date(startVal) : null, endDate = endVal ? new Date(endVal) : null;
+            if(endDate) endDate.setHours(23,59,59,999);
+            currentFilteredTasks = allTodoData.filter(item => {
+                const itemDate = parseDate(item.Date || item.date), itemPlant = item.Plant || item.plant;
+                if (startDate && (!itemDate || itemDate < startDate)) return false;
+                if (endDate && (!itemDate || itemDate > endDate)) return false;
+                if (plantVal && itemPlant !== plantVal) return false;
+                return true;
+            }).reverse();
+            dashboardPage = 1; window.renderDashboard();
+            if(!document.getElementById('calendar-view-content').classList.contains('hidden')) renderCalendar();
+        };
 
-            // Set loading state
-            btn.disabled = true;
-            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Creating...`;
-
-            const payload = {
-                topic: topic,
-                detail: detail,
-                image: imageUrl
-            };
-
+        async function fetchTodos() {
             try {
-                // Use apiUrlMain for creating solutions
-                const res = await fetch(apiUrlMain, {
-                    method: 'POST',
-                    body: JSON.stringify(payload),
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' } 
-                });
-
-                closeCreateSolutionPopup();
-                // Refresh solutions list
-                fetchSolutions();
-            } catch (error) {
-                console.error("Error creating solution:", error);
-                alert("Failed to create solution. Please try again.");
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
+                const res = await fetch(API_URL + "?target=task&t=" + new Date().getTime());
+                const raw = await res.json();
+                allTodoData = (Array.isArray(raw) ? raw : []).filter(i => i.Plant || i.plant || i.Status || i.status);
+                populatePlantOptions(); window.filterDashboard();
+            } catch(e) { console.error(e); }
         }
 
-        function toggleMobileTimeline() {
-            const sidebar = document.getElementById('timeline-sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            const chatSidebar = document.getElementById('chat-sidebar');
-            chatSidebar.classList.remove('mobile-open');
-            if (sidebar.classList.contains('-translate-x-full')) {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('mobile-open');
-                overlay.classList.add('active');
-            } else {
-                closeAllMobileSidebars();
-            }
-        }
-
-        function toggleMobileChat() {
-            const chatSidebar = document.getElementById('chat-sidebar');
-            const overlay = document.getElementById('mobile-overlay');
-            const timelineSidebar = document.getElementById('timeline-sidebar');
-            timelineSidebar.classList.add('-translate-x-full');
-            timelineSidebar.classList.remove('mobile-open');
-            if (!chatSidebar.classList.contains('mobile-open')) {
-                chatSidebar.classList.add('mobile-open');
-                overlay.classList.add('active');
-            } else {
-                closeAllMobileSidebars();
-            }
-        }
-
-        function closeAllMobileSidebars() {
-            document.getElementById('timeline-sidebar').classList.add('-translate-x-full');
-            document.getElementById('timeline-sidebar').classList.remove('mobile-open');
-            document.getElementById('chat-sidebar').classList.remove('mobile-open');
-            document.getElementById('mobile-overlay').classList.remove('active');
-        }
-
-        // --- Data Fetching ---
         async function fetchSolutions() {
-            document.getElementById("loading-indicator").classList.remove("hidden");
             try {
-                const res = await fetch(apiUrlMain);
-                solutions = await res.json();
-                renderSolutions();
-                renderPagination();
-            } catch (e) {
-                document.getElementById("solutions").innerHTML = `<div class="col-span-full text-center text-red-500 py-10 bg-white rounded-2xl border border-red-100">Unable to connect to database.</div>`;
-            } finally {
-                document.getElementById("loading-indicator").classList.add("hidden");
-            }
+                const res = await fetch(API_URL + "?target=solution&t=" + new Date().getTime());
+                const data = await res.json();
+                solutions = Array.isArray(data) ? data.filter(item => item.topic || item.Topic) : [];
+                renderSolutions(); renderPagination();
+            } catch (e) { }
         }
 
         async function fetchTimeline() {
             try {
-                const res = await fetch(apiUrlTimeline);
+                const res = await fetch(API_URL + "?target=timeline&t=" + new Date().getTime());
                 const data = await res.json();
-                const sorted = data.sort((a,b) => {
-                    const [da, ma, ya] = a.date.split('/').map(Number);
-                    const [db, mb, yb] = b.date.split('/').map(Number);
-                    return new Date(yb, mb-1, db) - new Date(ya, ma-1, da);
-                }).slice(0, 10);
+                timelineData = (Array.isArray(data) ? data : []).filter(i => i.date || i.Date || i.datere || i.Datere).sort((a,b) => (parseDate(b.date||b.Date||b.datere) - parseDate(a.date||a.Date||a.datere))).slice(0, 15);
+                document.getElementById('timeline-items').innerHTML = timelineData.map((item, idx) => `<div class="timeline-node" onclick="window.openItem('timeline', ${idx})"><div class="timeline-dot"></div><div class="timeline-content"><div class="text-[10px] font-bold text-slate-800">${formatDate(item.date||item.Date||item.datere)}</div><div class="text-[9px] text-slate-500 truncate w-[100px]">${item.detail||item.Detail}</div></div></div>`).join('');
+            } catch(e) { }
+        }
 
-                document.getElementById('timeline-items').innerHTML = sorted.map((item, idx) => `
-                    <div class="timeline-node ${idx===0?'latest':''}" onclick='openPopup(${JSON.stringify(item).replace(/'/g, "&#39;")}, "timeline")'>
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">
-                            <div class="text-sm font-bold text-slate-800">${item.date}</div>
-                            <div class="text-xs text-slate-500 font-medium">${item.detail ? item.detail.substring(0, 25)+'...' : 'Update'}</div>
-                        </div>
-                    </div>
-                `).join('');
-            } catch(e) {
-                document.getElementById('timeline-items').innerHTML = '<div class="text-xs text-center p-4 text-slate-400">Offline</div>';
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid-container'), label = document.getElementById('calendar-month-year');
+            const month = currentCalendarDate.getMonth(), year = currentCalendarDate.getFullYear();
+            label.innerText = currentCalendarDate.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+            grid.innerHTML = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="calendar-header-day">${d}</div>`).join('');
+            const first = new Date(year, month, 1).getDay(), days = new Date(year, month + 1, 0).getDate();
+            for (let i = 0; i < first; i++) grid.innerHTML += `<div class="calendar-day empty"></div>`;
+            const today = new Date();
+            for (let d = 1; d <= days; d++) {
+                const isToday = today.getDate() === d && today.getMonth() === month && today.getFullYear() === year;
+                const tasks = allTodoData.filter(t => { const td = parseDate(t.Date || t.date); return td && td.getDate() === d && td.getMonth() === month && td.getFullYear() === year; });
+                grid.innerHTML += `<div class="calendar-day ${isToday ? 'today' : ''}"><div class="day-number">${d}</div><div class="flex flex-col gap-1 overflow-hidden">${tasks.map(t => { const s = (t.Status||t.status||'').toLowerCase(); const sc = s.includes('completed')?'status-completed':(s.includes('transferred')?'status-transferred':'status-inprocess'); return `<div class="task-dot ${sc}" onclick="event.stopPropagation(); window.openPopup(${JSON.stringify(t).replace(/'/g, "&#39;")}, 'task')">${t.Topic||t.topic}</div>`; }).join('')}</div></div>`;
             }
         }
+        window.prevMonth = function(){ currentCalendarDate.setMonth(currentCalendarDate.getMonth()-1); renderCalendar(); };
+        window.nextMonth = function(){ currentCalendarDate.setMonth(currentCalendarDate.getMonth()+1); renderCalendar(); };
 
-        async function fetchTodos() {
-            const listBody = document.getElementById('task-list-body');
-            // Check if element exists (might be hidden or tab not active)
-            if(!listBody) return;
-            
-            listBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center"><div class="inline-block ai-spinner w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div><span class="ml-3 text-slate-500">Loading tasks...</span></td></tr>`;
-            document.getElementById('total-tasks-count').innerText = "...";
-            document.getElementById('completed-count').innerText = "...";
-
-            try {
-                // *** FIXED: Use apiUrlCreate here ***
-                const res = await fetch(apiUrlCreate);
-                allTodoData = await res.json(); // Store in raw variable
-                populatePlantOptions();
-                filterDashboard(); // Initial render with filters
-            } catch(e) {
-                console.error("Error fetching todos", e);
-                listBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-red-500">Failed to load data.</td></tr>`;
-            }
-        }
-
-        // --- Helper: Parse ISO Date (Correctly handles timezone roughly) ---
-        function parseDate(dateString) {
-            if(!dateString) return null;
-            
-            // Fix for Buddhist Era years in ISO string (e.g. 2569 -> 2026)
-            if (typeof dateString === 'string') {
-                const match = dateString.match(/^(\d{4})/);
-                if (match) {
-                    const year = parseInt(match[1]);
-                    if (year > 2400) {
-                        const adYear = year - 543;
-                        dateString = dateString.replace(/^\d{4}/, adYear);
-                    }
-                }
-            }
-
-            const d = new Date(dateString);
-            return isNaN(d.getTime()) ? null : d;
-        }
-
-        function formatDate(dateString) {
-            const d = parseDate(dateString);
-            if (!d) return dateString;
-            // Use 'en-GB' to force Gregorian Calendar (AD years like 2025, 2026)
-            return d.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
-        }
-
-        // --- Dashboard Logic ---
-        function populatePlantOptions() {
-            const plantSelect = document.getElementById('filter-plant');
-            // Check for both lowercase and uppercase 'Plant' key
-            const plants = [...new Set(allTodoData.map(item => item.plant || item.Plant).filter(p => p))].sort();
-            
-            // Keep "All Plants" option
-            plantSelect.innerHTML = '<option value="">All Plants</option>';
-            plants.forEach(plant => {
-                const option = document.createElement('option');
-                option.value = plant;
-                option.textContent = plant;
-                plantSelect.appendChild(option);
-            });
-        }
-
-        function filterDashboard() {
-            const startVal = document.getElementById('filter-start').value;
-            const endVal = document.getElementById('filter-end').value;
-            const plantVal = document.getElementById('filter-plant').value;
-            const statusVal = document.getElementById('filter-status').value;
-
-            const startDate = startVal ? new Date(startVal) : null;
-            const endDate = endVal ? new Date(endVal) : null;
-            // Set end date time to end of day
-            if(endDate) endDate.setHours(23, 59, 59, 999);
-
-            const filteredData = allTodoData.filter(item => {
-                // Check for lowercase keys too
-                const itemDateStr = item.date || item.Date;
-                const itemPlant = item.plant || item.Plant;
-                const itemStatus = item.status || item.Status;
-
-                const itemDate = parseDate(itemDateStr);
-                
-                // 1. Date Range
-                if (startDate && (!itemDate || itemDate < startDate)) return false;
-                if (endDate && (!itemDate || itemDate > endDate)) return false;
-
-                // 2. Plant
-                if (plantVal && itemPlant !== plantVal) return false;
-
-                // 3. Status
-                if (statusVal) {
-                    const currentStatus = (itemStatus || "In Process").toLowerCase();
-                    if (statusVal === "Completed" && !currentStatus.includes("completed")) return false;
-                    if (statusVal === "In Process" && currentStatus.includes("completed")) return false;
-                }
-
-                return true;
-            });
-
-            // Update global filtered data for pagination
-            currentFilteredTasks = filteredData.reverse(); // Newest first
-            dashboardPage = 1; // Reset to page 1
-            renderDashboard();
-        }
-
-        function changeTaskPage(direction) {
-            dashboardPage += direction;
-            renderDashboard();
-        }
-
-        function renderDashboard() {
-            // Stats (based on all filtered data)
-            const total = currentFilteredTasks.length;
-            const completed = currentFilteredTasks.filter(t => {
-                const s = t.status || t.Status || '';
-                return s.toLowerCase().includes('completed');
-            }).length;
-            const inProgress = total - completed;
-
-            document.getElementById('total-tasks-count').innerText = total;
-            document.getElementById('completed-count').innerText = completed;
-
-            // Chart
-            renderChart(completed, inProgress);
-
-            // Pagination Logic
-            const totalPages = Math.ceil(total / tasksPerPage);
-            if (dashboardPage < 1) dashboardPage = 1;
-            if (dashboardPage > totalPages && totalPages > 0) dashboardPage = totalPages;
-
-            const start = (dashboardPage - 1) * tasksPerPage;
-            const end = start + tasksPerPage;
-            const pageItems = currentFilteredTasks.slice(start, end);
-
-            // Update Pagination UI
-            const btnPrev = document.getElementById('btn-prev-task');
-            const btnNext = document.getElementById('btn-next-task');
-            const pageInfo = document.getElementById('task-page-info');
-
-            if (btnPrev && btnNext && pageInfo) {
-                btnPrev.disabled = dashboardPage === 1;
-                btnNext.disabled = dashboardPage >= totalPages;
-                pageInfo.innerText = total > 0 ? `Page ${dashboardPage} of ${totalPages}` : 'Page 0 of 0';
-            }
-
-            // List
-            const listBody = document.getElementById('task-list-body');
-            if(pageItems.length === 0) {
-                 listBody.innerHTML = `<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">No tasks matches the criteria.</td></tr>`;
-                 return;
-            }
-
-            listBody.innerHTML = pageItems.map(task => {
-                // Normalize keys for display
-                const tDate = task.date || task.Date;
-                const tPlant = task.plant || task.Plant || '-';
-                const tTopic = task.topic || task.Topic;
-                const tDetail = task.detail || task.Detail || '';
-                const tStatus = task.status || task.Status;
-
-                const isCompleted = tStatus && tStatus.toLowerCase().includes('completed');
-                const statusClass = isCompleted ? 'status-completed' : 'status-inprocess';
-                return `
-                <tr class="hover:bg-slate-50 transition-colors cursor-pointer" onclick='openPopup(${JSON.stringify(task).replace(/'/g, "&#39;")}, "task")'>
-                    <td class="px-6 py-4 whitespace-nowrap text-slate-500">${formatDate(tDate)}</td>
-                    <td class="px-6 py-4 whitespace-nowrap font-medium text-slate-700">${tPlant}</td>
-                    <td class="px-6 py-4">${tTopic} <span class="block text-xs text-slate-400 truncate max-w-[200px]">${tDetail}</span></td>
-                    <td class="px-6 py-4">
-                        <span class="status-pill ${statusClass}">${tStatus || 'In Process'}</span>
-                    </td>
-                </tr>
-                `;
-            }).join('');
-        }
-
-        function renderChart(completed, inProgress) {
-            const ctx = document.getElementById('statusChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
-
-            // Handle empty chart
-            if (completed === 0 && inProgress === 0) {
-                // Render empty grey ring or clear
-                chartInstance = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: { labels: ['No Data'], datasets: [{ data: [1], backgroundColor: ['#F1F5F9'], borderWidth: 0 }] },
-                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
-                });
-                return;
-            }
-
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Completed', 'In Process'],
-                    datasets: [{
-                        data: [completed, inProgress],
-                        backgroundColor: ['#10B981', '#0EA5E9'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, padding: 20 } }
-                    },
-                    cutout: '70%',
-                }
-            });
-        }
-
-        function exportExcel() {
-            const startVal = document.getElementById('filter-start').value;
-            const endVal = document.getElementById('filter-end').value;
-            const plantVal = document.getElementById('filter-plant').value;
-            const statusVal = document.getElementById('filter-status').value;
-            const startDate = startVal ? new Date(startVal) : null;
-            const endDate = endVal ? new Date(endVal) : null;
-            if(endDate) endDate.setHours(23, 59, 59, 999);
-
-            const dataToExport = allTodoData.filter(item => {
-                const itemDateStr = item.date || item.Date;
-                const itemPlant = item.plant || item.Plant;
-                const itemStatus = item.status || item.Status;
-                
-                const itemDate = parseDate(itemDateStr);
-                if (startDate && (!itemDate || itemDate < startDate)) return false;
-                if (endDate && (!itemDate || itemDate > endDate)) return false;
-                if (plantVal && itemPlant !== plantVal) return false;
-                if (statusVal) {
-                    const currentStatus = (itemStatus || "In Process").toLowerCase();
-                    if (statusVal === "Completed" && !currentStatus.includes("completed")) return false;
-                    if (statusVal === "In Process" && currentStatus.includes("completed")) return false;
-                }
-                return true;
-            });
-
-            if (dataToExport.length === 0) {
-                alert("No data to export!");
-                return;
-            }
-
-            const header = ["Date", "Plant", "Topic", "Detail", "Status"];
-            const rows = dataToExport.map(item => [
-                formatDate(item.date || item.Date),
-                `"${(item.plant || item.Plant || '').replace(/"/g, '""')}"`,
-                `"${(item.topic || item.Topic || '').replace(/"/g, '""')}"`,
-                `"${(item.detail || item.Detail || '').replace(/"/g, '""')}"`,
-                item.status || item.Status || 'In Process'
-            ]);
-
-            const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
-                + header.join(",") + "\n" 
-                + rows.map(e => e.join(",")).join("\n");
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `operations_report_${new Date().toISOString().slice(0,10)}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // --- Standard Solutions Logic ---
-        function renderSolutions() {
-            const query = document.getElementById('search').value.toLowerCase().trim();
-            const filtered = solutions.filter(s => s.topic.toLowerCase().includes(query) || s.detail.toLowerCase().includes(query));
-            const start = (solutionsPage - 1) * itemsPerPage;
-            const pageItems = filtered.slice(start, start + itemsPerPage);
-            const container = document.getElementById("solutions");
-            
-            if(pageItems.length === 0) {
-                container.innerHTML = `<div class="col-span-full text-center py-24 text-slate-400 flex flex-col items-center"><svg class="w-12 h-12 mb-4 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>No solutions found.</div>`;
-                return;
-            }
-
-            container.innerHTML = pageItems.map(item => `
-                <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-lg hover:border-primary/20 transition-all duration-300 cursor-pointer group flex gap-5" onclick='openPopup(${JSON.stringify(item).replace(/'/g, "&#39;")}, "solution")'>
-                    <div class="w-20 h-20 shrink-0 bg-slate-100 rounded-2xl overflow-hidden shadow-inner relative">
-                        <img src="${item.image || 'https://placehold.co/100x100?text=IMG'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" onerror="this.src='https://placehold.co/100x100?text=IMG'">
-                    </div>
-                    <div class="min-w-0 flex-1 flex flex-col justify-center">
-                        <h3 class="font-bold text-slate-800 text-lg truncate group-hover:text-primary transition">${item.topic}</h3>
-                        <p class="text-sm text-slate-500 line-clamp-2 mt-1 leading-relaxed">${item.detail}</p>
-                    </div>
-                    <div class="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderPagination() {
-            const query = document.getElementById('search').value.toLowerCase().trim();
-            const filtered = solutions.filter(s => s.topic.toLowerCase().includes(query) || s.detail.toLowerCase().includes(query));
-            const totalPages = Math.ceil(filtered.length / itemsPerPage);
-            const container = document.getElementById("pagination");
-            
-            if(totalPages <= 1) { container.innerHTML = ''; return; }
-
-            let html = `<button onclick="goToPage(${Math.max(1, solutionsPage-1)})" ${solutionsPage===1?'disabled class="opacity-30 cursor-not-allowed"':''} class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>`;
-            
-            let start = Math.max(1, solutionsPage - 2);
-            let end = Math.min(totalPages, start + 4);
-            if(end - start < 4) start = Math.max(1, end - 4);
-            
-            for(let i=start; i<=end; i++) {
-                if(i>0) html += `<button onclick="goToPage(${i})" class="w-10 h-10 rounded-xl text-sm font-bold transition ${i===solutionsPage ? 'bg-primary text-white shadow-md shadow-primary/30' : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-600'}">${i}</button>`;
-            }
-            
-            html += `<button onclick="goToPage(${Math.min(totalPages, solutionsPage+1)})" ${solutionsPage===totalPages?'disabled class="opacity-30 cursor-not-allowed"':''} class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 transition shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>`;
-            container.innerHTML = html;
-        }
-
-        function goToPage(p) {
-            solutionsPage = p;
-            renderSolutions();
-            renderPagination();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function filterSolutions() {
-            solutionsPage = 1;
-            renderSolutions();
-            renderPagination();
-        }
-
-        function openPopup(item, type = 'solution') {
-            const container = document.getElementById('popup-container');
-            container.classList.remove('hidden');
-            
-            // Store Current Task Data Global
-            currentTaskData = item;
-            currentType = type;
-
-            // Normalize Data Keys
-            const topic = item.topic || item.Topic;
-            const detail = item.detail || item.Detail || '';
-            const rawDate = item.date || item.Date;
-            const image = item.image || item.Image || 'https://placehold.co/600x400';
-            const plant = item.plant || item.Plant;
-            const status = item.status || item.Status;
-            
-            let contentHtml = '';
-
-            // Common plants list for Task & potentially other edits if needed
-            const plantsList = ["Binh Phuoc", "Xuan Mai", "Hai Duong", "Binh Dinh", "Dak Lak", "Yangon", "Mandalay", "Taunggyi", "Kampot", "Pailin", "Phnom Penh", "Tarlac", "Laos"];
-            
-            // --- EDIT MODE FORM GENERATION ---
-            let editFormHtml = '';
-            if (type === 'task') {
-                 const plantOptions = plantsList.map(p => `<option value="${p}" ${plant === p ? 'selected' : ''}>${p}</option>`).join('');
-                 editFormHtml = `
-                    <div class="space-y-4">
-                        <div><label class="form-label">Plant</label><select id="edit-plant" class="form-input"><option value="" disabled ${!plant ? 'selected' : ''}>Select Plant</option>${plantOptions}</select></div>
-                        <div><label class="form-label">Topic</label><input type="text" id="edit-topic" value="${topic || ''}" class="form-input"></div>
-                        <div><label class="form-label">Detail</label><textarea id="edit-detail" rows="4" class="form-input">${detail || ''}</textarea></div>
-                        <div><label class="form-label">Status</label><select id="edit-status" class="form-input"><option value="In Process" ${status === 'In Process' ? 'selected' : ''}>In Process</option><option value="Completed" ${status === 'Completed' ? 'selected' : ''}>Completed</option></select></div>
-                    </div>`;
-            } else if (type === 'timeline') {
-                // Timeline Edit Form
-                editFormHtml = `
-                    <div class="space-y-4">
-                        <div><label class="form-label">Date</label><input type="date" id="edit-date" value="${rawDate ? rawDate.split('/').reverse().join('-') : ''}" class="form-input"></div>
-                        <div><label class="form-label">Detail</label><textarea id="edit-detail" rows="4" class="form-input">${detail || ''}</textarea></div>
-                        <div><label class="form-label">Image URL</label><input type="url" id="edit-image" value="${image}" class="form-input"></div>
-                        <div><label class="form-label">Zone</label><input type="text" id="edit-zone" value="${item.zone || ''}" class="form-input"></div>
-                        <div><label class="form-label">Post By</label><input type="text" id="edit-postby" value="${item.postby || ''}" class="form-input"></div>
-                    </div>`;
-            } else if (type === 'solution') {
-                // Solution Edit Form
-                editFormHtml = `
-                    <div class="space-y-4">
-                         <div><label class="form-label">Topic</label><input type="text" id="edit-topic" value="${topic || ''}" class="form-input"></div>
-                         <div><label class="form-label">Detail</label><textarea id="edit-detail" rows="4" class="form-input">${detail || ''}</textarea></div>
-                         <div><label class="form-label">Image URL</label><input type="url" id="edit-image" value="${image}" class="form-input"></div>
-                    </div>`;
-            }
-
-
-            if (type === 'task') {
-                // --- TYPE: TASK (Clean Text) ---
-                const dateStr = rawDate ? formatDate(rawDate) : '';
-                const statusLower = (status || '').toLowerCase();
-                const isCompleted = statusLower.includes('completed');
-                const statusClass = isCompleted ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-blue-100 text-blue-700 border border-blue-200';
-                
-                contentHtml = `
-                    <!-- View Mode -->
-                    <div id="popup-view-mode" class="relative bg-white w-full max-w-xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-                        <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/80 flex justify-between items-start">
-                            <div class="flex-1 pr-6">
-                                <div class="flex flex-wrap gap-2 mb-3">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold uppercase tracking-wide ${statusClass}">${status || 'In Process'}</span>
-                                    ${plant ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-slate-200 text-slate-600 text-xs font-bold border border-slate-300">${plant}</span>` : ''}
-                                    ${dateStr ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md bg-white text-slate-500 text-xs font-medium border border-slate-200">${dateStr}</span>` : ''}
-                                </div>
-                                <h2 class="text-xl md:text-2xl font-bold text-slate-800 leading-snug">${topic || 'Task Details'}</h2>
-                            </div>
-                            <button onclick="closePopup()" class="text-slate-400 hover:text-slate-600 hover:bg-slate-200 p-2 rounded-full transition -mr-2 -mt-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                        </div>
-                        <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-white">
-                            <div class="prose prose-slate prose-sm md:prose-base max-w-none text-slate-600">${detail ? detail.replace(/\n/g, '<br>') : '<span class="text-slate-400 italic">No details provided.</span>'}</div>
-                            ${item.transfercase ? `<div class="mt-4 p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-xs text-indigo-700 font-medium flex items-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg> Transferred to: ${item.transfercase}</div>` : ''}
-                        </div>
-                        
-                        <!-- NEW Transfer Section -->
-                        <div id="transfer-section" class="hidden px-6 py-4 bg-slate-50 border-t border-slate-100 transition-all">
-                            <h4 class="text-sm font-bold text-slate-700 mb-2">Transfer Case To Rhino</h4>
-                            <div class="flex gap-2">
-                                <select id="transfer-email" class="form-input text-sm flex-1">
-                                    <option value="boong@rhino-research.com">boong@rhino-research.com</option>
-                                    <option value="support@rhino-research.com">support@rhino-research.com</option>
-                                </select>
-                                <button onclick="submitTransfer(this)" class="px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg hover:bg-indigo-600 text-xs transition whitespace-nowrap shadow-md shadow-indigo-200">Confirm Transfer</button>
-                            </div>
-                            <p class="text-xs text-slate-400 mt-2">This will update the task status and notify the recipient.</p>
-                        </div>
-
-                        <!-- Footer with Edit/Delete/Transfer -->
-                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex flex-wrap justify-between items-center gap-2">
-                            <div class="flex gap-2 flex-wrap">
-                                <button onclick="readCurrentPopup()" class="text-slate-500 hover:text-primary flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Read Aloud"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg></button>
-                                <button onclick="enableEditMode()" class="text-slate-500 hover:text-blue-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Edit Task"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                                <button onclick="deleteCurrentItem()" class="text-slate-500 hover:text-red-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Delete Task"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                                <!-- Transfer Button -->
-                                <button onclick="toggleTransferMode()" class="flex items-center gap-2 px-3 py-2 bg-indigo-50 text-indigo-600 font-bold rounded-lg border border-indigo-100 hover:bg-indigo-100 transition text-xs shadow-sm" title="Transfer Case">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                                    Transfer Case To Rhino
-                                </button>
-                            </div>
-                            <button onclick="closePopup()" class="px-5 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 hover:text-slate-900 shadow-sm transition text-sm">Close</button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // --- TYPE: TIMELINE or SOLUTION (Image Popup) ---
-                let titleStr = topic || 'Details';
-                if (type === 'timeline') titleStr = 'Timeline Update';
-                
-                let metaHtml = '';
-                if (type === 'timeline' && rawDate) {
-                    metaHtml = `<span class="inline-block px-2.5 py-1 mb-2 rounded-lg bg-primary/90 backdrop-blur-sm text-white text-xs font-bold shadow-sm">${rawDate}</span>`;
-                }
-                
-                contentHtml = `
-                    <div id="popup-view-mode" class="relative bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-                        <div class="relative h-64 bg-slate-100 shrink-0 group">
-                            <img src="${image}" onclick="zoomImage('${image}')" class="w-full h-full object-cover cursor-zoom-in transition duration-700 group-hover:scale-105" onerror="this.src='https://placehold.co/600x400'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
-                            <button onclick="closePopup()" class="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md text-white p-2 rounded-full transition z-10"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                            <div class="absolute bottom-0 p-6 w-full pointer-events-none">
-                                <div class="pointer-events-auto">
-                                    ${metaHtml}
-                                    <h2 class="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-sm">${titleStr}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-6 md:p-8 overflow-y-auto custom-scrollbar bg-white">
-                            <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed text-base md:text-lg">${detail || '<span class="text-slate-400 italic">No details provided.</span>'}</div>
-                        </div>
-                        <!-- Footer with Edit/Delete for Timeline/Solutions -->
-                        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
-                             <div class="flex gap-2">
-                                <button onclick="readCurrentPopup()" class="text-slate-500 hover:text-primary flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Read Aloud"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464A4 4 0 0117 12h2.5a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H17a4 4 0 01-1.464 3.536M15 12H9M7 9l-4 3 4 3V9z"></path></svg></button>
-                                <button onclick="enableEditMode()" class="text-slate-500 hover:text-blue-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Edit"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                                <button onclick="deleteCurrentItem()" class="text-slate-500 hover:text-red-600 flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg hover:bg-white transition" title="Delete"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                             </div>
-                            <button onclick="closePopup()" class="px-5 py-2 bg-white border border-slate-200 text-slate-700 font-bold rounded-lg hover:bg-slate-50 hover:border-slate-300 shadow-sm transition">Close</button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Append Edit Mode Structure (Hidden by default)
-            contentHtml += `
-                <div id="popup-edit-mode" class="hidden relative bg-white w-full max-w-xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[scaleIn_0.2s_ease-out]">
-                    <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
-                        <h3 class="text-lg font-bold text-slate-800">Edit ${type === 'timeline' ? 'Update' : (type === 'solution' ? 'Solution' : 'Task')}</h3>
-                    </div>
-                    <div class="p-6 overflow-y-auto custom-scrollbar">
-                        ${editFormHtml}
-                    </div>
-                    <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-                        <button onclick="cancelEditMode()" class="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition text-sm">Cancel</button>
-                        <button onclick="saveEdit()" id="btn-save-edit" class="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 shadow-md shadow-blue-200 transition text-sm">Save Changes</button>
-                    </div>
-                </div>
-            `;
-
-            container.innerHTML = `
-                <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closePopup()"></div>
-                ${contentHtml}
-            `;
-        }
-
-        // --- Transfer Case Functions ---
-        function toggleTransferMode() {
-            const section = document.getElementById('transfer-section');
-            if(section) section.classList.toggle('hidden');
-        }
-
-        async function submitTransfer(btn) {
-            const email = document.getElementById('transfer-email').value;
-            const originalText = btn.innerText;
-            
-            if (!currentTaskData.row_index) {
-                alert("Cannot transfer: ID is missing.");
-                return;
-            }
-
-            btn.innerText = "Sending...";
-            btn.disabled = true;
-            
-            // Construct payload to update with transfercase field
-            const payload = {
-                action: 'update',
-                row: currentTaskData.row_index,
-                plant_select: currentTaskData.plant || currentTaskData.Plant,
-                topic: currentTaskData.topic || currentTaskData.Topic,
-                detail: currentTaskData.detail || currentTaskData.Detail,
-                status: currentTaskData.status || currentTaskData.Status,
-                image: currentTaskData.image || currentTaskData.Image || "",
-                transfercase: email // NEW FIELD
+        // --- SUBMISSIONS (With Corrected IDs) ---
+        window.submitCreateTask = async function(){ 
+            const b=document.getElementById('btn-task-go'); b.disabled=true; 
+            const p = {
+                target:'task', action:'create', 
+                plant:document.getElementById('task-plant-input').value, 
+                topic:document.getElementById('task-topic-input').value, 
+                detail:document.getElementById('task-detail-input').value, 
+                status:document.getElementById('task-status-input').value
             };
-
-            try {
-                await fetch(apiUrlCreate, {
-                    method: 'POST',
-                    body: JSON.stringify(payload),
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' }
-                });
-                
-                alert(`Case successfully transferred to ${email}`);
-                closePopup();
-                fetchTodos(); // Refresh list
-            } catch (e) {
-                console.error(e);
-                alert("Failed to transfer case.");
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        // --- Edit Mode Logic ---
-        function enableEditMode() {
-            document.getElementById('popup-view-mode').classList.add('hidden');
-            document.getElementById('popup-edit-mode').classList.remove('hidden');
-        }
-
-        function cancelEditMode() {
-            document.getElementById('popup-edit-mode').classList.add('hidden');
-            document.getElementById('popup-view-mode').classList.remove('hidden');
-        }
-
-        async function saveEdit() {
-            const btn = document.getElementById('btn-save-edit');
-            const originalText = btn.innerHTML;
-            
-            // Check ID
-            let id = currentTaskData.row_index; 
-            if (!id && currentType === 'timeline') id = currentTaskData.date; 
-
-            btn.disabled = true;
-            btn.innerHTML = 'Saving...';
-
-            let payload = { action: 'update', row: currentTaskData.row_index };
-            let targetApi = '';
-
-            if (currentType === 'task') {
-                targetApi = apiUrlCreate;
-                payload.plant_select = document.getElementById('edit-plant').value;
-                payload.topic = document.getElementById('edit-topic').value;
-                payload.detail = document.getElementById('edit-detail').value;
-                payload.status = document.getElementById('edit-status').value;
-                payload.image = currentTaskData.image || ""; 
-            } else if (currentType === 'timeline') {
-                targetApi = apiUrlTimeline;
-                payload.date = document.getElementById('edit-date').value; 
-                payload.detail = document.getElementById('edit-detail').value;
-                payload.image = document.getElementById('edit-image').value;
-                payload.zone = document.getElementById('edit-zone').value;
-                payload.postby = document.getElementById('edit-postby').value;
-            } else if (currentType === 'solution') {
-                targetApi = apiUrlMain;
-                payload.topic = document.getElementById('edit-topic').value;
-                payload.detail = document.getElementById('edit-detail').value;
-                payload.image = document.getElementById('edit-image').value;
-            }
-
-            try {
-                await fetch(targetApi, {
-                    method: 'POST',
-                    body: JSON.stringify(payload),
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' }
-                });
-                closePopup();
-                if (currentType === 'task') fetchTodos();
-                else if (currentType === 'timeline') fetchTimeline();
-                else if (currentType === 'solution') fetchSolutions();
-            } catch(e) {
-                console.error(e);
-                alert('Update failed');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        }
-
-        async function deleteCurrentItem() {
-            // 1. Confirm deletion intent
-            if (!confirm("Are you sure you want to delete this item?")) return;
-            
-            // 2. Check Passcode for protected sections (Timeline & Solution)
-            if (currentType === 'timeline' || currentType === 'solution') {
-                const passcode = prompt("Security Check: Enter Admin Passcode");
-                if (passcode !== "admin101") {
-                    alert("Incorrect Passcode! Action denied.");
-                    return;
-                }
-            }
-
-            // Determine API
-            let targetApi = '';
-            if (currentType === 'task') targetApi = apiUrlCreate;
-            else if (currentType === 'timeline') targetApi = apiUrlTimeline;
-            else if (currentType === 'solution') targetApi = apiUrlMain;
-
-            try {
-                await fetch(targetApi, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'delete', row: currentTaskData.row_index }), // Use row index
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' }
-                });
-                closePopup();
-                // Refresh UI
-                if (currentType === 'task') fetchTodos();
-                else if (currentType === 'timeline') fetchTimeline();
-                else if (currentType === 'solution') fetchSolutions();
-            } catch(e) {
-                console.error(e);
-                alert('Delete failed');
-            }
-        }
-
-        function closePopup() {
-            document.getElementById('popup-container').classList.add('hidden');
-            speechSynthesis.cancel();
-        }
-
-        // Zoom Image Functions
-        function zoomImage(src) {
-            const modal = document.getElementById('image-zoom-modal');
-            const img = document.getElementById('zoomed-image');
-            img.src = src;
-            modal.classList.remove('hidden');
-            // Animation
-            setTimeout(() => {
-                img.classList.remove('scale-95');
-                img.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeZoomImage() {
-            const modal = document.getElementById('image-zoom-modal');
-            const img = document.getElementById('zoomed-image');
-            
-            img.classList.remove('scale-100');
-            img.classList.add('scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                img.src = '';
-            }, 300); // Match transition duration
-        }
-
-        // New Helper to Read current popup content
-        function readCurrentPopup() {
-            const container = document.getElementById('popup-container');
-            if (container.classList.contains('hidden')) return;
-            
-            const title = container.querySelector('h2')?.innerText || '';
-            const content = container.querySelector('.prose')?.innerText || '';
-            readAloud(`${title}. ${content}`);
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if(!text) return;
-            addChatMessage(text, 'user');
-            input.value = '';
-            showTyping();
-            setTimeout(() => {
-                const matches = findMatches(text);
-                let response = "";
-                if(matches.length > 0) {
-                    response = `I found ${matches.length} possible solutions:<br>`;
-                    matches.forEach((m, i) => {
-                        response += `<div class="mt-2 p-3 bg-white rounded-xl border border-slate-200 cursor-pointer hover:border-primary/50 hover:shadow-sm transition group" onclick='openPopup(${JSON.stringify(m).replace(/'/g, "&#39;")})'>
-                            <div class="font-bold text-slate-700 text-xs mb-1 group-hover:text-primary">${i+1}. ${m.topic}</div>
-                            <div class="text-xs text-slate-500 line-clamp-1">${m.detail}</div>
-                        </div>`;
-                    });
-                } else {
-                    response = "I couldn't find a direct match. Could you describe it differently?";
-                }
-                removeTyping();
-                addChatMessage(response, 'bot');
-            }, 800);
-        }
-
-        function findMatches(text) {
-            const tokens = text.toLowerCase().split(/\s+/).filter(t => t.length > 2);
-            if(tokens.length === 0) return [];
-            return solutions.map(s => {
-                const content = (s.topic + " " + s.detail).toLowerCase();
-                let score = 0;
-                tokens.forEach(t => { if(content.includes(t)) score++; });
-                return { ...s, score };
-            }).filter(s => s.score > 0).sort((a,b) => b.score - a.score).slice(0, 3);
-        }
-
-        function addChatMessage(html, sender) {
-            const log = document.getElementById('chat-log');
-            const div = document.createElement('div');
-            div.className = `msg-bubble ${sender === 'user' ? 'msg-user' : 'msg-bot'}`;
-            div.innerHTML = html;
-            log.appendChild(div);
-            log.scrollTop = log.scrollHeight;
-        }
-
-        function showTyping() {
-            const log = document.getElementById('chat-log');
-            const div = document.createElement('div');
-            div.id = 'typing-indicator';
-            div.className = 'msg-bubble msg-bot flex gap-1 items-center py-4 px-4 w-16';
-            div.innerHTML = '<span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75"></span><span class="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150"></span>';
-            log.appendChild(div);
-            log.scrollTop = log.scrollHeight;
-        }
-
-        function removeTyping() {
-            const el = document.getElementById('typing-indicator');
-            if(el) el.remove();
-        }
-
-        function readAloud(text) {
-            // Ensure voices are loaded
-            let voices = speechSynthesis.getVoices();
-            
-            const u = new SpeechSynthesisUtterance(text);
-            
-            // Priority 1: Google Translate Dropdown
-            let langVal = document.querySelector('.goog-te-combo')?.value;
-            
-            // Priority 2: HTML Lang attribute (Updated by Google Translate)
-            if (!langVal || langVal === '') {
-                langVal = document.documentElement.lang;
-            }
-
-            // Default
-            if (!langVal) langVal = 'en';
-
-            // Map common codes to full BCP 47 tags
-            const langMap = {
-                'th': 'th-TH',
-                'vi': 'vi-VN',
-                'ja': 'ja-JP',
-                'ko': 'ko-KR',
-                'zh-CN': 'zh-CN',
-                'zh-TW': 'zh-TW',
-                'id': 'id-ID',
-                'ms': 'ms-MY',
-                'hi': 'hi-IN',
-                'fr': 'fr-FR',
-                'de': 'de-DE',
-                'es': 'es-ES',
-                'ru': 'ru-RU',
-                'pt': 'pt-PT',
-                'it': 'it-IT'
-            };
-
-            // Set the language
-            u.lang = langMap[langVal] || langVal;
-
-            // Create a function to speak so we can call it after loading voices if needed
-            const speak = () => {
-                const voices = speechSynthesis.getVoices();
-                // Try to find a voice that matches the language exactly or partially
-                const preferredVoice = voices.find(v => v.lang === u.lang) || 
-                                     voices.find(v => v.lang.startsWith(langVal));
-                
-                if (preferredVoice) {
-                    u.voice = preferredVoice;
-                }
-                
-                speechSynthesis.cancel();
-                speechSynthesis.speak(u);
-            };
-
-            // Handle async voice loading (Chrome sometimes needs this)
-            if (speechSynthesis.getVoices().length === 0) {
-                speechSynthesis.onvoiceschanged = speak;
-            } else {
-                speak();
-            }
-        }
-
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({ pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE }, 'google_translate_element');
-        }
-
-        function triggerTranslate() {
-            const elem = document.querySelector('.goog-te-gadget-simple');
-            if (!elem) return;
-            if (elem.click) { elem.click(); } else {
-                const evt = new MouseEvent('click', { bubbles: true, cancelable: true, view: window });
-                elem.dispatchEvent(evt);
-            }
-        }
-
-        document.getElementById('user-input').addEventListener('keypress', e => e.key==='Enter' && sendMessage());
-        window.onload = () => {
-            fetchSolutions();
-            fetchTimeline();
-            setTimeout(() => addChatMessage("Hi! 👋 I'm here to help you solve problems. What's wrong?", 'bot'), 600);
+            try{ await fetch(API_URL,{method:'POST',body:JSON.stringify(p),mode:'no-cors'}); window.closeCreateTaskPopup(); fetchTodos(); } finally{b.disabled=false;} 
         };
+        window.submitCreateTimeline = async function(){ 
+            const b=document.getElementById('btn-time-go'); b.disabled=true; 
+            const p = {
+                target:'timeline', action:'create', 
+                image:document.getElementById('time-image-input').value, 
+                datere:document.getElementById('time-date-input').value, 
+                detail:document.getElementById('time-detail-input').value, 
+                zone:document.getElementById('time-zone-input').value, 
+                postby:document.getElementById('time-postby-input').value
+            };
+            try{ await fetch(API_URL,{method:'POST',body:JSON.stringify(p),mode:'no-cors'}); window.closeCreateTimelinePopup(); fetchTimeline(); } finally{b.disabled=false;} 
+        };
+        window.submitCreateSolution = async function(){ 
+            const b=document.getElementById('btn-sol-go'); b.disabled=true; 
+            const p = {
+                target:'solution', action:'create', 
+                topic:document.getElementById('sol-topic-input').value, 
+                detail:document.getElementById('sol-detail-input').value, 
+                image:document.getElementById('sol-image-input').value
+            };
+            try{ await fetch(API_URL,{method:'POST',body:JSON.stringify(p),mode:'no-cors'}); window.closeCreateSolutionPopup(); fetchSolutions(); } finally{b.disabled=false;} 
+        };
+
+        // --- POPUP LOGIC ---
+        window.openItem = function(t,i){let item=t==='timeline'?timelineData[i]:(t==='solution'?window.currentRenderedSolutions[i]:window.currentRenderedTasks[i]);if(item)window.openPopup(item,t);};
+        window.toggleTransferMode = function() { const s = document.getElementById('transfer-section'); if(s) s.classList.toggle('hidden'); };
+        window.submitTransfer = async function(btn) { btn.disabled = true; const email = document.getElementById('transfer-email').value; try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ target: 'task', action: 'transfer', row: currentTaskData.row_index, email: email }), mode: 'no-cors' }); window.closePopup(); setTimeout(fetchTodos, 2000); } finally { btn.disabled = false; } };
+
+        window.deleteCurrentItem = async function() {
+            const pass = prompt("Action Security: Enter Passcode (admin101) to delete:");
+            if (pass !== "admin101") { alert("Incorrect Passcode!"); return; }
+            if (!confirm("Are you sure?")) return;
+            try{await fetch(API_URL,{method:'POST',body:JSON.stringify({target:currentType,action:'delete',row:currentTaskData.row_index}),mode:'no-cors'}); window.closePopup(); setTimeout(()=>{if(currentType==='task')fetchTodos();else if(currentType==='timeline')fetchTimeline();else fetchSolutions();},2000);}catch(e){}
+        };
+
+        window.openPopup = function(item, type = 'solution') {
+            const container = document.getElementById('popup-view-container'); 
+            container.classList.remove('hidden'); 
+            currentTaskData = item; currentType = type;
+            const topic = item.topic || item.Topic || '', detail = item.detail || item.Detail || '', rawD = item.date || item.Date || item.datere || item.Datere, img = item.image || item.Image || 'https://placehold.co/600x400';
+            const plant = item.plant || item.Plant || '', status = item.status || item.Status || 'In Process', tc = item.TransferCase || item.transfercase || '';
+            const dObj = parseDate(rawD); let isoD = ''; if (dObj) try { isoD = dObj.toISOString().split('T')[0]; } catch (e) { }
+            
+            let editHtml = `<div class="space-y-4"><div><label class="form-label text-[10px]">Topic</label><input type="text" id="pop-edit-topic" value="${topic}" class="form-input"></div><div><label class="form-label text-[10px]">Detail</label><textarea id="pop-edit-detail" rows="4" class="form-input">${detail}</textarea></div><div><label class="form-label text-[10px]">Image URL</label><input type="url" id="pop-edit-image" value="${img}" class="form-input"></div>${type==='task'?`<div><label class="form-label text-[10px]">Status</label><select id="pop-edit-status" class="form-input"><option value="In Process" ${status==='In Process'?'selected':''}>In Process</option><option value="Completed" ${status==='Completed'?'selected':''}>Completed</option></select></div>`:''}</div>`;
+            if (type === 'timeline') { editHtml = `<div class="space-y-4"><div><label class="form-label text-[10px]">Date</label><input type="date" id="pop-edit-date" value="${isoD}" class="form-input"></div><div><label class="form-label text-[10px]">Detail</label><textarea id="pop-edit-detail" rows="4" class="form-input">${detail}</textarea></div><div><label class="form-label text-[10px]">Image URL</label><input type="url" id="pop-edit-image" value="${img}" class="form-input"></div></div>`; }
+
+            container.innerHTML=`<div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="window.closePopup()"></div><div id="popup-view-mode" class="relative bg-white w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-[fadeIn_0.2s]"><div class="px-6 py-4 border-b bg-slate-50 flex justify-between"><div><div class="flex flex-wrap gap-2 mb-2">${type==='task'?`<span class="status-pill bg-blue-50 text-blue-600">${status}</span>`:''}${plant?`<span class="status-pill bg-slate-200 text-slate-600">${plant}</span>`:''}${isoD?`<span class="status-pill bg-white border border-slate-200">${formatDate(isoD)}</span>`:''}</div><h2 class="text-xl font-bold text-slate-800">${topic||(type==='timeline'?'Latest Update':'')}</h2></div><button onclick="window.closePopup()">✕</button></div><div class="p-6 overflow-y-auto bg-white">${type!=='task'?`<img src="${img}" onclick="window.zoomImage('${img}')" class="w-full h-40 object-cover rounded-xl mb-4 cursor-pointer">`:''}<div class="text-sm text-slate-600 leading-relaxed">${detail.replace(/\n/g,'<br>')}</div>${tc?`<div class="mt-4 p-3 bg-purple-50 border border-purple-100 rounded-lg text-purple-700 text-xs font-bold">Transferred to: ${tc}</div>`:''}</div><div id="transfer-section" class="hidden px-6 py-3 bg-purple-50 border-t border-purple-100 flex gap-2"><select id="transfer-email" class="form-input text-xs flex-1"><option value="boong@rhino-research.com">boong@rhino-research.com</option><option value="support@rhino-research.com">support@rhino-research.com</option></select><button onclick="window.submitTransfer(this)" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-[10px] font-bold shadow-sm">CONFIRM</button></div><div class="px-6 py-4 border-t bg-slate-50 flex justify-between items-center"><div><button onclick="window.readAloud('${topic}. ${detail}')" class="p-2 mr-2">🔊</button><button onclick="window.enableEditMode()" class="text-blue-600 font-bold px-3 text-sm">Edit</button>${type==='task'?`<button onclick="window.toggleTransferMode()" class="text-purple-600 font-bold px-3 text-sm">Transfer</button>`:''}<button onclick="window.deleteCurrentItem()" class="text-red-500 font-bold px-3 text-sm">Delete</button></div><button onclick="window.closePopup()" class="text-xs font-bold uppercase opacity-60">Close</button></div></div><div id="popup-edit-mode" class="hidden relative bg-white w-full max-w-xl rounded-2xl p-6 flex flex-col animate-[fadeIn_0.3s]"><h3 class="font-bold mb-4 uppercase text-xs">Edit Content</h3><div class="flex-1 overflow-y-auto">${editHtml}</div><div class="flex justify-end mt-6 gap-2"><button onclick="window.cancelEditMode()" class="px-4 py-2 text-xs font-bold text-slate-400">Cancel</button><button onclick="window.saveEditFromPopup()" id="btn-save-pop" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold text-xs shadow-lg">Save Changes</button></div></div>`;
+        };
+
+        window.enableEditMode = function(){document.getElementById('popup-view-mode').classList.add('hidden');document.getElementById('popup-edit-mode').classList.remove('hidden');};
+        window.cancelEditMode = function(){document.getElementById('popup-edit-mode').classList.add('hidden');document.getElementById('popup-view-mode').classList.remove('hidden');};
+        window.saveEditFromPopup = async function(){const b=document.getElementById('btn-save-pop');b.disabled=true;const p={action:'update',row:currentTaskData.row_index,target:currentType};if(currentType==='timeline'){p.date=document.getElementById('pop-edit-date').value;p.detail=document.getElementById('pop-edit-detail').value;p.image=document.getElementById('pop-edit-image').value;}else{p.topic=document.getElementById('pop-edit-topic').value;p.detail=document.getElementById('pop-edit-detail').value;p.image=document.getElementById('pop-edit-image').value;if(currentType==='task')p.status=document.getElementById('pop-edit-status').value;}try{await fetch(API_URL,{method:'POST',body:JSON.stringify(p),mode:'no-cors'});window.closePopup();setTimeout(()=>{if(currentType==='task')fetchTodos();else if(currentType==='timeline')fetchTimeline();else fetchSolutions();},2500);}finally{b.disabled=false;}};
+        
+        // --- Assistant Control ---
+        window.startNewChat = function(){ chatHistory=[]; document.getElementById('chat-log').innerHTML=''; addChatMessage('Hi there! 👋 How can I help you today? (English support only)','bot',true); };
+        window.sendMessage = function(){
+            const input=document.getElementById('user-input'),text=input.value.trim();
+            if(!text) return;
+            addChatMessage(text,'user'); chatHistory.push(text); input.value=''; showTyping();
+            setTimeout(()=>{
+                const mt=findMatches(text); removeTyping();
+                if(mt.length){
+                    addChatMessage(`I found ${mt.length} possible solutions:`, 'bot', true);
+                    mt.forEach((m,i)=>setTimeout(()=>{
+                        addChatMessage(`<div class="bg-white rounded-xl border overflow-hidden mt-3 shadow-sm cursor-pointer" onclick='window.openPopup(${JSON.stringify(m).replace(/'/g, "&#39;")}, "solution")'><img src="${m.image||m.Image||'https://placehold.co/400x200'}" class="w-full h-24 object-cover"><div class="p-3 font-bold text-xs text-slate-800">${m.topic||m.Topic}</div></div>`,'bot',false);
+                        if(i===mt.length-1)setTimeout(()=>addChatMessage("Could you share more details about exactly what happened?", "bot",true),1500);
+                    },(i+1)*1000));
+                } else addChatMessage("I couldn't find a direct match. Tell me more about what's happening!",'bot',true);
+            },1000);
+        };
+
+        function addChatMessage(h,s,e=false){
+            const l=document.getElementById('chat-log'),d=document.createElement('div');
+            d.className=`msg-bubble ${s==='user'?'msg-user':'msg-bot'}`;
+            l.appendChild(d);
+            if(e && !h.includes('<div')){
+                let i=0; const iv=setInterval(()=>{d.innerHTML=h.substring(0,i)+'|';i++;if(i>h.length){clearInterval(iv);d.innerHTML=h;l.scrollTop=l.scrollHeight;}},15);
+            }else{ d.innerHTML=h; }
+            l.scrollTop=l.scrollHeight;
+        }
+
+        function calculateSimilarity(s1,s2){s1=(s1||'').toLowerCase().replace(/\s/g,'');s2=(s2||'').toLowerCase().replace(/\s/g,'');if(s1===s2)return 1;if(s1.length<2||s2.length<2)return 0;let b1=new Set();for(let i=0;i<s1.length-1;i++)b1.add(s1.substring(i,i+2));let b2=new Set();for(let i=0;i<s2.length-1;i++)b2.add(s2.substring(i,i+2));let intersect=0;for(let b of b1) if(b2.has(b))intersect++;return (2*intersect)/(b1.size+b2.size);}
+        function findMatches(q){const tk=q.toLowerCase().split(/\s+/).filter(t=>t.length>1);if(!tk.length)return [];return solutions.map(s=>{const t=(s.topic||'').toLowerCase(),d=(s.detail||'').toLowerCase(),comb=t+" "+d;let sc=0;tk.forEach(x=>{if(comb.includes(x))sc+=2.5;else comb.split(/\s+/).forEach(w=>{if(calculateSimilarity(x,w)>0.75)sc+=1.2;});});chatHistory.slice(-3).forEach(p=>{if(t.includes(p.toLowerCase()))sc+=0.5;});sc+=calculateSimilarity(q,t)*6;return{...s,sc};}).filter(s=>s.sc>1.8).sort((a,b)=>b.sc-a.sc).slice(0,2);}
+        function showTyping(){const l=document.getElementById('chat-log'),d=document.createElement('div');d.id='typing-indicator';d.className='msg-bubble msg-bot w-16';d.innerHTML='<div class="typing-dots flex gap-1 justify-center"><span></span><span></span><span></span></div>';l.appendChild(d);l.scrollTop=l.scrollHeight;}
+        function removeTyping(){const e=document.getElementById('typing-indicator');if(e)e.remove();}
+
+        window.zoomImage = function(s){document.getElementById('zoomed-image').src=s;document.getElementById('image-zoom-modal').classList.remove('hidden');};
+        window.closeZoomImage = function(){document.getElementById('image-zoom-modal').classList.add('hidden');};
+        window.toggleMobileTimeline = function(){document.getElementById('timeline-sidebar').classList.toggle('-translate-x-full');document.getElementById('mobile-overlay').classList.toggle('opacity-100');document.getElementById('mobile-overlay').classList.toggle('pointer-events-none');};
+        window.closeAllMobileSidebars = function(){document.getElementById('timeline-sidebar').classList.add('-translate-x-full');document.getElementById('chat-sidebar').classList.remove('open');document.getElementById('mobile-overlay').classList.add('pointer-events-none');document.getElementById('mobile-overlay').classList.remove('opacity-100');};
+        window.triggerTranslate = function(){const el=document.querySelector('.goog-te-gadget-simple');if(el)el.click();};
+        window.googleTranslateElementInit = function(){new google.translate.TranslateElement({pageLanguage:'en',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');};
+        window.readAloud = function(text) { if(!window.speechSynthesis) return; const u = new SpeechSynthesisUtterance(text); const lMap = { 'th': 'th-TH', 'ja': 'ja-JP', 'en': 'en-US' }; u.lang = lMap[document.querySelector('.goog-te-combo')?.value] || 'en-US'; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); };
+
+        function populatePlantOptions(){const s=document.getElementById('filter-plant'),p=[...new Set(allTodoData.map(i=>i.Plant||i.plant).filter(x=>x))].sort();s.innerHTML='<option value="">All Plants</option>';p.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x;s.appendChild(o);});}
+        function renderSolutions(){const q=document.getElementById('search').value.toLowerCase(),f=solutions.filter(s=>((s.topic||'')+(s.detail||'')).toLowerCase().includes(q)),items=f.slice((solutionsPage-1)*itemsPerPage,solutionsPage*itemsPerPage);window.currentRenderedSolutions=items;document.getElementById("solutions").innerHTML=items.map((i,idx)=>`<div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl cursor-pointer group flex gap-4 animate-[fadeIn_0.3s]" onclick="window.openItem('solution',${idx})"><div class="w-20 h-20 shrink-0 bg-blue-50 rounded-xl overflow-hidden shadow-inner"><img src="${i.image||i.Image||'https://placehold.co/100x100'}" class="w-full h-full object-cover"></div><div class="min-w-0 flex-1 flex flex-col justify-center"><h3 class="font-bold truncate group-hover:text-primary transition text-slate-800 text-sm">${i.topic||i.Topic}</h3><p class="text-[10px] text-slate-500 line-clamp-2 mt-1 leading-relaxed">${i.detail||i.Detail}</p></div></div>`).join('');}
+        function renderPagination(){const q=document.getElementById('search').value.toLowerCase(),f=solutions.filter(s=>((s.topic||'')+(s.detail||'')).toLowerCase().includes(q)),tp=Math.ceil(f.length/itemsPerPage);let h='';for(let i=1;i<=tp;i++)h+=`<button onclick="window.goToPage(${i})" class="w-9 h-9 rounded-lg font-bold text-xs transition ${i===solutionsPage?'bg-primary text-white shadow-lg shadow-blue-200':'bg-white border text-slate-400'}">${i}</button>`;document.getElementById("pagination").innerHTML=h;}
+        window.goToPage = function(p){solutionsPage=p;renderSolutions();renderPagination();};
+        window.filterSolutions = function(){solutionsPage=1;renderSolutions();renderPagination();};
+        window.changeTaskPage = function(d){dashboardPage+=d;window.renderDashboard();};
+
+        window.onload = () => { 
+            fetchSolutions(); fetchTimeline(); fetchTodos();
+            window.startNewChat();
+        };
+        document.getElementById('user-input').addEventListener('keypress', e => e.key === 'Enter' && window.sendMessage());
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
