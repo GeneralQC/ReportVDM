@@ -517,7 +517,7 @@
     <header class="header-bg fixed top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-8">
         <div class="flex items-center">
             <!-- Timeline Toggle Button -->
-            <button onclick="window.toggleTimeline()"
+            <button id="timeline-toggle-btn" onclick="window.toggleTimeline()"
                 class="p-2 mr-4 bg-blue-50 text-primary rounded-xl hover:bg-blue-100 transition flex items-center justify-center">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7">
@@ -1217,6 +1217,26 @@
             window.startNewChat();
         };
         document.getElementById('user-input').addEventListener('keypress', e => e.key === 'Enter' && window.sendMessage());
+
+
+
+        // ดักจับการคลิกทั่วทั้งหน้าจอ
+document.addEventListener('click', function(event) {
+    const timelineSidebar = document.getElementById('timeline-sidebar');
+    // หาปุ่มที่ใช้กดเปิด Timeline (ปุ่มแรกใน Header)
+    const toggleBtn = document.querySelector('button[onclick="window.toggleTimeline()"]');
+
+    // เช็คว่าหน้าจอเป็นขนาด Desktop (>= 1024px) ตามเงื่อนไขที่คุณตั้งไว้ใน CSS
+    if (window.innerWidth >= 1024) {
+        // ถ้าจุดที่คลิก "ไม่ใช่" ตัวแถบ updates และ "ไม่ใช่" ปุ่มเปิด
+        if (!timelineSidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+            // สั่งให้ยุบแถบโดยการเติม Class 'collapsed'
+            timelineSidebar.classList.add('collapsed');
+            // ปรับ Padding ของเนื้อหาหลักให้กว้างขึ้น
+            document.getElementById('main-content').classList.add('no-timeline');
+        }
+    }
+});
     </script>
     <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
