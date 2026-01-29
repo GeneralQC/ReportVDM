@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VDM Solutions Platform</title>
-   
+
     <script src="https://cdn.tailwindcss.com"></script>
-  
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -877,7 +877,7 @@
             class="max-w-full max-h-full object-contain rounded-lg shadow-2xl transition-transform duration-300"></div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbzvoGV69ogQW4dg_mWXAJoSAMnjWDi8_FGpDjqRHQFmlmRtyVh1BfSxj9O3wlweCzat/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbwCa6Wruz8hjIoLZ6_DodMfqub26gHKw-lFy6R8mrohPXucKllxb9OPmujQ0LMEcrQ/exec";
 
         // --- GLOBAL EXPORTS ---
         window.closePopup = function () {
@@ -1055,7 +1055,53 @@
         // --- POPUP LOGIC ---
         window.openItem = function (t, i) { let item = t === 'timeline' ? timelineData[i] : (t === 'solution' ? window.currentRenderedSolutions[i] : window.currentRenderedTasks[i]); if (item) window.openPopup(item, t); };
         window.toggleTransferMode = function () { const s = document.getElementById('transfer-section'); if (s) s.classList.toggle('hidden'); };
-        window.submitTransfer = async function (btn) { btn.disabled = true; const email = document.getElementById('transfer-email').value; try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ target: 'task', action: 'transfer', row: currentTaskData.row_index, email: email }), mode: 'no-cors' }); window.closePopup(); setTimeout(fetchTodos, 2000); } finally { btn.disabled = false; } };
+        window.submitTransfer = async function (btn) {
+            const targetRow = currentTaskData ? currentTaskData.row_index : null;
+
+            // Log เช็คก่อนส่ง
+            window.showDebugLog(`Transferring Row: ${targetRow}...`, 'info');
+
+            if (!targetRow) {
+                window.showDebugLog("Error: Missing Row Index!", "error");
+                alert("ไม่พบข้อมูลเลขแถว!");
+                return;
+            }
+
+            btn.disabled = true;
+            const email = document.getElementById('transfer-email').value;
+
+            const payload = {
+                target: 'problem',
+                action: 'transfer',
+                row: targetRow,
+                email: email,
+                plant: currentTaskData.Plant || currentTaskData.plant || '',
+                topic: currentTaskData.Topic || currentTaskData.topic || '',
+                detail: currentTaskData.Detail || currentTaskData.detail || '',
+                image: currentTaskData.Image || currentTaskData.image || '',
+                status: 'Transferred to ' + email
+            };
+
+            // Log ตัวข้อมูลที่จะส่งไป .gs
+            console.log("Payload sent:", payload);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    mode: 'no-cors'
+                });
+
+                window.showDebugLog("Transfer request sent!", "success");
+                window.closePopup();
+                setTimeout(fetchTodos, 1500);
+            } catch (e) {
+                window.showDebugLog("Fetch Error: " + e.message, "error");
+                console.error(e);
+            } finally {
+                btn.disabled = false;
+            }
+        };
 
         window.deleteCurrentItem = async function () {
             const pass = prompt("Action Security: Enter Passcode (admin101) to delete:");
@@ -1116,54 +1162,51 @@
         window.cancelEditMode = function () { document.getElementById('popup-edit-mode').classList.add('hidden'); document.getElementById('popup-view-mode').classList.remove('hidden'); };
         window.saveEditFromPopup = async function () {
             const b = document.getElementById('btn-save-pop');
-            if (!b) return;
+            // ดึงเลขแถวจากข้อมูลปัจจุบันที่เปิด Popup อยู่
+            const finalRow = currentTaskData ? currentTaskData.row_index : null;
+
+            if (!b || !finalRow) {
+                alert("Error: ข้อมูลแถวไม่ถูกต้อง กรุณารีเฟรชหน้าจอ");
+                return;
+            }
             b.disabled = true;
 
-            // สร้าง Object ข้อมูลพื้นฐาน
+            // เตรียม Payload สำหรับส่งไป Update
             const p = {
                 action: 'update',
-                row: currentTaskData.row_index,
-                target: currentType
+                row: finalRow,
+                target: (currentType === 'task' ? 'problem' : currentType) // ปรับ target ให้ตรงกับ Sheet
             };
 
             try {
-                if (currentType === 'timeline') {
-                    // ดึงค่าเฉพาะที่มีในหน้า Timeline
-                    p.date = document.getElementById('pop-edit-date')?.value || '';
+                if (currentType === 'task') {
+                    p.plant = document.getElementById('pop-edit-plant')?.value || '';
+                    p.topic = document.getElementById('pop-edit-topic')?.value || '';
                     p.detail = document.getElementById('pop-edit-detail')?.value || '';
-                    p.image = document.getElementById('pop-edit-image')?.value || '';
+                    p.status = document.getElementById('pop-edit-status')?.value || 'In Process';
                 } else {
-                    // ดึงค่าสำหรับ Solution และ Task
+                    // กรณีอื่นๆ (Timeline/Solution)
                     p.topic = document.getElementById('pop-edit-topic')?.value || '';
                     p.detail = document.getElementById('pop-edit-detail')?.value || '';
                     p.image = document.getElementById('pop-edit-image')?.value || '';
-
-                    if (currentType === 'task') {
-                        // ดึงค่าเฉพาะที่มีในหน้า Task (ใช้ ?. เพื่อป้องกัน Error ถ้าหา ID ไม่เจอ)
-                        p.status = document.getElementById('pop-edit-status')?.value || 'In Process';
-                        p.plant = document.getElementById('pop-edit-plant')?.value || '';
-                    }
                 }
 
-                // ส่งข้อมูลไปยัง Google Apps Script
                 await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify(p),
-                    mode: 'no-cors'
+                    mode: 'no-cors' // Google Apps Script POST ต้องใช้ mode นี้
                 });
 
                 window.closePopup();
-
-                // รอให้ Database อัปเดตแล้ว Refresh ข้อมูลหน้าจอ
+                // รอ 1.5 วินาทีเพื่อให้ Database อัปเดตเสร็จแล้วค่อยรีโหลดข้อมูล
                 setTimeout(() => {
                     if (currentType === 'task') fetchTodos();
                     else if (currentType === 'timeline') fetchTimeline();
                     else fetchSolutions();
-                }, 2000);
+                }, 1500);
 
             } catch (error) {
-                console.error("Save failed:", error);
-                alert("Update failed. Please check your connection.");
+                console.error("Save Error:", error);
             } finally {
                 b.disabled = false;
             }
@@ -1221,25 +1264,44 @@
 
 
         // ดักจับการคลิกทั่วทั้งหน้าจอ
-document.addEventListener('click', function(event) {
-    const timelineSidebar = document.getElementById('timeline-sidebar');
-    // หาปุ่มที่ใช้กดเปิด Timeline (ปุ่มแรกใน Header)
-    const toggleBtn = document.querySelector('button[onclick="window.toggleTimeline()"]');
+        document.addEventListener('click', function (event) {
+            const timelineSidebar = document.getElementById('timeline-sidebar');
+            // หาปุ่มที่ใช้กดเปิด Timeline (ปุ่มแรกใน Header)
+            const toggleBtn = document.querySelector('button[onclick="window.toggleTimeline()"]');
 
-    // เช็คว่าหน้าจอเป็นขนาด Desktop (>= 1024px) ตามเงื่อนไขที่คุณตั้งไว้ใน CSS
-    if (window.innerWidth >= 1024) {
-        // ถ้าจุดที่คลิก "ไม่ใช่" ตัวแถบ updates และ "ไม่ใช่" ปุ่มเปิด
-        if (!timelineSidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
-            // สั่งให้ยุบแถบโดยการเติม Class 'collapsed'
-            timelineSidebar.classList.add('collapsed');
-            // ปรับ Padding ของเนื้อหาหลักให้กว้างขึ้น
-            document.getElementById('main-content').classList.add('no-timeline');
-        }
-    }
-});
+            // เช็คว่าหน้าจอเป็นขนาด Desktop (>= 1024px) ตามเงื่อนไขที่คุณตั้งไว้ใน CSS
+            if (window.innerWidth >= 1024) {
+                // ถ้าจุดที่คลิก "ไม่ใช่" ตัวแถบ updates และ "ไม่ใช่" ปุ่มเปิด
+                if (!timelineSidebar.contains(event.target) && !toggleBtn.contains(event.target)) {
+                    // สั่งให้ยุบแถบโดยการเติม Class 'collapsed'
+                    timelineSidebar.classList.add('collapsed');
+                    // ปรับ Padding ของเนื้อหาหลักให้กว้างขึ้น
+                    document.getElementById('main-content').classList.add('no-timeline');
+                }
+            }
+        });
+
+        // ฟังก์ชันสำหรับโชว์ Log บนหน้าจอ
+        window.showDebugLog = function (msg, type = 'info') {
+            const logContent = document.getElementById('debug-log-content');
+            const entry = document.createElement('div');
+            const bgColor = type === 'error' ? 'bg-red-500' : (type === 'success' ? 'bg-emerald-500' : 'bg-slate-800');
+            entry.className = `${bgColor} text-white text-[9px] font-bold px-3 py-1.5 rounded-lg shadow-sm animate-fadeIn mb-1`;
+            entry.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logContent.prepend(entry);
+            // ลบ Log อัตโนมัติใน 5 วินาที
+            setTimeout(() => entry.remove(), 5000);
+        };
     </script>
     <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div id="debug-log-container"
+        class="fixed top-20 right-5 z-[200] w-64 max-h-40 overflow-y-auto pointer-events-none">
+        <div id="debug-log-content" class="flex flex-col gap-1"></div>
+    </div>
+
+
 </body>
 
 </html>
