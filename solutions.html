@@ -1330,17 +1330,25 @@ window.handleChatImage = async function(input) {
 
 function detectIntent(text) {
   const t = text.toLowerCase().trim();
-  const greetings = ['สวัสดี','หวัดดี','ดีจ้า','ดีครับ','ดีค่ะ','hello','hi','hey','howdy','good morning','good afternoon','good evening','อรุณสวัสดิ์','ราตรีสวัสดิ์'];
-  const thanks = ['ขอบคุณ','ขอบใจ','thank','thanks','ขอบพระคุณ','ขอบคุณมาก','thanks a lot','thank you'];
-  const whoami = ['คุณคือใคร','น้องคือใคร','you are','who are you','what are you','ทำอะไรได้','ช่วยอะไรได้','what can you do','คุณทำอะไรได้'];
-  const bye = ['ลาก่อน','บาย','bye','goodbye','แล้วเจอกัน','see you','goodnight','ราตรี'];
-  const praise = ['เก่งมาก','ดีมาก','เยี่ยม','สุดยอด','good job','great','awesome','nice','perfect','โอเค','ok'];
+  const wordSet = new Set(t.split(/[\s,!?.;:]+/).filter(Boolean));
 
-  if (greetings.some(g => t.includes(g))) return 'greeting';
-  if (thanks.some(g => t.includes(g))) return 'thanks';
-  if (whoami.some(g => t.includes(g))) return 'whoami';
-  if (bye.some(g => t.includes(g))) return 'bye';
-  if (praise.some(g => t.includes(g))) return 'praise';
+  // Thai/multi-word phrases: substring match | English single words: exact word match
+  const matches = (patterns) => patterns.some(g => {
+    if (/[฀-๿]/.test(g) || g.includes(' ')) return t.includes(g);
+    return wordSet.has(g);
+  });
+
+  const greetings = ['สวัสดี','หวัดดี','ดีจ้า','ดีครับ','ดีค่ะ','hello','hi','hey','howdy','good morning','good afternoon','good evening','อรุณสวัสดิ์','ราตรีสวัสดิ์'];
+  const thanks = ['ขอบคุณ','ขอบใจ','ขอบพระคุณ','ขอบคุณมาก','thanks a lot','thank you','thanks','thank'];
+  const whoami = ['คุณคือใคร','น้องคือใคร','who are you','what are you','ทำอะไรได้','ช่วยอะไรได้','what can you do','คุณทำอะไรได้'];
+  const bye = ['ลาก่อน','บาย','แล้วเจอกัน','see you','goodnight','ราตรี','bye','goodbye'];
+  const praise = ['เก่งมาก','ดีมาก','เยี่ยม','สุดยอด','good job','awesome','perfect','โอเค'];
+
+  if (matches(greetings)) return 'greeting';
+  if (matches(thanks)) return 'thanks';
+  if (matches(whoami)) return 'whoami';
+  if (matches(bye)) return 'bye';
+  if (matches(praise)) return 'praise';
   return null;
 }
 
