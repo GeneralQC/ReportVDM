@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VDM Knowledge Base - 100% Local AI Search</title>
+<title>VDM Knowledge Base</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Tesseract.js for robust local OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
 <style>
 *{-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
 body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:hidden;margin:0;}
@@ -75,59 +77,57 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
 .scene{position:relative;height:440px;}
 @media(max-width:900px){.scene{height:300px;}}
 
-/* ── Phone Mockup ── */
-.phone-wrap{
-  position:absolute;top:50%;left:50%;z-index:15;
-  transform:translate(-50%,-50%);
-  animation:phoneFloat 5s ease-in-out infinite;
-}
-@media(max-width:900px){.phone-wrap{display:none;}}
-@keyframes phoneFloat{
-  0%,100%{transform:translate(-50%,-50%) perspective(900px) rotateY(18deg) rotateX(-8deg) rotateZ(-3deg) translateY(0);}
-  50%    {transform:translate(-50%,-50%) perspective(900px) rotateY(18deg) rotateX(-8deg) rotateZ(-3deg) translateY(-18px);}
-}
-.phone-frame{
-  width:186px;height:370px;
-  background:linear-gradient(160deg,#2c2c2c,#111);
-  border-radius:32px;padding:9px;
-  border:1px solid rgba(255,255,255,.13);
-  box-shadow:inset 0 2px 4px rgba(255,255,255,.07),0 35px 60px rgba(0,0,0,.85),0 0 45px rgba(59,130,246,.14);
-  position:relative;
-}
-/* Side buttons */
-.phone-frame::before{content:'';position:absolute;right:-3px;top:55px;width:3px;height:48px;background:linear-gradient(145deg,#3a3a3a,#222);border-radius:0 4px 4px 0;}
-.phone-frame::after{content:'';position:absolute;left:-3px;top:44px;width:3px;height:28px;background:linear-gradient(145deg,#3a3a3a,#222);border-radius:4px 0 0 4px;}
-.phone-screen{width:100%;height:100%;background:#080E1E;border-radius:24px;overflow:hidden;position:relative;}
-.p-notch{width:46px;height:10px;background:#000;border-radius:0 0 8px 8px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;gap:4px;}
+/* ── Multi-Device Scene ── */
+@media(max-width:900px){.devices-scene{display:none;}}
+.devices-scene{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;overflow:visible;}
+/* Laptop */
+.laptop-wrap{position:absolute;top:55px;left:-5px;z-index:5;animation:devFloat1 6s ease-in-out infinite;}
+@keyframes devFloat1{0%,100%{transform:perspective(1100px) rotateY(5deg) rotateX(-3deg) translateY(0);}50%{transform:perspective(1100px) rotateY(5deg) rotateX(-3deg) translateY(-9px);}}
+.laptop-lid{width:240px;height:152px;background:linear-gradient(160deg,#2c2c2c,#111);border-radius:9px 9px 0 0;padding:7px;border:1px solid rgba(255,255,255,.13);box-shadow:0 20px 50px rgba(0,0,0,.85),0 0 40px rgba(59,130,246,.1);position:relative;overflow:hidden;}
+.laptop-screen-inner{width:100%;height:100%;background:#080E1E;border-radius:4px;overflow:hidden;position:relative;}
+.laptop-base{width:268px;height:12px;background:linear-gradient(135deg,#2a2a2a,#181818);border-radius:0 0 7px 7px;margin-left:-14px;border:1px solid rgba(255,255,255,.06);border-top:none;display:flex;align-items:center;justify-content:center;}
+.laptop-notch{width:45px;height:3px;background:#1a1a1a;border-radius:2px;}
+.laptop-lid::after{content:'';position:absolute;top:7px;left:7px;right:7px;height:35%;background:linear-gradient(180deg,rgba(255,255,255,.055) 0%,transparent 100%);pointer-events:none;border-radius:4px 4px 0 0;}
+/* Tablet */
+.tablet-wrap{position:absolute;top:28px;left:225px;z-index:10;animation:devFloat2 5.5s ease-in-out infinite;animation-delay:.7s;}
+@keyframes devFloat2{0%,100%{transform:perspective(900px) rotateY(-7deg) rotateX(-2deg) translateY(0);}50%{transform:perspective(900px) rotateY(-7deg) rotateX(-2deg) translateY(-12px);}}
+.tablet-frame{width:110px;height:152px;background:linear-gradient(160deg,#2c2c2c,#111);border-radius:12px;padding:5px;border:1px solid rgba(255,255,255,.13);box-shadow:inset 0 2px 4px rgba(255,255,255,.06),0 20px 45px rgba(0,0,0,.85),0 0 28px rgba(99,102,241,.13);position:relative;overflow:hidden;}
+.tablet-frame::before{content:'';position:absolute;right:-3px;top:38%;width:3px;height:22px;background:linear-gradient(145deg,#3a3a3a,#222);border-radius:0 3px 3px 0;z-index:2;}
+.tablet-frame::after{content:'';position:absolute;top:5px;left:5px;right:5px;height:35%;background:linear-gradient(180deg,rgba(255,255,255,.05) 0%,transparent 100%);pointer-events:none;border-radius:8px 8px 0 0;z-index:2;}
+.tablet-screen{width:100%;height:100%;background:#080E1E;border-radius:8px;overflow:hidden;position:relative;}
+/* Phone */
+.phone-wrap{position:absolute;top:15px;right:0;z-index:15;animation:devFloat3 5s ease-in-out infinite;animation-delay:1.4s;}
+@keyframes devFloat3{0%,100%{transform:perspective(900px) rotateY(18deg) rotateX(-8deg) rotateZ(-2deg) translateY(0);}50%{transform:perspective(900px) rotateY(18deg) rotateX(-8deg) rotateZ(-2deg) translateY(-16px);}}
+.phone-frame{width:160px;height:315px;background:linear-gradient(160deg,#2c2c2c,#111);border-radius:28px;padding:8px;border:1px solid rgba(255,255,255,.13);box-shadow:inset 0 2px 4px rgba(255,255,255,.07),0 30px 55px rgba(0,0,0,.85),0 0 45px rgba(59,130,246,.14);position:relative;}
+.phone-frame::before{content:'';position:absolute;right:-3px;top:50px;width:3px;height:42px;background:linear-gradient(145deg,#3a3a3a,#222);border-radius:0 4px 4px 0;}
+.phone-frame::after{content:'';position:absolute;left:-3px;top:38px;width:3px;height:24px;background:linear-gradient(145deg,#3a3a3a,#222);border-radius:4px 0 0 4px;}
+.phone-screen{width:100%;height:100%;background:#080E1E;border-radius:20px;overflow:hidden;position:relative;}
+.p-notch{width:40px;height:9px;background:#000;border-radius:0 0 7px 7px;margin:0 auto 2px;display:flex;align-items:center;justify-content:center;gap:3px;}
 .p-cam{width:5px;height:5px;border-radius:50%;background:#1c1c1c;border:1px solid #2a2a2a;}
 .p-dot{width:3px;height:3px;border-radius:50%;background:#2a2a2a;}
-/* Mini nav */
-.p-nav{height:20px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);}
+.p-nav{height:18px;padding:0 7px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);}
 .p-logo{display:flex;align-items:center;gap:3px;}
-.p-icon{width:8px;height:8px;border-radius:2px;background:linear-gradient(135deg,#3B82F6,#6366F1);}
-.p-name{font-size:6px;font-weight:700;color:rgba(255,255,255,.65);}
+.p-icon{width:7px;height:7px;border-radius:2px;background:linear-gradient(135deg,#3B82F6,#6366F1);}
+.p-name{font-size:5.5px;font-weight:700;color:rgba(255,255,255,.65);}
 .p-dots{display:flex;gap:2px;}
 .p-d{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);}
-/* Mini hero */
-.p-hero{background:linear-gradient(160deg,#0C1F3E,#1B3FA0);padding:10px 8px 14px;text-align:center;position:relative;overflow:hidden;}
-.p-htitle{font-size:7px;font-weight:800;color:#fff;margin-bottom:3px;}
-.p-hsub{font-size:5px;color:rgba(255,255,255,.45);margin-bottom:8px;}
-.p-hbar{background:rgba(255,255,255,.95);border-radius:5px;height:13px;display:flex;align-items:center;padding:0 5px;gap:4px;}
+.p-hero{background:linear-gradient(160deg,#0C1F3E,#1B3FA0);padding:9px 7px 12px;text-align:center;position:relative;overflow:hidden;}
+.p-htitle{font-size:6.5px;font-weight:800;color:#fff;margin-bottom:3px;}
+.p-hsub{font-size:4.5px;color:rgba(255,255,255,.45);margin-bottom:7px;}
+.p-hbar{background:rgba(255,255,255,.95);border-radius:5px;height:12px;display:flex;align-items:center;padding:0 5px;gap:4px;}
 .p-hico{width:6px;height:6px;border:1px solid #94A3B8;border-radius:50%;}
-.p-htxt{font-size:5px;color:#94A3B8;}
-.p-cursor{display:inline-block;width:1px;height:7px;background:#3B82F6;animation:blink 1s step-end infinite;vertical-align:middle;}
+.p-htxt{font-size:4.5px;color:#94A3B8;}
+.p-cursor{display:inline-block;width:1px;height:6px;background:#3B82F6;animation:blink 1s step-end infinite;vertical-align:middle;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-/* Mini cards */
-.p-cards{padding:6px;display:flex;flex-direction:column;gap:3px;}
-.p-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:6px;height:23px;display:flex;align-items:center;padding:0 5px;gap:4px;animation:pCardIn .5s ease-out both;}
+.p-cards{padding:5px;display:flex;flex-direction:column;gap:2.5px;}
+.p-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:5px;height:21px;display:flex;align-items:center;padding:0 5px;gap:3px;animation:pCardIn .5s ease-out both;}
 @keyframes pCardIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-.p-thumb{width:13px;height:13px;border-radius:3px;flex-shrink:0;}
+.p-thumb{width:12px;height:12px;border-radius:2.5px;flex-shrink:0;}
 .p-lines{flex:1;display:flex;flex-direction:column;gap:2px;}
-.p-line{height:2.5px;border-radius:2px;background:rgba(255,255,255,.2);}
+.p-line{height:2px;border-radius:2px;background:rgba(255,255,255,.2);}
 .p-line.s{width:55%;}
 .p-arr{width:5px;height:5px;opacity:.28;}
-/* Shine overlay */
-.p-shine{position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,transparent 100%);border-radius:24px 24px 0 0;pointer-events:none;}
+.p-shine{position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,transparent 100%);border-radius:20px 20px 0 0;pointer-events:none;}
 
 /* ═══ CARDS SECTION ═══ */
 .sol-card{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:18px;cursor:pointer;transition:border-color .18s,box-shadow .18s,transform .18s;}
@@ -159,24 +159,6 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .fade-up{animation:fadeUp .35s ease-out both;}
 @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-5px);opacity:1;}}
-
-/* AI Progress Indicator Styles */
-.ai-progress-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255,255,255,0.05);
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.1);
-  font-size: 11px;
-}
-.ai-progress-bar {
-  height: 4px;
-  background: #3B82F6;
-  border-radius: 2px;
-  transition: width 0.3s ease;
-}
 </style>
 </head>
 <body>
@@ -187,13 +169,15 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
     <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(59,130,246,.35);">
       <svg style="width:15px;height:15px;color:white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     </div>
-    <span style="font-weight:700;font-size:15px;color:#1E293B;letter-spacing:-.02em;">VDM <span style="color:#3B82F6;font-weight:400;">Solutions</span><span style="color:#4bfd05;font-weight:700;"> Ai</span></span>
+    <span style="font-weight:700;font-size:15px;color:#1E293B;letter-spacing:-.02em;">VDM <span style="color:#3B82F6;font-weight:400;">Solutions</span><span style="color:#19ff04;font-weight:900;"> AI</span></span>
   </a>
   <div style="display:flex;align-items:center;gap:8px;">
     <!-- AI Status indicator on Header -->
     <div id="ai-header-status" class="hidden md:flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-lg text-[11px] text-blue-600 font-semibold">
       <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse" id="ai-header-dot"></div>
-      <span id="ai-header-text">Initializing AI Engine...</span>
+      <span id="ai-header-text">Initializing AI Engine (0%)</span>
+      <button id="ai-help-btn" onclick="window.showWifiHelp()" class="ml-1.5 text-blue-500 hover:text-blue-700 font-extrabold underline hidden">WiFi Help ❓</button>
+      <button id="ai-skip-btn" onclick="window.skipAiLoading()" class="ml-1 text-blue-500 hover:text-blue-700 underline font-bold">Skip</button>
     </div>
 
     <a href="https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?refresh=1&platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA63PPQ_CIBAG4L_S3MwvYG0cjB-DGhdxuMI1IVJogKoN4b9L_Yibix15uTz3XoKrpts-orwAP6Xva0UjcEgCDmNPAriA2tnonRHABGyxe4U7ks6rqkajG49RO1utHapKkimTGfKZfcxIAXj6n-Tzt2SgFdmoW01-8ietuG-rfE9SCX45kBl0Q8TG0PPY4uRcstbJIZA6lsozVQ1Lu7j3aNXGqbKmRRMoPwCfwSiliconYyQEA==&view=Record%20Calibration%20Load%20cell" target="_blank" class="ext-btn">
@@ -219,8 +203,8 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
         <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
       </div>
       <div>
-        <p style="font-weight:600;font-size:13px;color:#1E293B;margin:0;line-height:1.3;">VDM Assistant </p>
-        <p id="chat-status-text" style="font-size:10px;font-weight:700;color:#10B981;margin:0;text-transform:uppercase;letter-spacing:.08em;">● Ai-MiniLM-L6-v2</p>
+        <p style="font-weight:600;font-size:13px;color:#1E293B;margin:0;line-height:1.3;">VDM Assistant</p>
+        <p id="chat-status-text" style="font-size:10px;font-weight:700;color:#3b82f6;margin:0;text-transform:uppercase;letter-spacing:.08em;">● Preparing AI</p>
       </div>
     </div>
     <div style="display:flex;gap:6px;">
@@ -231,8 +215,8 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
     </div>
   </div>
   
-  <!-- AI Loading Progress Bar in Chat Panel -->
-  <div id="ai-chat-progress" class="px-4 py-2 border-b border-gray-100 bg-blue-50/50 flex flex-col gap-1.5" style="display:none;">
+  <!-- AI Loading Progress Bar in Chat Panel with Skip option -->
+  <div id="ai-chat-progress" class="px-4 py-2 border-b border-gray-100 bg-blue-50/50 flex flex-col gap-1.5">
     <div class="flex justify-between items-center text-[10px] text-blue-600 font-bold">
       <span id="ai-progress-label">Preparing Local AI Engine...</span>
       <span id="ai-progress-percent">0%</span>
@@ -240,12 +224,30 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
     <div class="w-full bg-blue-100 rounded-full h-1.5 overflow-hidden">
       <div id="ai-progress-fill" class="bg-blue-500 h-1.5 rounded-full" style="width: 0%"></div>
     </div>
+    <div class="flex justify-between items-center mt-0.5">
+      <button onclick="window.showWifiHelp()" class="text-[10px] text-blue-500 hover:text-blue-700 underline font-extrabold cursor-pointer">
+        WiFi Redirect Help ❓
+      </button>
+      <button onclick="window.skipAiLoading()" class="text-[10px] text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer">
+        Skip & Use Instant Search (No download) ⚡
+      </button>
+    </div>
   </div>
 
   <div id="chat-msgs" class="chat-msgs" style="display:flex;flex-direction:column;"></div>
+  
+  <!-- Chat Input Bar with camera upload capability -->
   <div style="padding:12px;border-top:1px solid #F1F5F9;">
     <div style="display:flex;align-items:center;gap:8px;background:#F8FAFC;border-radius:12px;padding:8px 12px;border:1.5px solid #E2E8F0;transition:border-color .2s;" onfocusin="this.style.borderColor='#93C5FD'" onfocusout="this.style.borderColor='#E2E8F0'">
+      
+      <!-- Upload Vision AI Image Trigger -->
+      <label id="vision-trigger" for="chat-img-upload" style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:30px; height:30px; background:#EFF6FF; border-radius:8px; color:#3B82F6; flex-shrink:0;" class="hover:bg-blue-100 transition-all" title="Upload Image for AI Analysis">
+        <svg style="width:17px;height:17px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+      </label>
+      <input id="chat-img-upload" type="file" accept="image/*" style="display:none;" onchange="window.handleChatImage(this)">
+      
       <input id="chat-input" type="text" placeholder="Ask local AI support…" style="flex:1;background:transparent;border:none;outline:none;font-size:13.5px;color:#1E293B;font-family:'Inter',sans-serif;">
+      
       <button onclick="window.sendMsg()" style="width:32px;height:32px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;cursor:pointer;border:none;transition:background .18s;" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">
         <svg style="width:14px;height:14px;transform:rotate(90deg)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
       </button>
@@ -275,8 +277,8 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
         </div>
         <!-- Local AI Active Badge -->
         <div id="ai-search-indicator" class="flex items-center gap-1.5 text-[11px] text-white/50 pl-2">
-          <div class="w-1.5 h-1.5 rounded-full bg-white/30" id="ai-dot-indicator"></div>
-          <span id="ai-indicator-text">Semantic search is offline. Keyword matching active.</span>
+          <div class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" id="ai-dot-indicator"></div>
+          <span id="ai-indicator-text">Semantic search is initializing. Fast search is active.</span>
         </div>
       </div>
 
@@ -286,29 +288,75 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
     <!-- RIGHT: 3D Scene -->
     <div class="scene">
 
-      <!-- Phone Mockup -->
-      <div class="phone-wrap">
-        <div class="phone-frame">
-          <div class="phone-screen">
-            <div class="p-notch"><div class="p-cam"></div><div class="p-dot"></div></div>
-            <div class="p-nav">
-              <div class="p-logo"><div class="p-icon"></div><span class="p-name">VDM Solutions Ai-MiniLM-L6-v2</span></div>
-              <div class="p-dots"><div class="p-d"></div><div class="p-d"></div><div class="p-d"></div></div>
+      <div class="devices-scene">
+
+        <!-- Laptop Mockup -->
+        <div class="laptop-wrap">
+          <div class="laptop-lid">
+            <div class="laptop-screen-inner">
+              <div style="height:12px;background:rgba(15,23,42,.95);display:flex;align-items:center;padding:0 7px;gap:5px;border-bottom:1px solid rgba(255,255,255,.05);">
+                <div style="display:flex;gap:3px;"><div style="width:4px;height:4px;border-radius:50%;background:#FF5F57;"></div><div style="width:4px;height:4px;border-radius:50%;background:#FEBC2E;"></div><div style="width:4px;height:4px;border-radius:50%;background:#28C840;"></div></div>
+                <div style="flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;"></div>
+                <div style="display:flex;align-items:center;gap:2px;"><div style="width:6px;height:6px;border-radius:1.5px;background:linear-gradient(135deg,#3B82F6,#6366F1);"></div><div style="font-size:4.5px;font-weight:700;color:rgba(255,255,255,.6);">VDM Solutions</div></div>
+              </div>
+              <div style="background:linear-gradient(160deg,#0C1F3E,#1B3FA0);padding:7px 8px;display:flex;align-items:center;gap:6px;">
+                <div style="flex:1;"><div style="font-size:5.5px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:4px;">Troubleshooting<br>Knowledge Base</div><div style="background:rgba(255,255,255,.92);border-radius:4px;height:9px;display:flex;align-items:center;padding:0 5px;gap:3px;"><div style="width:5px;height:5px;border:1px solid #CBD5E1;border-radius:50%;"></div><div style="font-size:4px;color:#94A3B8;">Search solutions...</div></div></div>
+                <div style="width:26px;height:44px;background:rgba(0,0,0,.4);border-radius:5px;border:1px solid rgba(255,255,255,.1);flex-shrink:0;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(180deg,rgba(59,130,246,.3),rgba(99,102,241,.2));"></div></div>
+              </div>
+              <div style="padding:5px 6px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;">
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:4px;height:28px;"><div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(135deg,#3B82F6,#6366F1);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:65%;"></div></div>
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:4px;height:28px;"><div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(135deg,#10B981,#059669);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:75%;"></div></div>
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:4px;height:28px;"><div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(135deg,#F59E0B,#D97706);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:50%;"></div></div>
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:4px;height:28px;"><div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(135deg,#EC4899,#DB2777);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:60%;"></div></div>
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:4px;height:28px;"><div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(135deg,#8B5CF6,#7C3AED);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:70%;"></div></div>
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:4px;padding:4px;height:28px;"><div style="width:14px;height:8px;border-radius:2px;background:linear-gradient(135deg,#06B6D4,#0891B2);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:80%;"></div></div>
+              </div>
             </div>
-            <div class="p-hero">
-              <div class="p-htitle">How can we help?</div>
-              <div class="p-hsub">Search troubleshooting guides</div>
-              <div class="p-hbar"><div class="p-hico"></div><span class="p-htxt">Search<span class="p-cursor"></span></span></div>
+          </div>
+          <div class="laptop-base"><div class="laptop-notch"></div></div>
+        </div>
+
+        <!-- Tablet Mockup -->
+        <div class="tablet-wrap">
+          <div class="tablet-frame">
+            <div class="tablet-screen">
+              <div style="height:14px;padding:0 5px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.05);"><div style="display:flex;align-items:center;gap:2px;"><div style="width:6px;height:6px;border-radius:1.5px;background:linear-gradient(135deg,#3B82F6,#6366F1);"></div><div style="font-size:4.5px;font-weight:700;color:rgba(255,255,255,.65);">VDM</div></div><div style="display:flex;gap:2px;"><div style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);"></div><div style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);"></div></div></div>
+              <div style="background:linear-gradient(160deg,#0C1F3E,#1B3FA0);padding:7px 6px 9px;text-align:center;"><div style="font-size:5.5px;font-weight:800;color:#fff;margin-bottom:2px;">VDM Solutions</div><div style="font-size:3.5px;color:rgba(255,255,255,.5);margin-bottom:5px;">Troubleshooting KB</div><div style="background:rgba(255,255,255,.92);border-radius:4px;height:9px;display:flex;align-items:center;padding:0 4px;gap:3px;"><div style="width:5px;height:5px;border:1px solid #CBD5E1;border-radius:50%;"></div><div style="font-size:3.5px;color:#94A3B8;">Search...</div></div></div>
+              <div style="padding:4px;display:grid;grid-template-columns:1fr 1fr;gap:2.5px;">
+                <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:4px;height:22px;padding:3.5px;"><div style="width:12px;height:7px;border-radius:2px;background:linear-gradient(135deg,#3B82F6,#6366F1);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:70%;"></div></div>
+                <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:4px;height:22px;padding:3.5px;"><div style="width:12px;height:7px;border-radius:2px;background:linear-gradient(135deg,#10B981,#059669);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:55%;"></div></div>
+                <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:4px;height:22px;padding:3.5px;"><div style="width:12px;height:7px;border-radius:2px;background:linear-gradient(135deg,#F59E0B,#D97706);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:80%;"></div></div>
+                <div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:4px;height:22px;padding:3.5px;"><div style="width:12px;height:7px;border-radius:2px;background:linear-gradient(135deg,#EC4899,#DB2777);margin-bottom:2px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.2);margin-bottom:1.5px;"></div><div style="height:2px;border-radius:1px;background:rgba(255,255,255,.1);width:65%;"></div></div>
+              </div>
             </div>
-            <div class="p-cards">
-              <div class="p-card" style="animation-delay:.4s"><div class="p-thumb" style="background:linear-gradient(135deg,#3B82F6,#6366F1)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
-              <div class="p-card" style="animation-delay:.6s"><div class="p-thumb" style="background:linear-gradient(135deg,#10B981,#059669)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
-              <div class="p-card" style="animation-delay:.8s"><div class="p-thumb" style="background:linear-gradient(135deg,#F59E0B,#D97706)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
-              <div class="p-card" style="animation-delay:1s"><div class="p-thumb" style="background:linear-gradient(135deg,#EC4899,#DB2777)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
-            </div>
-            <div class="p-shine"></div>
           </div>
         </div>
+
+        <!-- Phone Mockup -->
+        <div class="phone-wrap">
+          <div class="phone-frame">
+            <div class="phone-screen">
+              <div class="p-notch"><div class="p-cam"></div><div class="p-dot"></div></div>
+              <div class="p-nav">
+                <div class="p-logo"><div class="p-icon"></div><span class="p-name">VDM Solutions</span></div>
+                <div class="p-dots"><div class="p-d"></div><div class="p-d"></div><div class="p-d"></div></div>
+              </div>
+              <div class="p-hero">
+                <div class="p-htitle">How can we help?</div>
+                <div class="p-hsub">Search troubleshooting guides</div>
+                <div class="p-hbar"><div class="p-hico"></div><span class="p-htxt">Search<span class="p-cursor"></span></span></div>
+              </div>
+              <div class="p-cards">
+                <div class="p-card" style="animation-delay:.4s"><div class="p-thumb" style="background:linear-gradient(135deg,#3B82F6,#6366F1)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
+                <div class="p-card" style="animation-delay:.6s"><div class="p-thumb" style="background:linear-gradient(135deg,#10B981,#059669)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
+                <div class="p-card" style="animation-delay:.8s"><div class="p-thumb" style="background:linear-gradient(135deg,#F59E0B,#D97706)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
+                <div class="p-card" style="animation-delay:1s"><div class="p-thumb" style="background:linear-gradient(135deg,#EC4899,#DB2777)"></div><div class="p-lines"><div class="p-line"></div><div class="p-line s"></div></div><svg class="p-arr" fill="none" stroke="rgba(255,255,255,.35)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div>
+              </div>
+              <div class="p-shine"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -398,6 +446,57 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
   </div>
 </div>
 
+<!-- ═══ WIFI / LOCAL AI TROUBLESHOOTING MODAL ═══ -->
+<div id="modal-wifi-help" style="display:none;position:fixed;inset:0;z-index:110;align-items:center;justify-content:center;padding:16px;">
+  <div style="position:fixed;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(6px);" onclick="window.closeWifiHelp()"></div>
+  <div style="position:relative;background:#fff;width:100%;max-width:480px;border-radius:24px;box-shadow:0 25px 65px rgba(0,0,0,.25);overflow:hidden;animation:fadeUp .25s ease-out;">
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="font-extrabold text-lg leading-tight">📡 First-time AI Setup Help</h3>
+          <p class="text-blue-100 text-xs mt-1">Why is my local AI engine stuck or loading slowly?</p>
+        </div>
+        <button onclick="window.closeWifiHelp()" class="text-white/80 hover:text-white transition-colors bg-white/10 p-1.5 rounded-lg">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+    </div>
+    <div class="p-6 flex flex-col gap-4">
+      <div class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 text-xs leading-relaxed flex gap-2.5 items-start">
+        <span class="text-lg">⚠️</span>
+        <div>
+          <b>Public Wi-Fi Redirect Block</b><br>
+          If you are connected to public networks like <b>.@ TRUEWIFI</b>, the system cannot download the AI module due to captive portal login barriers.
+        </div>
+      </div>
+      
+      <div class="text-xs text-slate-600 flex flex-col gap-2 leading-relaxed">
+        <p class="font-bold text-slate-800">Please follow these quick steps to fix it:</p>
+        <div class="flex gap-2 items-start">
+          <div class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold flex-shrink-0 text-[10px]">1</div>
+          <p>Login to your <b>.@ TRUEWIFI</b> portal through your browser so internet flows successfully.</p>
+        </div>
+        <div class="flex gap-2 items-start">
+          <div class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold flex-shrink-0 text-[10px]">2</div>
+          <p><b>Or, temporarily switch to a mobile data hotspot</b> on your device for about 1 minute. It only needs to fetch the lightweight 23MB text file and 5MB image analysis file once.</p>
+        </div>
+        <div class="flex gap-2 items-start">
+          <div class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold flex-shrink-0 text-[10px]">3</div>
+          <p>Once downloaded and saved in browser cache, <b>you can disconnect from the internet and use the AI completely offline!</b></p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex justify-end gap-2.5">
+      <button onclick="window.skipAiLoading()" class="h-9 px-4 border border-slate-200 rounded-xl text-slate-600 text-xs font-semibold hover:bg-slate-100 transition-colors">
+        Skip & Use Keyword Mode
+      </button>
+      <button onclick="window.closeWifiHelp()" class="h-9 px-5 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-colors">
+        Got it!
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="dbg-wrap" style="position:fixed;top:66px;right:16px;z-index:200;width:260px;max-height:160px;overflow-y:auto;pointer-events:none;">
   <div id="dbg-log" style="display:flex;flex-direction:column;gap:4px;"></div>
 </div>
@@ -411,10 +510,23 @@ let aiExtractor = null;
 let aiEmbeddingCache = {}; // Cache to store vector embeddings for loaded articles
 let isAiLoading = false;
 let isAiReady = false;
+let loadingTimeout = null;
+
+/* ── Vision AI Variables ── */
+let aiClassifier = null;
+let isClassifierLoading = false;
+let isClassifierReady = false;
+
+// Real-time tracking of the download status of each model
+let modelProgress = {
+  text: 0,
+  vision: 0
+};
 
 /* ── Premium Custom Notification Dialogs ── */
 window.showToast = function(message, type = 'success') {
   const container = document.getElementById('toast-container');
+  if (!container) return;
   const toast = document.createElement('div');
   toast.className = 'fade-up';
   toast.style.cssText = `
@@ -457,6 +569,14 @@ window.showConfirmDialog = function(title, message, onConfirm) {
   cancelBtn.onclick = close;
 };
 
+/* ── Wifi Modal Controls ── */
+window.showWifiHelp = () => {
+  document.getElementById('modal-wifi-help').style.display = 'flex';
+};
+window.closeWifiHelp = () => {
+  document.getElementById('modal-wifi-help').style.display = 'none';
+};
+
 /* ── Chat toggle ── */
 window.toggleChat=function(){
   const p=document.getElementById('chat-panel'),b=document.getElementById('page-body');
@@ -469,7 +589,7 @@ window.closeMobileChat=function(){document.getElementById('chat-panel').classLis
 /* ── Modals ── */
 window.openAddSolution=()=>{ const m=document.getElementById('modal-solution');m.style.display='flex'; };
 window.closeAddSolution=()=>{ document.getElementById('modal-solution').style.display='none'; };
-window.closeZoom=()=>{ document.getElementById('zoom-modal');m=document.getElementById('zoom-modal');m.style.display='none'; };
+window.closeZoom=()=>{ const m=document.getElementById('zoom-modal');m.style.display='none'; };
 window.zoomImage=(s)=>{ document.getElementById('zoom-img').src=s;const m=document.getElementById('zoom-modal');m.style.display='flex'; };
 window.closePopup=()=>{ document.getElementById('popup-wrap').style.display='none';if(window.speechSynthesis)window.speechSynthesis.cancel(); };
 
@@ -488,85 +608,235 @@ async function fetchSolutions(){
   // Re-initialize dynamic suggestions once live database loads
   window.newChat();
 
-  // Initialize AI Vector Search background load
+  // Initialize AI Vector Search & Vision engine immediately on load
   if (!isAiReady && !isAiLoading) {
     initLocalAIEngine();
-  } else if (isAiReady) {
-    precomputeArticleEmbeddings();
   }
 }
 
-/* ── AI Embedding Engine (Transformers.js Integration) ── */
+/* ── AI Embedding & Vision Engine (Parallel Transformers.js Integration) ── */
 async function initLocalAIEngine() {
   isAiLoading = true;
   
-  // Show Loading Bars
+  // Setup header loading and help dialog options
   const chatProgress = document.getElementById('ai-chat-progress');
   const headerStatusText = document.getElementById('ai-header-text');
   const progressLabel = document.getElementById('ai-progress-label');
   const progressPercent = document.getElementById('ai-progress-percent');
   const progressFill = document.getElementById('ai-progress-fill');
+  const skipBtn = document.getElementById('ai-skip-btn');
+  const helpBtn = document.getElementById('ai-help-btn');
+  const chatStatusText = document.getElementById('chat-status-text');
   
-  chatProgress.style.display = 'flex';
-  headerStatusText.textContent = "Loading Local AI...";
-  progressLabel.textContent = "Downloading AI Neural Net...";
+  if (chatProgress) chatProgress.style.display = 'flex';
+  if (headerStatusText) headerStatusText.textContent = "Initializing AI Engine (0%)";
+  if (progressLabel) progressLabel.textContent = "Downloading AI Neural Net...";
+  if (skipBtn) skipBtn.style.display = 'inline-block';
+  
+  // Setup loading warning timeout for 15 seconds in case network is redirected/captive
+  loadingTimeout = setTimeout(() => {
+    if (!isAiReady && isAiLoading) {
+      console.log("Local AI loading slowly. Showing WiFi Redirect diagnostic options.");
+      if (helpBtn) helpBtn.classList.remove('hidden');
+      window.showToast("Local AI loading slowly. Captive Portal check recommended 📡", "error");
+    }
+  }, 15000);
   
   try {
-    // Dynamically import Transformers.js to avoid blocking UI thread initially
+    // Dynamically import Transformers.js to avoid blocking browser's rendering path initially
     const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
     
-    // Disable local model looking. Always pull from Hugging Face CDN (cached in browser Cache Storage)
+    // Check if user manually bypassed/skipped during module fetch
+    if (!isAiLoading) return;
+    
     env.allowLocalModels = false;
     
-    // We use 'Xenova/all-MiniLM-L6-v2', a highly efficient 23MB sentence embedding model
-    aiExtractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+    // Fire off both pipelines concurrently to optimize handshake time
+    // Weight calculation: text model is 23MB (~80%), vision model is 5MB (~20%)
+    const textPromise = pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
       progress_callback: (data) => {
+        if (!isAiLoading) return;
         if (data.status === 'progress') {
-          const progress = Math.round(data.progress);
-          progressPercent.textContent = `${progress}%`;
-          progressFill.style.width = `${progress}%`;
-          headerStatusText.textContent = `Loading Local AI (${progress}%)`;
+          modelProgress.text = data.progress;
+          updateTotalProgress();
+        } else if (data.status === 'ready') {
+          modelProgress.text = 100;
+          updateTotalProgress();
         }
       }
     });
+
+    // We changed the model to the official, public "Xenova/resnet-50" which has perfect configuration files and will load 100%!
+    const visionPromise = pipeline('image-classification', 'Xenova/resnet-50', {
+      progress_callback: (data) => {
+        if (!isAiLoading) return;
+        if (data.status === 'progress') {
+          modelProgress.vision = data.progress;
+          updateTotalProgress();
+        } else if (data.status === 'ready') {
+          modelProgress.vision = 100;
+          updateTotalProgress();
+        }
+      }
+    });
+
+    // Instead of Promise.all (which fails globally if either model errors out), 
+    // we handle individual model rejections gracefully so text search remains functional!
+    let textModelLoaded = false;
+    let visionModelLoaded = false;
+
+    await Promise.all([
+      textPromise.then(model => {
+        aiExtractor = model;
+        isAiReady = true;
+        textModelLoaded = true;
+      }).catch(err => {
+        console.error("Text search model failed to load:", err);
+        modelProgress.text = 0;
+      }),
+      visionPromise.then(model => {
+        aiClassifier = model;
+        isClassifierReady = true;
+        visionModelLoaded = true;
+      }).catch(err => {
+        console.error("Vision AI model failed to load:", err);
+        modelProgress.vision = 0;
+        window.showToast("Vision AI setup skipped. Text search is still active!", "error");
+      })
+    ]);
     
-    isAiReady = true;
+    // Check if skipped while loading completes
+    if (!isAiLoading) return;
+    
+    clearTimeout(loadingTimeout);
     isAiLoading = false;
     
-    // Successfully loaded local Neural Net
-    chatProgress.style.display = 'none';
-    
-    // Update Indicators
-    const headerDot = document.getElementById('ai-header-dot');
-    headerDot.classList.remove('bg-blue-400');
-    headerDot.classList.add('bg-emerald-400');
-    headerStatusText.textContent = "Local AI Search: Active";
-    
-    const aiSearchIndicator = document.getElementById('ai-search-indicator');
-    const aiDotIndicator = document.getElementById('ai-dot-indicator');
-    const aiIndicatorText = document.getElementById('ai-indicator-text');
-    aiDotIndicator.classList.remove('bg-white/30');
-    aiDotIndicator.classList.add('bg-emerald-400');
-    aiDotIndicator.classList.add('animate-pulse');
-    aiIndicatorText.textContent = "Semantic Local AI Search is now active! 🧠";
-    
-    // Run embeddings computation for loaded articles
-    await precomputeArticleEmbeddings();
+    if (textModelLoaded) {
+      // Successfully configured text embeddings!
+      if (chatProgress) chatProgress.style.display = 'none';
+      if (skipBtn) skipBtn.style.display = 'none';
+      if (helpBtn) helpBtn.classList.add('hidden');
+      
+      // Update Indicators
+      const headerDot = document.getElementById('ai-header-dot');
+      if (headerDot) {
+        headerDot.classList.remove('bg-blue-400');
+        headerDot.classList.add('bg-emerald-400');
+      }
+      
+      if (headerStatusText) {
+        headerStatusText.textContent = visionModelLoaded ? "Local AI: Ready 🧠" : "Local AI: Search Active 🧠";
+      }
+      if (chatStatusText) {
+        chatStatusText.textContent = visionModelLoaded ? "● AI Xenova Ready" : "● Text AI Active";
+        chatStatusText.classList.remove('text-emerald-500');
+        chatStatusText.style.color = '#10B981';
+      }   //:  resnet-50 & all-MiniLM-L6-v2
+      
+      const aiDotIndicator = document.getElementById('ai-dot-indicator');
+      const aiIndicatorText = document.getElementById('ai-indicator-text');
+      if (aiDotIndicator) {
+        aiDotIndicator.classList.remove('bg-white/30', 'bg-amber-400', 'bg-blue-400', 'animate-pulse');
+        aiDotIndicator.classList.add('bg-emerald-400', 'animate-pulse');
+      }
+      if (aiIndicatorText) {
+        aiIndicatorText.textContent = visionModelLoaded 
+          ? "Semantic Local AI Search & Vision Active! 🧠" 
+          : "Semantic Local AI Search Active (Vision Offline)! 🧠";
+      }
+      
+      window.showToast(visionModelLoaded ? "Local Search & Vision AI active!" : "Local Search active!");
+      
+      // Run embeddings computation for all fetched articles
+      await precomputeArticleEmbeddings();
+    } else {
+      fallbackToKeywordMode();
+    }
     
   } catch (error) {
-    console.error("Failed to load Transformers.js locally:", error);
+    console.error("Failed to load local model files:", error);
+    clearTimeout(loadingTimeout);
     isAiLoading = false;
-    chatProgress.style.display = 'none';
-    headerStatusText.textContent = "Local Search Active (Keyword mode)";
+    fallbackToKeywordMode();
   }
 }
+
+/* Calculate consolidated progress percentages */
+function updateTotalProgress() {
+  // Weighted equation: Text search model accounts for 80%, Image model accounts for 20%
+  const totalPercent = Math.round((modelProgress.text * 0.8) + (modelProgress.vision * 0.2));
+  
+  const headerStatusText = document.getElementById('ai-header-text');
+  const progressPercent = document.getElementById('ai-progress-percent');
+  const progressFill = document.getElementById('ai-progress-fill');
+  
+  if (headerStatusText) headerStatusText.textContent = `Initializing AI Engine (${totalPercent}%)`;
+  if (progressPercent) progressPercent.textContent = `${totalPercent}%`;
+  if (progressFill) progressFill.style.width = `${totalPercent}%`;
+}
+
+/* Triggered on fetch error or fallback configurations */
+function fallbackToKeywordMode() {
+  const chatProgress = document.getElementById('ai-chat-progress');
+  if (chatProgress) chatProgress.style.display = 'none';
+  
+  const headerStatusText = document.getElementById('ai-header-text');
+  if (headerStatusText) headerStatusText.textContent = "Local Search Active (Keyword mode)";
+  
+  const headerDot = document.getElementById('ai-header-dot');
+  if (headerDot) {
+    headerDot.classList.remove('bg-blue-400', 'bg-emerald-400');
+    headerDot.classList.add('bg-amber-400');
+  }
+}
+
+/* ── Skip AI loading manually ── */
+window.skipAiLoading = function() {
+  isAiLoading = false;
+  clearTimeout(loadingTimeout);
+  window.closeWifiHelp();
+  
+  // Hide progress bars
+  const chatProgress = document.getElementById('ai-chat-progress');
+  if (chatProgress) chatProgress.style.display = 'none';
+  
+  const headerStatusText = document.getElementById('ai-header-text');
+  if (headerStatusText) {
+    headerStatusText.innerHTML = `Fast Search Active <span class="text-slate-400 font-normal">(AI Skip)</span>`;
+  }
+  
+  const headerDot = document.getElementById('ai-header-dot');
+  if (headerDot) {
+    headerDot.classList.remove('bg-blue-400', 'bg-emerald-400', 'animate-pulse');
+    headerDot.classList.add('bg-amber-400');
+  }
+  
+  const skipBtn = document.getElementById('ai-skip-btn');
+  if (skipBtn) skipBtn.style.display = 'none';
+  
+  const helpBtn = document.getElementById('ai-help-btn');
+  if (helpBtn) helpBtn.classList.add('hidden');
+  
+  const aiDotIndicator = document.getElementById('ai-dot-indicator');
+  if (aiDotIndicator) {
+    aiDotIndicator.classList.remove('bg-white/30', 'bg-emerald-400', 'bg-blue-400', 'animate-pulse');
+    aiDotIndicator.classList.add('bg-amber-400');
+  }
+  
+  const aiIndicatorText = document.getElementById('ai-indicator-text');
+  if (aiIndicatorText) {
+    aiIndicatorText.textContent = "Instant search mode active. AI background downloads cancelled.";
+  }
+  
+  window.showToast("Bypassed to Instant Fast Search Mode (0MB Download) ⚡");
+};
 
 /* Pre-calculate vectors for all documents */
 async function precomputeArticleEmbeddings() {
   if (!isAiReady || !aiExtractor || !solutions.length) return;
   
   const headerStatusText = document.getElementById('ai-header-text');
-  headerStatusText.textContent = "AI indexing articles...";
+  if (headerStatusText) headerStatusText.textContent = "AI indexing articles...";
   
   for (let s of solutions) {
     const key = s.row_index || (s.topic || s.Topic);
@@ -585,7 +855,7 @@ async function precomputeArticleEmbeddings() {
     }
   }
   
-  headerStatusText.textContent = "Local AI Search: Active";
+  if (headerStatusText) headerStatusText.textContent = "Local AI Search: Active 🧠";
 }
 
 /* Cosine Similarity calculation */
@@ -628,7 +898,7 @@ async function getFilteredSolutions() {
     
     // Base keyword matching score
     const keywordScore = calcSim(q, title) * 0.6 + (detail.includes(q) ? 0.4 : 0);
-    return { ...s, keywordScore, semanticScore: 0, finalScore: keywordScore };
+    return { ...s, keywordScore, finalScore: keywordScore };
   });
 
   // If AI is ready, compute hybrid vector score with language alignment bonus
@@ -647,9 +917,9 @@ async function getFilteredSolutions() {
         const langBonus = (qLang === articleLang) ? 0.25 : 0;
         
         if (articleVector) {
-          s.semanticScore = cosineSimilarity(queryVector, articleVector);
+          const semanticScore = cosineSimilarity(queryVector, articleVector);
           // Combine: 70% Semantic Vector + 30% Keyword overlap + lang alignment bonus
-          s.finalScore = (s.semanticScore * 0.7) + (s.keywordScore * 0.3) + langBonus;
+          s.finalScore = (semanticScore * 0.7) + (s.keywordScore * 0.3) + langBonus;
         }
       });
     } catch (e) {
@@ -873,7 +1143,7 @@ window.newChat = function() {
       <p style="margin: 0 0 12px 0; line-height: 1.5; font-size:12.5px; color: #475569;">
         Hello! I am VDM Local AI, running 100% on your device. 
         I can search and retrieve step-by-step troubleshooting guides for your color sorting equipment instantly without internet!
-        <br><span class="font-bold text-blue-600">Type your query in any language to search the local repository.</span>
+        <br><span class="font-bold text-blue-600">Type your query or upload an image 📷 of error screens/components to extract text and scan the local repository.</span>
       </p>
       
       <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; margin-bottom: 8px; margin-top: 4px;">Suggested real-time topics:</p>
@@ -885,39 +1155,310 @@ window.newChat = function() {
   addBubble(welcomeMessage, 'bot', false);
 };
 
+/* ── Dynamic Vision AI Chat Handler (Tesseract.js OCR) ── */
+window.handleChatImage = async function(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const base64Img = e.target.result;
+    
+    // 1. Add User image bubble
+    addBubble(`<div style="max-width:200px; border-radius:12px; overflow:hidden; border: 1px solid #E2E8F0;"><img src="${base64Img}" style="width:100%; display:block;"></div>`, 'user');
+    showTyping();
+    
+    // 2. Add dynamic OCR progress container inside bot response
+    const ocrBubbleId = "ocr-progress-" + Date.now();
+    addBubble(`
+      <div id="${ocrBubbleId}" style="font-family:'Inter', sans-serif;">
+        <div class="flex items-center gap-2 py-1">
+          <div class="spinner" style="width: 14px; height: 14px; border-width: 1.5px;"></div>
+          <p class="font-bold text-blue-600 animate-pulse text-[11.5px] m-0" id="${ocrBubbleId}-label">Initializing Local OCR Scanner...</p>
+        </div>
+        <div class="w-full bg-blue-100 rounded-full h-1 mt-1.5 overflow-hidden">
+          <div id="${ocrBubbleId}-fill" class="bg-blue-500 h-1 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+    `, 'bot');
+    
+    try {
+      // Run local OCR scan
+      const result = await Tesseract.recognize(
+        base64Img,
+        'eng',
+        {
+          logger: m => {
+            const label = document.getElementById(`${ocrBubbleId}-label`);
+            const fill = document.getElementById(`${ocrBubbleId}-fill`);
+            if (m.status === 'recognizing text' && label && fill) {
+              const progress = Math.round(m.progress * 100);
+              label.textContent = `Scanning image text: ${progress}%`;
+              fill.style.width = `${progress}%`;
+            }
+          }
+        }
+      );
+      
+      const extractedText = result.data.text ? result.data.text.trim() : '';
+      console.log("Extracted text:", extractedText);
+      
+      // Update OCR progress card to show extracted keywords
+      const progressContainer = document.getElementById(ocrBubbleId);
+      if (progressContainer) {
+        if (extractedText.length > 5) {
+          // Format text into high-value search terms
+          const cleanTextToDisplay = extractedText.replace(/\n+/g, ' ').substring(0, 180) + (extractedText.length > 180 ? '...' : '');
+          progressContainer.innerHTML = `
+            <p class="text-[10px] text-blue-500 font-bold uppercase tracking-wider mb-1">📝 Local OCR Text Extracted</p>
+            <blockquote style="font-style: italic; border-left: 2px solid #3B82F6; padding-left: 8px; margin: 4px 0 8px; font-size:12px; color:#475569; line-height:1.45;">
+              "${cleanTextToDisplay}"
+            </blockquote>
+          `;
+        } else {
+          progressContainer.innerHTML = `
+            <p class="text-[10px] text-rose-500 font-bold uppercase tracking-wider mb-1">⚠️ OCR Scan Result</p>
+            <p class="text-slate-600 text-xs m-0">No readable text found on the image. Try uploading a clearer screenshot of the error screen.</p>
+          `;
+          removeTyping();
+          return;
+        }
+      }
+      
+      // 3. Search database using the extracted text
+      showTyping();
+      const bestMatches = await findMatches(extractedText);
+      removeTyping();
+      
+      if (bestMatches && bestMatches.length > 0) {
+        const best = bestMatches[0];
+        const topic = best.topic || best.Topic || '';
+        const detail = best.detail || best.Detail || '';
+        const img = best.image || best.Image || '';
+        const score = Math.round((best.sc || 0) * 100);
+        const bubbleId = 'vb' + Date.now();
+
+        let responseHtml = `
+          <div class="font-sans" id="${bubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
+            <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+              <span>🛠️ IDENTIFIED SOLUTION</span>
+              <span class="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100">${score}% Match Confidence</span>
+            </div>
+            <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
+            <div class="border-t border-slate-100 pt-1">
+              ${formatDetailToSteps(detail)}
+            </div>
+        `;
+        if (img) {
+          responseHtml += `
+            <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #E2E8F0; position: relative; background: #F8FAFC;">
+              <img src="${img}" onclick="window.zoomImage('${img}')" style="width: 100%; max-height: 140px; object-fit: cover; cursor: zoom-in; display: block;" onerror="this.parentElement.style.display='none'">
+              <div style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold;">
+                Click to Zoom 🔍
+              </div>
+            </div>
+          `;
+        }
+        
+        responseHtml += `
+          <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
+            <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
+              🔊 TTS Audio
+            </button>
+            <div style="position:relative;display:inline-block;">
+              <button onclick="window.toggleTranslateMenu('${bubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
+              <div id="tmenu-${bubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
+                <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Language</p>
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <button onclick="window.translateContent('${bubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
+                  <button onclick="window.translateContent('${bubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
+                  <button onclick="window.translateContent('${bubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
+                  <button onclick="window.translateContent('${bubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
+                  <button onclick="window.translateContent('${bubbleId}','tl','🇵🇭 Filipino')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇵🇭 Filipino</button>
+                  <button onclick="window.translateContent('${bubbleId}','my','🇲🇲 မြန်မာ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇲🇲 မြန်မာ</button>
+                  <button onclick="window.translateContent('${bubbleId}','bn','🇧🇩 বাংলা')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇧🇩 বাংলা</button>
+                </div>
+              </div>
+            </div>
+            <button onclick='window.openPopup(${JSON.stringify(best).replace(/'/g,"&#39;")},"solution")' style="height: 24px; padding: 0 8px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 6px; color: #475569; font-size: 10px; font-weight: 700; cursor: pointer;">
+              View Full Source
+            </button>
+          </div>
+          <div id="tresult-${bubbleId}" style="display:none;"></div>
+        `;
+
+        responseHtml += `</div>`;
+        addBubble(responseHtml, 'bot', false);
+        
+        // List alternative matches if found
+        if (bestMatches.length > 1) {
+          let suggestionsHtml = `
+            <div class="mt-2.5 p-2 bg-slate-50 border border-slate-100 rounded-lg">
+              <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">Other Potential Matches:</p>
+              <div class="flex flex-col gap-1.5">
+          `;
+          bestMatches.slice(1).forEach(m => {
+            const alternateTitle = m.topic || m.Topic || '';
+            suggestionsHtml += `
+              <button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate">
+                🔗 ${alternateTitle}
+              </button>
+            `;
+          });
+          suggestionsHtml += `</div></div>`;
+          addBubble(suggestionsHtml, 'bot', false);
+        }
+      } else {
+        removeTyping();
+        addBubble("I scanned the error text, but couldn't find a matching troubleshooting guide in the repository. Try describing the issue manually!", 'bot');
+      }
+      
+    } catch(err) {
+      console.error("OCR analysis failed:", err);
+      removeTyping();
+      const container = document.getElementById(ocrBubbleId);
+      if (container) {
+        container.innerHTML = `
+          <p class="text-[10px] text-rose-500 font-bold uppercase tracking-wider mb-1">❌ OCR Setup Failed</p>
+          <p class="text-slate-600 text-xs m-0">Failed to run local OCR engine on this network. Please switch connection or type error keywords manually.</p>
+        `;
+      }
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+function detectIntent(text) {
+  const t = text.toLowerCase().trim();
+  const greetings = ['สวัสดี','หวัดดี','ดีจ้า','ดีครับ','ดีค่ะ','hello','hi','hey','howdy','good morning','good afternoon','good evening','อรุณสวัสดิ์','ราตรีสวัสดิ์'];
+  const thanks = ['ขอบคุณ','ขอบใจ','thank','thanks','ขอบพระคุณ','ขอบคุณมาก','thanks a lot','thank you'];
+  const whoami = ['คุณคือใคร','น้องคือใคร','you are','who are you','what are you','ทำอะไรได้','ช่วยอะไรได้','what can you do','คุณทำอะไรได้'];
+  const bye = ['ลาก่อน','บาย','bye','goodbye','แล้วเจอกัน','see you','goodnight','ราตรี'];
+  const praise = ['เก่งมาก','ดีมาก','เยี่ยม','สุดยอด','good job','great','awesome','nice','perfect','โอเค','ok'];
+
+  if (greetings.some(g => t.includes(g))) return 'greeting';
+  if (thanks.some(g => t.includes(g))) return 'thanks';
+  if (whoami.some(g => t.includes(g))) return 'whoami';
+  if (bye.some(g => t.includes(g))) return 'bye';
+  if (praise.some(g => t.includes(g))) return 'praise';
+  return null;
+}
+
+function getIntentResponse(intent, lang) {
+  const responses = {
+    greeting: {
+      th: 'สวัสดีครับ! 👋 ผม VDM Local AI พร้อมช่วยค้นหาคู่มือแก้ปัญหาเครื่อง Color Sorter ครับ ลองพิมพ์อาการเสียหรืออัปโหลดรูปหน้าจอ Error ได้เลย',
+      en: 'Hello! 👋 I\'m VDM Local AI — here to help you find troubleshooting guides for Color Sorter equipment. Type a symptom or upload an error screen image to get started!'
+    },
+    thanks: {
+      th: 'ยินดีครับ! 😊 ถ้ามีปัญหาเครื่องอีกพิมพ์ถามได้เลยนะครับ',
+      en: 'You\'re welcome! 😊 Feel free to ask anytime you have equipment issues.'
+    },
+    whoami: {
+      th: 'ผมคือ VDM Local AI ครับ 🧠 ทำงานบนอุปกรณ์ของคุณ 100% ไม่ต้องส่งข้อมูลไป Server เลย เชี่ยวชาญค้นหาคู่มือแก้ปัญหาเครื่อง Color Sorter, Optical Sorter และอุปกรณ์ VDM ทุกรุ่นครับ',
+      en: 'I\'m VDM Local AI 🧠 — running 100% on your device with no data sent to any server. I specialize in finding troubleshooting guides for VDM Color Sorters, Optical Sorters, and related equipment.'
+    },
+    bye: {
+      th: 'ลาก่อนครับ! 👋 ถ้าเครื่องมีปัญหาอีกกลับมาถามได้เลยนะครับ',
+      en: 'Goodbye! 👋 Come back anytime you need equipment support.'
+    },
+    praise: {
+      th: 'ขอบคุณครับ 😊 ถ้ามีอะไรให้ช่วยอีกบอกได้เลยนะครับ',
+      en: 'Thank you! 😊 Let me know if there\'s anything else I can help with.'
+    }
+  };
+  const pick = responses[intent];
+  if (!pick) return null;
+  return lang === 'th' ? pick.th : pick.en;
+}
+
+function synthesizeFromMatches(query, matches) {
+  const qWords = query.toLowerCase().split(/[\s\W]+/).filter(w => w.length > 2);
+  const allSteps = [];
+
+  matches.forEach((match, si) => {
+    const detail = match.detail || match.Detail || '';
+    const topic = match.topic || match.Topic || '';
+    const lines = detail.split(/\n+|\r+/).map(l => l.trim()).filter(l => l.length > 8);
+    lines.forEach(line => {
+      const clean = line.replace(/^(?:\d+[\.\s\-:]+|[\-\*\•]+\s*)/, '').trim();
+      if (clean.length < 5) return;
+      const hits = qWords.filter(w => clean.toLowerCase().includes(w)).length;
+      allSteps.push({ text: clean, hits, si, source: topic });
+    });
+  });
+
+  const primary = allSteps.filter(s => s.si === 0);
+  const secondary = allSteps.filter(s => s.si > 0).sort((a, b) => b.hits - a.hits);
+  const combined = [...primary, ...secondary];
+
+  const unique = [];
+  combined.forEach(step => {
+    const isDup = unique.some(u => calcSim(u.text.substring(0, 60), step.text.substring(0, 60)) > 0.6);
+    if (!isDup) unique.push(step);
+  });
+  return unique.slice(0, 10);
+}
+
+function renderSynthesizedSteps(query, matches) {
+  const steps = synthesizeFromMatches(query, matches);
+  if (!steps.length) return `<p class="text-[12.5px] text-slate-600 m-0">No detailed steps available.</p>`;
+  let html = `<div class="flex flex-col gap-3 mt-3">`;
+  steps.forEach((step, idx) => {
+    const isAlt = step.si > 0;
+    const gradient = isAlt ? 'from-emerald-500 to-teal-600' : 'from-blue-500 to-indigo-600';
+    const tag = isAlt
+      ? `<span style="font-size:8px;background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;border-radius:3px;padding:1px 5px;margin-left:4px;white-space:nowrap;">${step.source.length > 24 ? step.source.substring(0, 24) + '…' : step.source}</span>`
+      : '';
+    html += `<div class="flex gap-2.5 items-start"><div class="bg-gradient-to-tr ${gradient} text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-extrabold flex-shrink-0 mt-0.5 shadow-sm">${idx + 1}</div><div class="text-[12.5px] text-slate-600 leading-relaxed flex-1">${step.text}${tag}</div></div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
 window.sendMsg = async function() {
   const inp = document.getElementById('chat-input'), text = inp.value.trim();
   if (!text) return;
-  
+
   addBubble(text, 'user');
   chatHistory.push(text);
   inp.value = '';
   showTyping();
-  
+
+  const qLang = detectLanguage(text);
+  const intent = detectIntent(text);
+  if (intent) {
+    setTimeout(() => {
+      removeTyping();
+      addBubble(getIntentResponse(intent, qLang), 'bot', true);
+    }, 350);
+    return;
+  }
+
   // Search Knowledge Base using local semantic hybrid search
   const matches = await findMatches(text);
-  const qLang = detectLanguage(text);
-  
   setTimeout(() => {
     removeTyping();
-    
+
     if (matches && matches.length > 0) {
       const bestMatch = matches[0];
       const topic = bestMatch.topic || bestMatch.Topic || '';
       const detail = bestMatch.detail || bestMatch.Detail || '';
       const img = bestMatch.image || bestMatch.Image || '';
       const score = Math.round((bestMatch.sc || 0) * 100);
-      
+      const bubbleId = 'vb' + Date.now();
+
+      const isSynthesis = matches.length > 1;
       // Beautiful local step-by-step rendering
       let responseHtml = `
-        <div class="font-sans">
+        <div class="font-sans" id="${bubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
           <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">
-            <span>🛠️ VDM LOCAL SOLUTION</span>
-            <span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">${score}% Match Confidence</span>
+            <span>${isSynthesis ? `🔗 SYNTHESIZED FROM ${matches.length} SOURCES` : '🛠️ VDM LOCAL SOLUTION'}</span>
+            <span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">${score}% Match</span>
           </div>
           <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
           <div class="border-t border-slate-100 pt-1">
-            ${formatDetailToSteps(detail)}
+            ${isSynthesis ? renderSynthesizedSteps(text, matches) : formatDetailToSteps(detail)}
           </div>
       `;
 
@@ -933,33 +1474,45 @@ window.sendMsg = async function() {
       }
 
       responseHtml += `
-        <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end;">
+        <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
           <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
             🔊 TTS Audio
           </button>
+          <div style="position:relative;display:inline-block;">
+            <button onclick="window.toggleTranslateMenu('${bubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
+            <div id="tmenu-${bubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
+              <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Language</p>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <button onclick="window.translateContent('${bubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
+                <button onclick="window.translateContent('${bubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
+                <button onclick="window.translateContent('${bubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
+                <button onclick="window.translateContent('${bubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
+                <button onclick="window.translateContent('${bubbleId}','tl','🇵🇭 Filipino')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇵🇭 Filipino</button>
+                <button onclick="window.translateContent('${bubbleId}','my','🇲🇲 မြန်မာ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇲🇲 မြန်မာ</button>
+                <button onclick="window.translateContent('${bubbleId}','bn','🇧🇩 বাংলা')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇧🇩 বাংলা</button>
+              </div>
+            </div>
+          </div>
           <button onclick='window.openPopup(${JSON.stringify(bestMatch).replace(/'/g,"&#39;")},"solution")' style="height: 24px; padding: 0 8px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 6px; color: #475569; font-size: 10px; font-weight: 700; cursor: pointer;">
             View Full Source
           </button>
         </div>
+        <div id="tresult-${bubbleId}" style="display:none;"></div>
       `;
-      
+
       responseHtml += `</div>`;
       addBubble(responseHtml, 'bot', false);
       
-      // If there are alternate suggestions, list them beneath the top card
       if (matches.length > 1) {
         let suggestionsHtml = `
           <div class="mt-2.5 p-2 bg-slate-50 border border-slate-100 rounded-lg">
-            <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">Related Topics Found:</p>
+            <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">${isSynthesis ? '📚 Sources combined:' : 'Related Topics Found:'}</p>
             <div class="flex flex-col gap-1.5">
         `;
-        matches.slice(1).forEach(m => {
-          const alternateTitle = m.topic || m.Topic || '';
-          suggestionsHtml += `
-            <button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate">
-              🔗 ${alternateTitle}
-            </button>
-          `;
+        matches.forEach((m, mi) => {
+          const t = m.topic || m.Topic || '';
+          const badge = mi === 0 ? `<span style="font-size:8px;background:#EFF6FF;border:1px solid #BFDBFE;color:#1E40AF;padding:1px 5px;border-radius:3px;margin-right:4px;">Primary</span>` : `<span style="font-size:8px;background:#F0FDF4;border:1px solid #BBF7D0;color:#166534;padding:1px 5px;border-radius:3px;margin-right:4px;">+Added</span>`;
+          suggestionsHtml += `<button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium flex items-center truncate">${badge}${t}</button>`;
         });
         suggestionsHtml += `</div></div>`;
         addBubble(suggestionsHtml, 'bot', false);
@@ -979,8 +1532,11 @@ window.sendMsg = async function() {
 };
 
 function addBubble(html,who,tw=false){const w=document.getElementById('chat-msgs'),el=document.createElement('div');el.className=`bubble b${who}`;w.appendChild(el);if(tw&&!html.includes('<')){let i=0,iv=setInterval(()=>{el.textContent=html.slice(0,i)+'▍';i++;if(i>html.length){clearInterval(iv);el.textContent=html;w.scrollTop=w.scrollHeight;}},13);}else{el.innerHTML=html;}w.scrollTop=w.scrollHeight;}
-function showTyping(){const w=document.getElementById('chat-msgs'),el=document.createElement('div');el.id='typing';el.className='bubble bbot';el.style.width='50px';el.innerHTML='<div style="display:flex;gap:4px;justify-content:center;align-items:center;height:14px;"><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:0s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.15s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.3s;"></span></div>';w.appendChild(el);w.scrollTop=w.scrollHeight;}
+function showTyping(){removeTyping();const w=document.getElementById('chat-msgs'),el=document.createElement('div');el.id='typing';el.className='bubble bbot';el.style.width='50px';el.innerHTML='<div style="display:flex;gap:4px;justify-content:center;align-items:center;height:14px;"><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:0s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.15s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.3s;"></span></div>';w.appendChild(el);w.scrollTop=w.scrollHeight;}
 function removeTyping(){document.getElementById('typing')?.remove();}
+window.toggleTranslateMenu=function(id,e){e.stopPropagation();const m=document.getElementById('tmenu-'+id);document.querySelectorAll('[id^="tmenu-"]').forEach(x=>{if(x.id!=='tmenu-'+id)x.style.display='none';});m.style.display=m.style.display==='block'?'none':'block';};
+document.addEventListener('click',function(){document.querySelectorAll('[id^="tmenu-"]').forEach(m=>m.style.display='none');});
+window.translateContent=async function(id,lang,name){const m=document.getElementById('tmenu-'+id);if(m)m.style.display='none';const b=document.getElementById(id);const r=document.getElementById('tresult-'+id);if(!b||!r)return;r.style.display='block';r.innerHTML='<p style="color:#6366F1;font-size:11px;font-weight:600;margin:0;padding:8px 10px;background:#EEF2FF;border-radius:8px;">⏳ Translating...</p>';try{const t=b.dataset.topic||'',d=b.dataset.detail||'';const[tr,dr]=await Promise.all([fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(t)+'&langpair=en|'+lang),fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(d)+'&langpair=en|'+lang)]);const td=await tr.json(),dd=await dr.json();const tt=td.responseData?.translatedText||t,dt=dd.responseData?.translatedText||d;const w=document.createElement('div');w.style.cssText='margin-top:8px;padding:10px 12px;background:linear-gradient(135deg,#EEF2FF,#F5F3FF);border:1px solid #C7D2FE;border-radius:10px;border-left:3px solid #6366F1;';const h=document.createElement('div');h.style.cssText='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;';const hl=document.createElement('span');hl.style.cssText='font-size:9px;color:#6366F1;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;';hl.textContent='🌐 '+name;const hb=document.createElement('button');hb.style.cssText='font-size:10px;color:#94A3B8;background:none;border:none;cursor:pointer;padding:0;line-height:1;';hb.textContent='✕';hb.onclick=function(){r.style.display='none';};h.appendChild(hl);h.appendChild(hb);const ti=document.createElement('p');ti.style.cssText='font-size:12.5px;font-weight:700;color:#1E293B;margin:0 0 5px;line-height:1.4;';ti.textContent=tt;const di=document.createElement('p');di.style.cssText='font-size:11px;color:#4C1D95;margin:0;line-height:1.6;';di.textContent=dt;w.appendChild(h);w.appendChild(ti);w.appendChild(di);r.innerHTML='';r.appendChild(w);}catch(e){r.innerHTML='<p style="color:#EF4444;font-size:11px;margin:0;padding:8px 10px;background:#FFF1F2;border-radius:8px;">❌ Translation failed. Check internet connection.</p>';}};
 
 function calcSim(a,b){a=(a||'').toLowerCase().replace(/\s/g,'');b=(b||'').toLowerCase().replace(/\s/g,'');if(a===b)return 1;if(a.length<2||b.length<2)return 0;const s1=new Set(),s2=new Set();for(let i=0;i<a.length-1;i++)s1.add(a.slice(i,i+2));for(let i=0;i<b.length-1;i++)s2.add(b.slice(i,i+2));let x=0;for(let c of s1)if(s2.has(c))x++;return(2*x)/(s1.size+s2.size);}
 
@@ -996,10 +1552,10 @@ async function findMatches(q) {
     const detail = (s.detail || s.Detail || '').toLowerCase();
     const comb = title + ' ' + detail;
     
-    const tk = qClean.split(/\s+/).filter(t => t.length > 1);
+    const tk = qClean.split(/[^a-zA-Z0-9ก-๙]+/).filter(t => t.length > 1);
     let kwScore = 0;
     tk.forEach(x => {
-      if (comb.includes(x)) kwScore += 2.0;
+      if (comb.includes(x)) kwScore += 2.5;
       else comb.split(/\s+/).forEach(w => {
         if (calcSim(x, w) > 0.75) kwScore += 1.0;
       });
@@ -1056,7 +1612,7 @@ window.readAloud=function(text){
 window.triggerTranslate=function(){document.querySelector('.goog-te-gadget-simple')?.click();};
 window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'en',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');};
 
-window.addEventListener('load',()=>{fetchSolutions();window.newChat();});
+window.addEventListener('load',()=>{fetchSolutions();});
 document.getElementById('chat-input').addEventListener('keypress',e=>e.key==='Enter'&&window.sendMsg());
 document.getElementById('search').addEventListener('keydown',e=>{if(e.key==='Escape'){e.target.value='';window.doSearch();}});
 </script>
