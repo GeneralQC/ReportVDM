@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VDM Knowledge Base</title>
+<title>VDM Knowledge Base - 100% Local AI Search</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -159,6 +159,24 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .fade-up{animation:fadeUp .35s ease-out both;}
 @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-5px);opacity:1;}}
+
+/* AI Progress Indicator Styles */
+.ai-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.05);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 11px;
+}
+.ai-progress-bar {
+  height: 4px;
+  background: #3B82F6;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
 </style>
 </head>
 <body>
@@ -169,10 +187,16 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
     <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(59,130,246,.35);">
       <svg style="width:15px;height:15px;color:white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
     </div>
-    <span style="font-weight:700;font-size:15px;color:#1E293B;letter-spacing:-.02em;">VDM <span style="color:#3B82F6;font-weight:400;">Solutions</span></span>
+    <span style="font-weight:700;font-size:15px;color:#1E293B;letter-spacing:-.02em;">VDM <span style="color:#3B82F6;font-weight:400;">Solutions</span><span style="color:#4bfd05;font-weight:700;"> Ai</span></span>
   </a>
   <div style="display:flex;align-items:center;gap:8px;">
-    <a href="https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?refresh=1&platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA63PPQ_CIBAG4L_S3MwvYG0cjB-DGhdxuMI1IVJogKoN4b9L_Yibix15uTz3XoKrpts-orwAP6Xva0UjcEgCDmNPAriA2tnonRHABGyxe4U7ks6rqkajG49RO1utHapKkimTGfKZfcxIAXj6n-Tzt2SgFdmoW01-8ietuG-rfE9SCX45kBl0Q8TG0PPY4uRcstbJIZA6lsozVQ1Lu7j3aNXGqbKmRRMoPwCfwSVCyQEAAA==&view=Record%20Calibration%20Load%20cell" target="_blank" class="ext-btn">
+    <!-- AI Status indicator on Header -->
+    <div id="ai-header-status" class="hidden md:flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-lg text-[11px] text-blue-600 font-semibold">
+      <div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse" id="ai-header-dot"></div>
+      <span id="ai-header-text">Initializing AI Engine...</span>
+    </div>
+
+    <a href="https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?refresh=1&platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA63PPQ_CIBAG4L_S3MwvYG0cjB-DGhdxuMI1IVJogKoN4b9L_Yibix15uTz3XoKrpts-orwAP6Xva0UjcEgCDmNPAriA2tnonRHABGyxe4U7ks6rqkajG49RO1utHapKkimTGfKZfcxIAXj6n-Tzt2SgFdmoW01-8ietuG-rfE9SCX45kBl0Q8TG0PPY4uRcstbJIZA6lsozVQ1Lu7j3aNXGqbKmRRMoPwCfwSiliconYyQEA==&view=Record%20Calibration%20Load%20cell" target="_blank" class="ext-btn">
       <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
       <span>Smart VDM APP</span>
     </a>
@@ -194,7 +218,10 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
       <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#3B82F6,#6366F1);display:flex;align-items:center;justify-content:center;color:white;">
         <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
       </div>
-      <div><p style="font-weight:600;font-size:13px;color:#1E293B;margin:0;line-height:1.3;">VDM Assistant</p><p style="font-size:10px;font-weight:700;color:#10B981;margin:0;text-transform:uppercase;letter-spacing:.08em;">● Online</p></div>
+      <div>
+        <p style="font-weight:600;font-size:13px;color:#1E293B;margin:0;line-height:1.3;">VDM Assistant </p>
+        <p id="chat-status-text" style="font-size:10px;font-weight:700;color:#10B981;margin:0;text-transform:uppercase;letter-spacing:.08em;">● Ai-MiniLM-L6-v2</p>
+      </div>
     </div>
     <div style="display:flex;gap:6px;">
       <button onclick="window.newChat()" style="height:28px;padding:0 10px;font-size:10px;font-weight:700;color:#3B82F6;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:7px;cursor:pointer;text-transform:uppercase;">New</button>
@@ -203,10 +230,22 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
       </button>
     </div>
   </div>
+  
+  <!-- AI Loading Progress Bar in Chat Panel -->
+  <div id="ai-chat-progress" class="px-4 py-2 border-b border-gray-100 bg-blue-50/50 flex flex-col gap-1.5" style="display:none;">
+    <div class="flex justify-between items-center text-[10px] text-blue-600 font-bold">
+      <span id="ai-progress-label">Preparing Local AI Engine...</span>
+      <span id="ai-progress-percent">0%</span>
+    </div>
+    <div class="w-full bg-blue-100 rounded-full h-1.5 overflow-hidden">
+      <div id="ai-progress-fill" class="bg-blue-500 h-1.5 rounded-full" style="width: 0%"></div>
+    </div>
+  </div>
+
   <div id="chat-msgs" class="chat-msgs" style="display:flex;flex-direction:column;"></div>
   <div style="padding:12px;border-top:1px solid #F1F5F9;">
     <div style="display:flex;align-items:center;gap:8px;background:#F8FAFC;border-radius:12px;padding:8px 12px;border:1.5px solid #E2E8F0;transition:border-color .2s;" onfocusin="this.style.borderColor='#93C5FD'" onfocusout="this.style.borderColor='#E2E8F0'">
-      <input id="chat-input" type="text" placeholder="Ask anything…" style="flex:1;background:transparent;border:none;outline:none;font-size:13.5px;color:#1E293B;font-family:'Inter',sans-serif;">
+      <input id="chat-input" type="text" placeholder="Ask local AI support…" style="flex:1;background:transparent;border:none;outline:none;font-size:13.5px;color:#1E293B;font-family:'Inter',sans-serif;">
       <button onclick="window.sendMsg()" style="width:32px;height:32px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;cursor:pointer;border:none;transition:background .18s;" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">
         <svg style="width:14px;height:14px;transform:rotate(90deg)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
       </button>
@@ -226,11 +265,21 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
       <div class="hero-badge"><span class="live"></span>VDM Knowledge Base</div>
       <h1 class="hero-title">How can we<br><em>help you?</em></h1>
       <p class="hero-sub">Search troubleshooting guides, solutions, and technical references for your VDM color sorting equipment.</p>
-      <div class="hero-search-box">
-        <svg style="width:17px;height:17px;color:rgba(255,255,255,.35);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.2"></path></svg>
-        <input id="search" type="text" placeholder="Search keywords, topics, solutions…" oninput="window.doSearch()" autocomplete="off">
-        <button class="search-btn" onclick="window.doSearch()">Search</button>
+      
+      <!-- Upgraded Search Container to display search mode status -->
+      <div class="flex flex-col gap-2 max-w-[480px]">
+        <div class="hero-search-box">
+          <svg style="width:17px;height:17px;color:rgba(255,255,255,.35);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2.2"></path></svg>
+          <input id="search" type="text" placeholder="Search keywords, topics, solutions…" oninput="window.doSearch()" autocomplete="off">
+          <button class="search-btn" onclick="window.doSearch()">Search</button>
+        </div>
+        <!-- Local AI Active Badge -->
+        <div id="ai-search-indicator" class="flex items-center gap-1.5 text-[11px] text-white/50 pl-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-white/30" id="ai-dot-indicator"></div>
+          <span id="ai-indicator-text">Semantic search is offline. Keyword matching active.</span>
+        </div>
       </div>
+
       <div class="hero-stat"><span class="dot"></span><span id="stats-text">Loading articles…</span></div>
     </div>
 
@@ -243,7 +292,7 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
           <div class="phone-screen">
             <div class="p-notch"><div class="p-cam"></div><div class="p-dot"></div></div>
             <div class="p-nav">
-              <div class="p-logo"><div class="p-icon"></div><span class="p-name">VDM Solutions</span></div>
+              <div class="p-logo"><div class="p-icon"></div><span class="p-name">VDM Solutions Ai-MiniLM-L6-v2</span></div>
               <div class="p-dots"><div class="p-d"></div><div class="p-d"></div><div class="p-d"></div></div>
             </div>
             <div class="p-hero">
@@ -333,6 +382,22 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
   <img id="zoom-img" src="" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.8);">
 </div>
 
+<!-- ═══ MODERN CUSTOM TOAST NOTIFICATION ═══ -->
+<div id="toast-container" style="position:fixed;bottom:24px;left:24px;z-index:250;display:flex;flex-direction:column;gap:8px;pointer-events:none;"></div>
+
+<!-- ═══ MODERN CUSTOM CONFIRM MODAL (Replacement for confirm) ═══ -->
+<div id="custom-confirm" style="display:none;position:fixed;inset:0;z-index:260;align-items:center;justify-content:center;padding:16px;">
+  <div style="position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);"></div>
+  <div style="position:relative;background:#fff;width:100%;max-width:380px;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.15);overflow:hidden;animation:fadeUp 0.2s ease-out;padding:20px;">
+    <h3 id="confirm-title" style="font-weight:700;color:#1E293B;font-size:15px;margin:0 0 8px;">Are you sure?</h3>
+    <p id="confirm-message" style="font-size:13px;color:#64748B;margin:0 0 20px;line-height:1.5;">Do you want to proceed with this action?</p>
+    <div style="display:flex;justify-content:flex-end;gap:8px;">
+      <button id="confirm-cancel-btn" style="height:32px;padding:0 14px;font-size:12px;font-weight:600;color:#64748B;background:#F1F5F9;border-radius:8px;cursor:pointer;border:none;">Cancel</button>
+      <button id="confirm-ok-btn" style="height:32px;padding:0 16px;font-size:12px;font-weight:700;color:#fff;background:#EF4444;border-radius:8px;cursor:pointer;border:none;">Delete</button>
+    </div>
+  </div>
+</div>
+
 <div id="dbg-wrap" style="position:fixed;top:66px;right:16px;z-index:200;width:260px;max-height:160px;overflow-y:auto;pointer-events:none;">
   <div id="dbg-log" style="display:flex;flex-direction:column;gap:4px;"></div>
 </div>
@@ -340,6 +405,57 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
 <script>
 const API="https://script.google.com/macros/s/AKfycbwCa6Wruz8hjIoLZ6_DodMfqub26gHKw-lFy6R8mrohPXucKllxb9OPmujQ0LMEcrQ/exec";
 let solutions=[],page=1,perPage=9,chatHistory=[],renderedCards=[],currentItem=null,currentType='';
+
+/* ── AI Engine Variables ── */
+let aiExtractor = null;
+let aiEmbeddingCache = {}; // Cache to store vector embeddings for loaded articles
+let isAiLoading = false;
+let isAiReady = false;
+
+/* ── Premium Custom Notification Dialogs ── */
+window.showToast = function(message, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'fade-up';
+  toast.style.cssText = `
+    background: ${type === 'error' ? '#FEF2F2' : '#EFF6FF'};
+    border: 1px solid ${type === 'error' ? '#FCA5A5' : '#BFDBFE'};
+    color: ${type === 'error' ? '#991B1B' : '#1E40AF'};
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+    min-width: 240px;
+  `;
+  const icon = type === 'error' ? '❌' : '✅';
+  toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+};
+
+window.showConfirmDialog = function(title, message, onConfirm) {
+  const dialog = document.getElementById('custom-confirm');
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-message').textContent = message;
+  dialog.style.display = 'flex';
+  
+  const okBtn = document.getElementById('confirm-ok-btn');
+  const cancelBtn = document.getElementById('confirm-cancel-btn');
+  
+  const close = () => { dialog.style.display = 'none'; };
+  
+  okBtn.onclick = () => { onConfirm(); close(); };
+  cancelBtn.onclick = close;
+};
 
 /* ── Chat toggle ── */
 window.toggleChat=function(){
@@ -353,7 +469,7 @@ window.closeMobileChat=function(){document.getElementById('chat-panel').classLis
 /* ── Modals ── */
 window.openAddSolution=()=>{ const m=document.getElementById('modal-solution');m.style.display='flex'; };
 window.closeAddSolution=()=>{ document.getElementById('modal-solution').style.display='none'; };
-window.closeZoom=()=>{ document.getElementById('zoom-modal').style.display='none'; };
+window.closeZoom=()=>{ document.getElementById('zoom-modal');m=document.getElementById('zoom-modal');m.style.display='none'; };
 window.zoomImage=(s)=>{ document.getElementById('zoom-img').src=s;const m=document.getElementById('zoom-modal');m.style.display='flex'; };
 window.closePopup=()=>{ document.getElementById('popup-wrap').style.display='none';if(window.speechSynthesis)window.speechSynthesis.cancel(); };
 
@@ -368,18 +484,196 @@ async function fetchSolutions(){
   renderCards();renderPager();
   const n=solutions.length;
   document.getElementById('stats-text').textContent=n>0?`${n} article${n!==1?'s':''} available`:'No articles yet';
+  
+  // Re-initialize dynamic suggestions once live database loads
+  window.newChat();
+
+  // Initialize AI Vector Search background load
+  if (!isAiReady && !isAiLoading) {
+    initLocalAIEngine();
+  } else if (isAiReady) {
+    precomputeArticleEmbeddings();
+  }
+}
+
+/* ── AI Embedding Engine (Transformers.js Integration) ── */
+async function initLocalAIEngine() {
+  isAiLoading = true;
+  
+  // Show Loading Bars
+  const chatProgress = document.getElementById('ai-chat-progress');
+  const headerStatusText = document.getElementById('ai-header-text');
+  const progressLabel = document.getElementById('ai-progress-label');
+  const progressPercent = document.getElementById('ai-progress-percent');
+  const progressFill = document.getElementById('ai-progress-fill');
+  
+  chatProgress.style.display = 'flex';
+  headerStatusText.textContent = "Loading Local AI...";
+  progressLabel.textContent = "Downloading AI Neural Net...";
+  
+  try {
+    // Dynamically import Transformers.js to avoid blocking UI thread initially
+    const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+    
+    // Disable local model looking. Always pull from Hugging Face CDN (cached in browser Cache Storage)
+    env.allowLocalModels = false;
+    
+    // We use 'Xenova/all-MiniLM-L6-v2', a highly efficient 23MB sentence embedding model
+    aiExtractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+      progress_callback: (data) => {
+        if (data.status === 'progress') {
+          const progress = Math.round(data.progress);
+          progressPercent.textContent = `${progress}%`;
+          progressFill.style.width = `${progress}%`;
+          headerStatusText.textContent = `Loading Local AI (${progress}%)`;
+        }
+      }
+    });
+    
+    isAiReady = true;
+    isAiLoading = false;
+    
+    // Successfully loaded local Neural Net
+    chatProgress.style.display = 'none';
+    
+    // Update Indicators
+    const headerDot = document.getElementById('ai-header-dot');
+    headerDot.classList.remove('bg-blue-400');
+    headerDot.classList.add('bg-emerald-400');
+    headerStatusText.textContent = "Local AI Search: Active";
+    
+    const aiSearchIndicator = document.getElementById('ai-search-indicator');
+    const aiDotIndicator = document.getElementById('ai-dot-indicator');
+    const aiIndicatorText = document.getElementById('ai-indicator-text');
+    aiDotIndicator.classList.remove('bg-white/30');
+    aiDotIndicator.classList.add('bg-emerald-400');
+    aiDotIndicator.classList.add('animate-pulse');
+    aiIndicatorText.textContent = "Semantic Local AI Search is now active! 🧠";
+    
+    // Run embeddings computation for loaded articles
+    await precomputeArticleEmbeddings();
+    
+  } catch (error) {
+    console.error("Failed to load Transformers.js locally:", error);
+    isAiLoading = false;
+    chatProgress.style.display = 'none';
+    headerStatusText.textContent = "Local Search Active (Keyword mode)";
+  }
+}
+
+/* Pre-calculate vectors for all documents */
+async function precomputeArticleEmbeddings() {
+  if (!isAiReady || !aiExtractor || !solutions.length) return;
+  
+  const headerStatusText = document.getElementById('ai-header-text');
+  headerStatusText.textContent = "AI indexing articles...";
+  
+  for (let s of solutions) {
+    const key = s.row_index || (s.topic || s.Topic);
+    if (!aiEmbeddingCache[key]) {
+      const topic = s.topic || s.Topic || '';
+      const detail = s.detail || s.Detail || '';
+      const fullText = `${topic}. ${detail}`;
+      
+      try {
+        // Run model to extract features/embeddings
+        const output = await aiExtractor(fullText, { pooling: 'mean', normalize: true });
+        aiEmbeddingCache[key] = Array.from(output.data);
+      } catch (err) {
+        console.error("Embedding generation failed for article:", s, err);
+      }
+    }
+  }
+  
+  headerStatusText.textContent = "Local AI Search: Active";
+}
+
+/* Cosine Similarity calculation */
+function cosineSimilarity(vectorA, vectorB) {
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < vectorA.length; i++) {
+    dotProduct += vectorA[i] * vectorB[i];
+    normA += vectorA[i] * vectorA[i];
+    normB += vectorB[i] * vectorB[i];
+  }
+  return normA === 0 || normB === 0 ? 0 : dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+/* ── Helper Language Detector ── */
+function detectLanguage(text) {
+  if (!text) return 'en';
+  const clean = text.toLowerCase();
+  // Match Thai character range
+  if (/[\u0e00-\u0e7f]/.test(clean)) return 'th';
+  // Match Vietnamese specific accented characters
+  if (/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(clean)) return 'vi';
+  return 'en';
 }
 
 /* ── Render cards ── */
 const THUMB_COLORS=['linear-gradient(135deg,#3B82F6,#6366F1)','linear-gradient(135deg,#10B981,#059669)','linear-gradient(135deg,#F59E0B,#D97706)','linear-gradient(135deg,#EC4899,#DB2777)','linear-gradient(135deg,#8B5CF6,#7C3AED)','linear-gradient(135deg,#06B6D4,#0284C7)'];
 
-function renderCards(){
-  const q=(document.getElementById('search').value||'').toLowerCase();
-  const filtered=solutions.filter(s=>((s.topic||'')+(s.detail||'')).toLowerCase().includes(q));
-  const slice=filtered.slice((page-1)*perPage,page*perPage);
-  renderedCards=slice;
-  const grid=document.getElementById('cards-grid'),empty=document.getElementById('empty-state');
-  document.getElementById('result-count').textContent=q?`${filtered.length} result${filtered.length!==1?'s':''} for "${q}"`:`${solutions.length} article${solutions.length!==1?'s':''}`;
+async function getFilteredSolutions() {
+  const q = (document.getElementById('search').value || '').toLowerCase().trim();
+  if (!q) return solutions;
+  
+  const qLang = detectLanguage(q);
+
+  // Calculate default keyword similarity score first
+  let scored = solutions.map(s => {
+    const title = (s.topic || s.Topic || '').toLowerCase();
+    const detail = (s.detail || s.Detail || '').toLowerCase();
+    
+    // Base keyword matching score
+    const keywordScore = calcSim(q, title) * 0.6 + (detail.includes(q) ? 0.4 : 0);
+    return { ...s, keywordScore, semanticScore: 0, finalScore: keywordScore };
+  });
+
+  // If AI is ready, compute hybrid vector score with language alignment bonus
+  if (isAiReady && aiExtractor) {
+    try {
+      const queryOutput = await aiExtractor(q, { pooling: 'mean', normalize: true });
+      const queryVector = Array.from(queryOutput.data);
+      
+      scored.forEach(s => {
+        const key = s.row_index || (s.topic || s.Topic);
+        const articleVector = aiEmbeddingCache[key];
+        const titleText = (s.topic || s.Topic || '');
+        const articleLang = detectLanguage(titleText);
+        
+        // Boost priority if user query language matches article content language
+        const langBonus = (qLang === articleLang) ? 0.25 : 0;
+        
+        if (articleVector) {
+          s.semanticScore = cosineSimilarity(queryVector, articleVector);
+          // Combine: 70% Semantic Vector + 30% Keyword overlap + lang alignment bonus
+          s.finalScore = (s.semanticScore * 0.7) + (s.keywordScore * 0.3) + langBonus;
+        }
+      });
+    } catch (e) {
+      console.warn("AI Semantic Search failed, falling back to keyword search:", e);
+    }
+  }
+  
+  return scored
+    .filter(s => s.finalScore > 0.20)
+    .sort((a, b) => b.finalScore - a.finalScore);
+}
+
+async function renderCards(){
+  const filtered = await getFilteredSolutions();
+  const q = (document.getElementById('search').value || '').trim();
+  
+  const slice = filtered.slice((page-1)*perPage,page*perPage);
+  renderedCards = slice;
+  const grid = document.getElementById('cards-grid'),empty = document.getElementById('empty-state');
+  
+  document.getElementById('result-count').textContent = q 
+    ? `${filtered.length} result${filtered.length!==1?'s':''} for "${q}"` 
+    : `${solutions.length} article${solutions.length!==1?'s':''}`;
+    
   if(!filtered.length){grid.style.display='none';empty.style.display='flex';return;}
   empty.style.display='none';grid.style.display='grid';
   grid.innerHTML=slice.map((item,idx)=>{
@@ -401,9 +695,8 @@ function renderCards(){
   }).join('');
 }
 
-function renderPager(){
-  const q=(document.getElementById('search').value||'').toLowerCase();
-  const filtered=solutions.filter(s=>((s.topic||'')+(s.detail||'')).toLowerCase().includes(q));
+async function renderPager(){
+  const filtered = await getFilteredSolutions();
   const total=Math.ceil(filtered.length/perPage);
   const pager=document.getElementById('pagination');
   if(total<=1){pager.style.display='none';return;}
@@ -462,42 +755,304 @@ window.cancelEdit=()=>{document.getElementById('popup-edit').style.display='none
 
 window.saveEdit=async function(){
   const b=document.getElementById('btn-save'),row=currentItem?.row_index;
-  if(!row){alert("Row index missing");return;}
+  if(!row){
+    window.showToast("Row index missing", "error");
+    return;
+  }
   b.disabled=true;b.textContent='Saving…';
   const p={action:'update',row,target:currentType==='task'?'problem':currentType,topic:document.getElementById('pe-topic')?.value||'',detail:document.getElementById('pe-detail')?.value||'',image:document.getElementById('pe-image')?.value||''};
   try{await fetch(API,{method:'POST',body:JSON.stringify(p),mode:'no-cors'});window.closePopup();setTimeout(fetchSolutions,1500);}
   catch(e){console.error(e);}finally{b.disabled=false;b.textContent='Save Changes';}
 };
+
 window.deleteItem=async function(){
-  const pass=prompt("Admin passcode:");if(pass!=="admin101"){alert("Incorrect");return;}
-  if(!confirm("Delete this article?"))return;
-  try{await fetch(API,{method:'POST',body:JSON.stringify({target:currentType,action:'delete',row:currentItem.row_index}),mode:'no-cors'});window.closePopup();setTimeout(fetchSolutions,2000);}catch(e){}
+  const pass = prompt("Admin passcode:");
+  if(pass !== "admin101"){
+    window.showToast("Incorrect Admin Passcode", "error");
+    return;
+  }
+  
+  window.showConfirmDialog(
+    "Delete Article", 
+    "Are you sure you want to delete this troubleshooting article? This action cannot be undone.", 
+    async () => {
+      try{
+        await fetch(API,{method:'POST',body:JSON.stringify({target:currentType,action:'delete',row:currentItem.row_index}),mode:'no-cors'});
+        window.closePopup();
+        window.showToast("Article deleted successfully");
+        setTimeout(fetchSolutions,2000);
+      } catch(e){
+        window.showToast("Failed to delete article", "error");
+      }
+    }
+  );
 };
+
 window.submitSolution=async function(){
   const b=document.getElementById('btn-sol-save');b.disabled=true;b.textContent='Publishing…';
   const payload={target:'solution',action:'create',topic:document.getElementById('sol-topic').value,detail:document.getElementById('sol-detail').value,image:document.getElementById('sol-image').value};
-  try{await fetch(API,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});window.closeAddSolution();setTimeout(fetchSolutions,1500);}
-  catch(e){console.error(e);}finally{b.disabled=false;b.textContent='Publish';}
+  try{await fetch(API,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});window.closeAddSolution();window.showToast("New troubleshooting guide published!");setTimeout(fetchSolutions,1500);}
+  catch(e){console.error(e);window.showToast("Publication failed", "error");}finally{b.disabled=false;b.textContent='Publish';}
 };
 
-/* ── Chat ── */
-window.newChat=function(){chatHistory=[];document.getElementById('chat-msgs').innerHTML='';addBubble('Hi! How can I help you today?','bot',true);};
-window.sendMsg=function(){
-  const inp=document.getElementById('chat-input'),text=inp.value.trim();
-  if(!text)return;addBubble(text,'user');chatHistory.push(text);inp.value='';showTyping();
-  setTimeout(()=>{
-    const mt=findMatches(text);removeTyping();
-    if(mt.length){addBubble('Here are some relevant articles:','bot',true);mt.forEach((m,i)=>setTimeout(()=>addBubble(`<div style="margin-top:8px;background:white;border-radius:12px;border:1px solid #E8EDF3;overflow:hidden;cursor:pointer;" onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")'>${m.image||m.Image?`<img src="${m.image||m.Image}" style="width:100%;height:68px;object-fit:cover;background:#F0F4F8;">`:'<div style="width:100%;height:36px;background:linear-gradient(135deg,#1E3A5F,#2563EB);"></div>'}<div style="padding:9px 11px;font-weight:600;font-size:12px;color:#1E293B;display:flex;align-items:center;justify-content:space-between;gap:8px;"><span style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${m.topic||m.Topic}</span><svg style="width:13px;height:13px;color:#CBD5E1;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></div></div>`,'bot',false),(i+1)*700));}
-    else{addBubble("I couldn't find an exact match. Try different keywords!",'bot',true);}
-  },900);
+/* ── Smart Step Extractor (JavaScript Local NLP Step Parser) ── */
+function formatDetailToSteps(detail) {
+  if (!detail) return '';
+  
+  // Standard parser: splits on newline characters or common sentence endings
+  const lines = detail.split(/\n+|\r+/).map(l => l.trim()).filter(l => l.length > 2);
+  
+  let html = `<div class="flex flex-col gap-3 mt-3">`;
+  let stepIndex = 1;
+  
+  lines.forEach((line) => {
+    // Clean out any existing leading digits, bullets or hyphens
+    const cleanedText = line.replace(/^(?:\d+[\.\s\-:]+|[\-\*\•\s]+)/, '').trim();
+    if (cleanedText.length < 3) return;
+    
+    html += `
+      <div class="flex gap-2.5 items-start">
+        <div class="bg-gradient-to-tr from-blue-500 to-indigo-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-extrabold flex-shrink-0 mt-0.5 shadow-sm shadow-blue-500/20">
+          ${stepIndex++}
+        </div>
+        <div class="text-[12.5px] text-slate-600 leading-relaxed flex-1">
+          ${cleanedText}
+        </div>
+      </div>
+    `;
+  });
+  
+  html += `</div>`;
+  
+  // If parsing didn't find any distinct lines/steps, default back to formatted paragraph block
+  if (stepIndex === 1) {
+    return `<p class="text-[12.5px] text-slate-600 leading-relaxed m-0">${detail.replace(/\n/g, '<br>')}</p>`;
+  }
+  
+  return html;
+}
+
+/* ── Chat initialization and interactions ── */
+window.newChat = function() {
+  chatHistory = [];
+  document.getElementById('chat-msgs').innerHTML = '';
+  
+  let buttonsHtml = '';
+  if (solutions && solutions.length > 0) {
+    // Pick 3 random troubleshooting items from the actual live Google Sheets dataset
+    const shuffled = [...solutions].sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, 3);
+    
+    selected.forEach(s => {
+      const topic = s.topic || s.Topic || '';
+      const lang = detectLanguage(topic);
+      const badge = lang === 'th' ? '🇹🇭 TH' : lang === 'vi' ? '🇻🇳 VN' : '🇬🇧 GB';
+      
+      // Safely escape single quotes for string execution inside HTML attributes
+      const safeTopic = topic.replace(/'/g, "\\'");
+      buttonsHtml += `
+        <button onclick="document.getElementById('chat-input').value='${safeTopic}'; window.sendMsg();" style="text-align:left; font-size:11.5px; padding:8px 12px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; color:#1E40AF; font-weight:600; cursor:pointer; transition: all 0.2s; display: flex; align-items: center;" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">
+          <span style="background:#DBEAFE; border: 1px solid #93C5FD; border-radius: 4px; padding: 2px 6px; font-size: 8px; font-weight:800; text-transform:uppercase; margin-right:8px; flex-shrink:0;">${badge}</span>
+          <span class="truncate" style="flex:1;">${topic}</span>
+        </button>
+      `;
+    });
+  } else {
+    // Elegant loading skeletons while actual database resolves
+    buttonsHtml = `
+      <div style="font-size:11px; color:#94A3B8; text-align:center; padding:12px; background:#F8FAFC; border:1px dashed #E2E8F0; border-radius:8px;" class="animate-pulse">
+        Fetching live suggestions...
+      </div>
+    `;
+  }
+
+  // Pure English Greeting Layout with fully randomized real database suggestions
+  const welcomeMessage = `
+    <div style="font-family:'Inter', sans-serif;">
+      <p style="font-weight: 700; margin: 0 0 6px 0; color: #1E3A8A; font-size: 13.5px;">Local AI Support Active ⚡</p>
+      <p style="margin: 0 0 12px 0; line-height: 1.5; font-size:12.5px; color: #475569;">
+        Hello! I am VDM Local AI, running 100% on your device. 
+        I can search and retrieve step-by-step troubleshooting guides for your color sorting equipment instantly without internet!
+        <br><span class="font-bold text-blue-600">Type your query in any language to search the local repository.</span>
+      </p>
+      
+      <p style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #94A3B8; margin-bottom: 8px; margin-top: 4px;">Suggested real-time topics:</p>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        ${buttonsHtml}
+      </div>
+    </div>
+  `;
+  addBubble(welcomeMessage, 'bot', false);
 };
+
+window.sendMsg = async function() {
+  const inp = document.getElementById('chat-input'), text = inp.value.trim();
+  if (!text) return;
+  
+  addBubble(text, 'user');
+  chatHistory.push(text);
+  inp.value = '';
+  showTyping();
+  
+  // Search Knowledge Base using local semantic hybrid search
+  const matches = await findMatches(text);
+  const qLang = detectLanguage(text);
+  
+  setTimeout(() => {
+    removeTyping();
+    
+    if (matches && matches.length > 0) {
+      const bestMatch = matches[0];
+      const topic = bestMatch.topic || bestMatch.Topic || '';
+      const detail = bestMatch.detail || bestMatch.Detail || '';
+      const img = bestMatch.image || bestMatch.Image || '';
+      const score = Math.round((bestMatch.sc || 0) * 100);
+      
+      // Beautiful local step-by-step rendering
+      let responseHtml = `
+        <div class="font-sans">
+          <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+            <span>🛠️ VDM LOCAL SOLUTION</span>
+            <span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">${score}% Match Confidence</span>
+          </div>
+          <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
+          <div class="border-t border-slate-100 pt-1">
+            ${formatDetailToSteps(detail)}
+          </div>
+      `;
+
+      if (img) {
+        responseHtml += `
+          <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #E2E8F0; position: relative; background: #F8FAFC;">
+            <img src="${img}" onclick="window.zoomImage('${img}')" style="width: 100%; max-height: 140px; object-fit: cover; cursor: zoom-in; display: block;" onerror="this.parentElement.style.display='none'">
+            <div style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold;">
+              Click to Zoom 🔍
+            </div>
+          </div>
+        `;
+      }
+
+      responseHtml += `
+        <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end;">
+          <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
+            🔊 TTS Audio
+          </button>
+          <button onclick='window.openPopup(${JSON.stringify(bestMatch).replace(/'/g,"&#39;")},"solution")' style="height: 24px; padding: 0 8px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 6px; color: #475569; font-size: 10px; font-weight: 700; cursor: pointer;">
+            View Full Source
+          </button>
+        </div>
+      `;
+      
+      responseHtml += `</div>`;
+      addBubble(responseHtml, 'bot', false);
+      
+      // If there are alternate suggestions, list them beneath the top card
+      if (matches.length > 1) {
+        let suggestionsHtml = `
+          <div class="mt-2.5 p-2 bg-slate-50 border border-slate-100 rounded-lg">
+            <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">Related Topics Found:</p>
+            <div class="flex flex-col gap-1.5">
+        `;
+        matches.slice(1).forEach(m => {
+          const alternateTitle = m.topic || m.Topic || '';
+          suggestionsHtml += `
+            <button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate">
+              🔗 ${alternateTitle}
+            </button>
+          `;
+        });
+        suggestionsHtml += `</div></div>`;
+        addBubble(suggestionsHtml, 'bot', false);
+      }
+      
+    } else {
+      // Dynamic multilingual error fallback responses depending on query language
+      if (qLang === 'th') {
+        addBubble("ขออภัยครับ ระบบไม่พบบทความแก้ไขปัญหาที่สอดคล้องกับหัวข้อนี้ กรุณาลองใช้คำค้นหาที่กระชับขึ้น เช่น 'กล้อง', 'พ่นลม' หรือ 'หน้าจอ' ครับ", 'bot', true);
+      } else if (qLang === 'vi') {
+        addBubble("Xin lỗi, hệ thống không tìm thấy tài liệu phù hợp. Vui lòng thử lại với các từ khóa ngắn gọn như 'camera', 'vòi phun' hoặc 'màn hình'.", 'bot', true);
+      } else {
+        addBubble("Sorry, we couldn't find a matching article for this problem. Try using alternative descriptive keywords like 'camera', 'valve' or 'screen'.", 'bot', true);
+      }
+    }
+  }, 400);
+};
+
 function addBubble(html,who,tw=false){const w=document.getElementById('chat-msgs'),el=document.createElement('div');el.className=`bubble b${who}`;w.appendChild(el);if(tw&&!html.includes('<')){let i=0,iv=setInterval(()=>{el.textContent=html.slice(0,i)+'▍';i++;if(i>html.length){clearInterval(iv);el.textContent=html;w.scrollTop=w.scrollHeight;}},13);}else{el.innerHTML=html;}w.scrollTop=w.scrollHeight;}
 function showTyping(){const w=document.getElementById('chat-msgs'),el=document.createElement('div');el.id='typing';el.className='bubble bbot';el.style.width='50px';el.innerHTML='<div style="display:flex;gap:4px;justify-content:center;align-items:center;height:14px;"><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:0s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.15s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.3s;"></span></div>';w.appendChild(el);w.scrollTop=w.scrollHeight;}
 function removeTyping(){document.getElementById('typing')?.remove();}
-function calcSim(a,b){a=(a||'').toLowerCase().replace(/\s/g,'');b=(b||'').toLowerCase().replace(/\s/g,'');if(a===b)return 1;if(a.length<2||b.length<2)return 0;const s1=new Set(),s2=new Set();for(let i=0;i<a.length-1;i++)s1.add(a.slice(i,i+2));for(let i=0;i<b.length-1;i++)s2.add(b.slice(i,i+2));let x=0;for(let c of s1)if(s2.has(c))x++;return(2*x)/(s1.size+s2.size);}
-function findMatches(q){const tk=q.toLowerCase().split(/\s+/).filter(t=>t.length>1);if(!tk.length)return[];return solutions.map(s=>{const t=(s.topic||'').toLowerCase(),d=(s.detail||'').toLowerCase(),comb=t+' '+d;let sc=0;tk.forEach(x=>{if(comb.includes(x))sc+=2.5;else comb.split(/\s+/).forEach(w=>{if(calcSim(x,w)>0.75)sc+=1.2;});});chatHistory.slice(-3).forEach(p=>{if(t.includes(p.toLowerCase()))sc+=0.5;});sc+=calcSim(q,t)*6;return{...s,sc};}).filter(s=>s.sc>1.8).sort((a,b)=>b.sc-a.sc).slice(0,3);}
 
-window.readAloud=function(text){if(!window.speechSynthesis)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);const lang=document.querySelector('.goog-te-combo')?.value||'en';u.lang=lang==='th'?'th-TH':lang==='ja'?'ja-JP':'en-US';window.speechSynthesis.speak(u);};
+function calcSim(a,b){a=(a||'').toLowerCase().replace(/\s/g,'');b=(b||'').toLowerCase().replace(/\s/g,'');if(a===b)return 1;if(a.length<2||b.length<2)return 0;const s1=new Set(),s2=new Set();for(let i=0;i<a.length-1;i++)s1.add(a.slice(i,i+2));for(let i=0;i<b.length-1;i++)s2.add(b.slice(i,i+2));let x=0;for(let c of s1)if(s2.has(c))x++;return(2*x)/(s1.size+s2.size);}
+
+/* Upgraded findMatches function inside Chat using local hybrid model scoring with language match boost */
+async function findMatches(q) {
+  const qClean = q.toLowerCase().trim();
+  if (!qClean) return [];
+  const qLang = detectLanguage(qClean);
+
+  // Define keyword scores for all candidates
+  let scored = solutions.map(s => {
+    const title = (s.topic || s.Topic || '').toLowerCase();
+    const detail = (s.detail || s.Detail || '').toLowerCase();
+    const comb = title + ' ' + detail;
+    
+    const tk = qClean.split(/\s+/).filter(t => t.length > 1);
+    let kwScore = 0;
+    tk.forEach(x => {
+      if (comb.includes(x)) kwScore += 2.0;
+      else comb.split(/\s+/).forEach(w => {
+        if (calcSim(x, w) > 0.75) kwScore += 1.0;
+      });
+    });
+    kwScore += calcSim(qClean, title) * 5;
+    
+    // Normalize to a 0-1 range
+    const normalizedKw = Math.min(kwScore / 10, 1.0);
+    return { ...s, keywordScore: normalizedKw, semanticScore: 0, sc: normalizedKw };
+  });
+
+  // Calculate local vector semantic similarity if loaded, boosting same language documents
+  if (isAiReady && aiExtractor) {
+    try {
+      const queryOutput = await aiExtractor(qClean, { pooling: 'mean', normalize: true });
+      const queryVector = Array.from(queryOutput.data);
+      
+      scored.forEach(s => {
+        const key = s.row_index || (s.topic || s.Topic);
+        const articleVector = aiEmbeddingCache[key];
+        const titleText = (s.topic || s.Topic || '');
+        const articleLang = detectLanguage(titleText);
+        
+        // Match user's input language strictly to articles matching the same language (TH, VN, EN)
+        const langBonus = (qLang === articleLang) ? 0.35 : 0;
+        
+        if (articleVector) {
+          s.semanticScore = cosineSimilarity(queryVector, articleVector);
+          // Combine scores: 70% Semantic Space, 30% Word Matching + strong alignment language bonus
+          s.sc = (s.semanticScore * 0.7) + (s.keywordScore * 0.3) + langBonus;
+        }
+      });
+    } catch (e) {
+      console.warn("AI Matching failed in Chat panel, falling back to keyword search.", e);
+    }
+  }
+
+  return scored
+    .filter(s => s.sc > 0.18) // Low cutoff for optimal suggestions
+    .sort((a,b) => b.sc - a.sc)
+    .slice(0, 3);
+}
+
+window.readAloud=function(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  // Dynamically configure TTS dialect by analyzing matching document text language
+  const textLang = detectLanguage(text);
+  u.lang = textLang === 'th' ? 'th-TH' : textLang === 'vi' ? 'vi-VN' : 'en-US';
+  window.speechSynthesis.speak(u);
+};
+
 window.triggerTranslate=function(){document.querySelector('.goog-te-gadget-simple')?.click();};
 window.googleTranslateElementInit=function(){new google.translate.TranslateElement({pageLanguage:'en',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'google_translate_element');};
 
