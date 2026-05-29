@@ -1802,125 +1802,90 @@ async function processImageLocally(base64Img, userCaption) {
   }
 
   // ── 4. CONDITIONAL LOOKUP PATHWAY ──
+  // Two independent paths run together:
+  //   A) Image  → identify component (badge + customDetail description)
+  //   B) Caption → findMatches() to find the troubleshooting solution
 
-  // Helper: render customDetail or articleTitle bubble for a matched component
-  async function renderCustomComponentResult(comp, simPercent, isExactMatch) {
+  // ── A: Component identification from image ──
+  function renderComponentIdentityCard(comp, simPercent, isExactMatch) {
     const badgeColor = isExactMatch ? 'purple' : 'amber';
-    const headerLabel = isExactMatch ? '🎯 Registered Component Detected' : '🔍 Best Visual Match (Below Threshold)';
-    const notify = `
-      <div class="mt-2 p-3 bg-${badgeColor}-50 border border-${badgeColor}-100 rounded-xl">
-        <p class="text-[10px] text-${badgeColor}-600 font-extrabold uppercase mb-1 tracking-wider">${headerLabel}</p>
-        <p class="text-slate-800 font-bold text-[13.5px] m-0">${comp.name}</p>
-        <p class="text-slate-500 text-[11px] m-0 mt-0.5">Visual Similarity: ${simPercent}%${isExactMatch ? ' (Passed 75% threshold)' : ' — partial match'}</p>
-      </div>
+    const headerLabel = isExactMatch ? '🎯 Component Identified' : '🔍 Best Visual Match';
+    const subBubbleId = 'vb' + Date.now();
+    const topic = comp.name;
+    const detail = comp.customDetail || '';
+    let html = `
+      <div class="font-sans" id="${subBubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
+        <div class="p-3 bg-${badgeColor}-50 border border-${badgeColor}-100 rounded-xl mb-2">
+          <p class="text-[10px] text-${badgeColor}-600 font-extrabold uppercase mb-1 tracking-wider">${headerLabel}</p>
+          <p class="text-slate-800 font-bold text-[13.5px] m-0">${comp.name}</p>
+          <p class="text-slate-500 text-[11px] m-0 mt-0.5">Visual Similarity: ${simPercent}%${isExactMatch ? '' : ' — partial match'}</p>
+        </div>
     `;
-    addBubble(notify, 'bot', false);
-
-    if (comp.articleTitle) {
-      showTyping();
-      const linkedSolutions = await findMatches(comp.articleTitle);
-      removeTyping();
-      if (linkedSolutions && linkedSolutions.length > 0) {
-        displayVisualSearchResult(linkedSolutions, " visual-custom-triggered");
-        return;
-      }
-    }
-
-    if (comp.customDetail) {
-      const subBubbleId = 'vb' + Date.now();
-      const topic = comp.name;
-      const detail = comp.customDetail;
-      const responseHtml = `
-        <div class="font-sans visual-custom-triggered" id="${subBubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
-          <div class="flex items-center justify-between text-${badgeColor}-400 text-[10px] font-bold uppercase tracking-wider mb-2">
-            <span>🛠️ Component Info & Troubleshooting</span>
-            <span class="bg-${badgeColor}-50 text-${badgeColor}-600 px-1.5 py-0.5 rounded border border-${badgeColor}-100">${simPercent}% Match</span>
-          </div>
-          <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
-          <div class="border-t border-slate-100 pt-1">
-            ${formatDetailToSteps(detail)}
-          </div>
-          <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
-            <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
-              🔊 Play TTS Audio
-            </button>
-            <div style="position:relative;display:inline-block;">
-              <button onclick="window.toggleTranslateMenu('${subBubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
-              <div id="tmenu-${subBubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
-                <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Target Language</p>
-                <div style="display:flex;flex-direction:column;gap:2px;">
-                  <button onclick="window.translateContent('${subBubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
-                  <button onclick="window.translateContent('${subBubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
-                  <button onclick="window.translateContent('${subBubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
-                  <button onclick="window.translateContent('${subBubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
-                </div>
+    if (detail) {
+      html += `
+        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-2">🛠️ Component Description</div>
+        <div class="border-t border-slate-100 pt-1">${formatDetailToSteps(detail)}</div>
+        <div style="margin-top:10px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;align-items:center;">
+          <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0,200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height:24px;padding:0 8px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;color:#1E40AF;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🔊 TTS</button>
+          <div style="position:relative;display:inline-block;">
+            <button onclick="window.toggleTranslateMenu('${subBubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
+            <div id="tmenu-${subBubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
+              <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Target Language</p>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <button onclick="window.translateContent('${subBubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
+                <button onclick="window.translateContent('${subBubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
+                <button onclick="window.translateContent('${subBubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
+                <button onclick="window.translateContent('${subBubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
               </div>
             </div>
           </div>
-          <div id="tresult-${subBubbleId}" style="display:none;"></div>
         </div>
+        <div id="tresult-${subBubbleId}" style="display:none;"></div>
       `;
-      addBubble(responseHtml, 'bot', false);
     }
+    html += `</div>`;
+    addBubble(html, 'bot', false);
   }
 
-  // ≥75% exact match → use registeredComponents data
   if (customMatchedComponent && highestSim >= 0.75) {
-    await renderCustomComponentResult(customMatchedComponent, Math.round(highestSim * 100), true);
-    return;
+    renderComponentIdentityCard(customMatchedComponent, Math.round(highestSim * 100), true);
+  } else if (customMatchedComponent && highestSim >= 0.40) {
+    renderComponentIdentityCard(customMatchedComponent, Math.round(highestSim * 100), false);
   }
 
-  // For machinery/no-text images: NEVER fall through to findMatches() with garbage ResNet labels
-  if (!shouldRunOCR) {
-    if (customMatchedComponent && highestSim >= 0.40) {
-      // Show best-guess match from registeredComponents with amber badge
-      await renderCustomComponentResult(customMatchedComponent, Math.round(highestSim * 100), false);
+  // ── B: Caption → always search the knowledge base ──
+  // Caption describes the PROBLEM; image identifies the COMPONENT — independent paths
+  const searchQuery = [userCaption, shouldRunOCR ? ocrText : ''].filter(s => s && s.length > 0).join(' ').trim();
+
+  if (searchQuery.length > 3) {
+    showTyping();
+    const captionMatches = await findMatches(searchQuery, 4);
+    removeTyping();
+    if (captionMatches && captionMatches.length > 0) {
+      displayVisualSearchResult([captionMatches[0]], "");
+      // Show related topic suggestions after all answers
+      const suggestions = captionMatches.slice(1);
+      if (suggestions.length > 0) {
+        const btnHtml = suggestions.map(m => {
+          const t = (m.topic || m.Topic || '').replace(/'/g, "\\'");
+          const display = m.topic || m.Topic || '';
+          return `<button onclick="document.getElementById('chat-input').value='${t}'; window.sendMsg();"
+            style="text-align:left;padding:8px 12px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;color:#1E40AF;font-size:11.5px;font-weight:600;cursor:pointer;width:100%;line-height:1.4;"
+            onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">
+            🔗 ${display}
+          </button>`;
+        }).join('');
+        addBubble(`
+          <div style="font-family:'Inter',sans-serif;">
+            <p style="font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:0.06em;margin:0 0 8px;">💡 Related Topics — Tap to continue:</p>
+            <div style="display:flex;flex-direction:column;gap:6px;">${btnHtml}</div>
+          </div>
+        `, 'bot', false);
+      }
     } else {
-      // No trained fingerprint match — show all registered components for manual selection
-      const listId = 'complist-' + Date.now();
-      let itemsHtml = registeredComponents.map((comp, idx) => `
-        <button onclick="window.selectComponentFromList(${idx},'${listId}')"
-          style="text-align:left;width:100%;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;background:white;cursor:pointer;margin-bottom:4px;display:flex;flex-direction:column;gap:2px;"
-          onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='white'">
-          <span style="font-size:12.5px;font-weight:700;color:#1E293B;">${comp.name}</span>
-          <span style="font-size:10.5px;color:#64748B;">${comp.articleTitle || comp.customDetail?.substring(0, 60) + '...' || ''}</span>
-        </button>
-      `).join('');
-      addBubble(`
-        <div class="font-sans" id="${listId}">
-          <div class="flex items-center gap-2 mb-3">
-            <p class="text-[10px] text-amber-600 font-extrabold uppercase tracking-wider m-0">📋 Select Component</p>
-          </div>
-          <p class="text-slate-600 text-[12px] mb-3 m-0">AI could not auto-identify this component. Please tap the correct one below to get its guide:</p>
-          <div style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;">
-            ${itemsHtml}
-          </div>
-        </div>
-      `, 'bot');
+      addBubble("No matching guide found for this description. Try different keywords.", 'bot');
     }
-    return;
   }
-
-  // For text/screen images: build query from OCR + ResNet labels and search the knowledge base
-  const expandedQuery = [
-    userCaption,
-    ocrText,
-    queryExpansionWords.join(' ')
-  ].filter(Boolean).join(' ').trim();
-
-  console.log("Expanded Query for Knowledge Base Matcher:", expandedQuery);
-
-  if (!expandedQuery) {
-    addBubble("No readable objects or text detected on the image. Try adding more context in the message or uploading a clearer image.", 'bot');
-    return;
-  }
-
-  // Run Semantic hybrid lookup using expanded query
-  showTyping();
-  const matchedSolutions = await findMatches(expandedQuery);
-  removeTyping();
-
-  displayVisualSearchResult(matchedSolutions, "");
 }
 
 /* ── Display Matched Troubleshooting Results in Chat ── */
@@ -1982,25 +1947,6 @@ function displayVisualSearchResult(matchedSolutions, extraClass) {
 
     responseHtml += `</div>`;
     addBubble(responseHtml, 'bot', false);
-    
-    // Suggest other closely matched solutions
-    if (matchedSolutions.length > 1) {
-      let suggestionsHtml = `
-        <div class="mt-2.5 p-2 bg-slate-50 border border-slate-100 rounded-lg">
-          <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">Other Related Articles:</p>
-          <div class="flex flex-col gap-1.5">
-      `;
-      matchedSolutions.slice(1).forEach(m => {
-        const alternateTitle = m.topic || m.Topic || '';
-        suggestionsHtml += `
-          <button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate">
-            🔗 ${alternateTitle}
-          </button>
-        `;
-      });
-      suggestionsHtml += `</div></div>`;
-      addBubble(suggestionsHtml, 'bot', false);
-    }
   } else {
     addBubble("Sorry, no matching troubleshooting guide found for this image. Try typing short error keywords.", 'bot');
   }
@@ -2242,7 +2188,7 @@ window.translateContent=async function(id,lang,name){const m=document.getElement
 function calcSim(a,b){a=(a||'').toLowerCase().replace(/\s/g,'');b=(b||'').toLowerCase().replace(/\s/g,'');if(a===b)return 1;if(a.length<2||b.length<2)return 0;const s1=new Set(),s2=new Set();for(let i=0;i<a.length-1;i++)s1.add(a.slice(i,i+2));for(let i=0;i<b.length-1;i++)s2.add(b.slice(i,i+2));let x=0;for(let c of s1)if(s2.has(c))x++;return(2*x)/(s1.size+s2.size);}
 
 /* Semantic hybrid scoring with language match boost */
-async function findMatches(q) {
+async function findMatches(q, limit = 3) {
   const qClean = q.toLowerCase().trim();
   if (!qClean) return [];
   const qLang = detectLanguage(qClean);
@@ -2292,7 +2238,7 @@ async function findMatches(q) {
   return scored
     .filter(s => s.sc > 0.18)
     .sort((a,b) => b.sc - a.sc)
-    .slice(0, 3);
+    .slice(0, limit);
 }
 
 window.readAloud=function(text){
