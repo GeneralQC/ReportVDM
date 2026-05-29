@@ -663,163 +663,127 @@ let registeredComponents = [
     "name": "VDM (Slide Valve & Cylinder)",
     "articleTitle": "The slide control cylinder is stuck or the air pressure is not fully opening or closing.",
     "customDetail": "Controls slide valves inside the cylinders using compressed air. Ensure zero leaks.",
-    "fingerprint": [
-      { "label": "vdm_pneumatic_linear_actuator_cylinder", "score": 0.8500 },
-      { "label": "pneumatic_valve_packet", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Speed Control Divider",
     "articleTitle": "Adjusts rotation speed of the divider, affecting division ratios.",
     "customDetail": "Typically, it's used to adjust the rotation speed of the divider, which affects sample division. We only set it to 20 or 55.",
-    "fingerprint": [
-      { "label": "vdm_speed_regulator_rotary_dial", "score": 0.8500 },
-      { "label": "stopwatch_divider_timer", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Feed Hopper and Divider",
     "articleTitle": "Verifies feed level sensor tolerances on high and low status.",
     "customDetail": "When collecting samples in Enable mode, the sample is placed in the Feed Hopper and Divider. Inside, there are high and low sensors to check the sample volume. If the sample does not reach the High Valve, the Feed Hopper and Divider will not operate.",
-    "fingerprint": [
-      { "label": "vdm_feed_hopper_sensor_chamber", "score": 0.8000 },
-      { "label": "bannister_structural_support", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "NIR Online",
     "articleTitle": "Spectroscopic analyzer of grains & raw materials dynamically.",
     "customDetail": "NIR Online systems are typically used primarily for chemical analysis of raw materials, including both grain and meal types. The process involves the sample passing through a sensor, after which NIR analysis is performed to obtain accurate chemical analysis results.",
-    "fingerprint": [
-      { "label": "vdm_nir_spectroscopy_analysis_window", "score": 0.8000 },
-      { "label": "solar_dish_reflector_collector", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Sample Preparation Machine",
     "articleTitle": "Conforms to CPF sieving requirements (5mm and 2mm screen filters).",
     "customDetail": "The Sample Preparation Machine primarily works by sieving corn raw materials. It contains 5 mm and 2 mm sieves, conforming to CPF standards. The internal slide opening and closing system uses mainly compressed air. Furthermore, the Sample Preparation Machine controls the VDM analysis system and the sample discharge from the feed hopper and divider.",
-    "fingerprint": [
-      { "label": "vdm_automated_sample_prep_sieve_cabinet", "score": 0.8000 },
-      { "label": "microwave_style_enclosure_cabinet", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "The tray for collecting materials",
     "articleTitle": "Safety interlocking sensor check for tray placement confirmation.",
     "customDetail": "The tray for collecting materials that have passed through a 5 mm or 2 mm sieve must be cleared of the sample after each sieving process. Failure to do so will lead to sample accumulation and insect infestation. Importantly, when removing the tray for cleaning, you should push it all the way in because it contains an internal sensor. Failure to push it all the way in will affect the entire system.",
-    "fingerprint": [
-      { "label": "vdm_stainless_steel_collection_tray", "score": 0.8500 },
-      { "label": "metal_sliding_receiver_tray", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Hopper VDM and Vibrator VDM",
     "articleTitle": "Gentle vibratory feeders transport corn kernels slowly into analysis.",
     "customDetail": "Hopper VDM and Vibrator VDM: The Hopper VDM is used to accommodate samples that have passed the Sample Prepare Machine and are ready to be fed into the VDM for analysis. The Vibrator VDM is used to convey the sample for analysis; it uses gentle vibrations to slowly transport the sample into the VDM.",
-    "fingerprint": [
-      { "label": "vdm_hopper_vibrator_conveyor_spring", "score": 0.8000 },
-      { "label": "vibratory_feeder_coil", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "VDM Set",
     "articleTitle": "Full assembly of infrared analyzers, blue belts and feeders.",
     "customDetail": "The VDM Set consists of a VDM instrument for grain sample analysis, a blue sample conveyor belt, and a conveyor drive system. It also includes a vibrator for sample transport and a hopper to collect prepared samples.",
-    "fingerprint": [
-      { "label": "vdm_complete_analyzer_set_structure", "score": 0.8000 },
-      { "label": "analytical_instrument_rig", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Hand sieve",
     "articleTitle": "Manual backup sieving procedures for when Sample Prep fails.",
     "customDetail": "A manual sieving device is used in cases where the sample preparer is unavailable and you need to prepare samples for VDM analysis yourself. Using the Disable mode in VDM, the process is very simple: prepare two sieving screens, one On 5 mm and one On 2 mm. Pour 200 grams of sample into the sieving screen, record the weight, then sieve the sample and record the weight again at the On 5 mm screen and then at the On 2 mm screen. Finally, pour in the On 5 mm sample and enter the recorded weights into the Rhino software.",
-    "fingerprint": [
-      { "label": "vdm_manual_aluminum_hand_sieve_plates", "score": 0.8000 },
-      { "label": "petri_dish_sieve_mesh", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Air Regulator",
     "articleTitle": "Pneumatic controller. Keep pressure at 4-5 bar and avoid moisture.",
     "customDetail": "The air regulator typically controls the air pressure inside the Sample Preparer. We set it to 4-5 bar, and there must be no water inside.",
-    "fingerprint": [
-      { "label": "vdm_air_filter_regulator_bar_gauge", "score": 0.7500 },
-      { "label": "pressure_gauge_dial", "score": 0.2500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "The weight display on the Sample Prepare machine",
     "articleTitle": "Weighing Controller indicators reporting Total, 5mm, and 2mm weights.",
     "customDetail": "The weight display on the Sample Prepare machine will show Total Weight, On 5 mm, and On 2 mm. This page displays the sample weight in real-time. If you find any unstable or incorrect weights, you will be able to notice them immediately. If you encounter any problems, you can find solutions by asking in this chat.",
-    "fingerprint": [
-      { "label": "vdm_weight_controller_led_display", "score": 0.8500 },
-      { "label": "industrial_scale_indicator", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Red Box in PLC of Sample Prepare Machine",
     "articleTitle": "PLC network hub requiring continuous RS485 and LAN activity.",
     "customDetail": "Red Box in PLC of Sample Prepare Machine\nThis is very important as it controls almost all of the instrument's functions, including receiving signals from the VDM Rhino, outputting weights, and controlling the Feed Hopper and Divider. The main ports are RS485 and LAN, and these must be working and have a flashing light at all times.",
-    "fingerprint": [
-      { "label": "vdm_plc_controller_red_gateway_box", "score": 0.8000 },
-      { "label": "modem_network_gateway", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "The Belt of VDM",
     "articleTitle": "Blue conveyor belt requiring centering calibration (Learn Belt).",
     "customDetail": "The VDM belt is a conveyor belt that slowly transports samples into the analysis process. Maintenance involves carefully wiping it with a dry cloth or sponge. This is usually done after each use. Before starting work, always remember to \"learn belt\" to check its centering or operating position.",
-    "fingerprint": [
-      { "label": "vdm_blue_conveyor_belt_drive_surface", "score": 0.8500 },
-      { "label": "conveyor_belt_flat_surface", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Calibration weights",
     "articleTitle": "Precision reference weights: 300g (Total/5mm) and 30g (2mm).",
     "customDetail": "Calibration weights are used to calibrate load cells in the Sample Preparer for the Total, On 5 mm, and On 2 mm positions. A 300-gram weight is used for Total and On 5 mm, and a 30-gram weight is used for On 2 mm.",
-    "fingerprint": [
-      { "label": "vdm_precision_calibration_cast_weights", "score": 0.8500 },
-      { "label": "metal_calibration_block", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Rhino Program",
     "articleTitle": "Control software executing Enable, Semi, and Disable operations.",
     "customDetail": "Rhino Program is a system control software consisting of three modes: Enable Mode, Semi Mode, and Disable Mode. You can find instructions on how to use each mode in the user manual.",
-    "fingerprint": [
-      { "label": "vdm_rhino_control_gui_window", "score": 0.8000 },
-      { "label": "computer_software_interface", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "SYMC Weighing Controller BC580",
     "articleTitle": "High precision weight transmitter for physical product classification.",
     "customDetail": "Physical hardware weight transceivers used on the grader scales. Ensure clean electrical grounding to prevent sensor drifts or negative offset calculations in the Rhino software.",
-    "fingerprint": [
-      { "label": "vdm_symc_weighing_controller_bc580", "score": 0.8500 },
-      { "label": "digital_scale_indicator_panel", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "APC Uninterruptible Power Supply (UPS)",
     "articleTitle": "Maintains backup power for the PLCs and computing terminal devices.",
     "customDetail": "Ensures clean power backup during operational sags. High battery health ensures that the Sample Preparation Machine or the VDM PC does not turn off abruptly, preventing database corruptions.",
-    "fingerprint": [
-      { "label": "vdm_apc_uninterruptible_power_supply_ups", "score": 0.8500 },
-      { "label": "laboratory_server_backup_battery", "score": 0.1500 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   },
   {
     "name": "Pneumatic Suction Blower System",
     "articleTitle": "Exhaust vacuum blower for cleaning and clearing sifting residues.",
     "customDetail": "Vacuum blower used for automated chamber cleaning to remove dusty or broken corn debris inside the graders. Keep active line connections on the air valves to guarantee smooth suction power.",
-    "fingerprint": [
-      { "label": "vdm_suction_blower_cleaning_unit", "score": 0.8000 },
-      { "label": "vacuum_dust_collector", "score": 0.2000 }
-    ]
+    "source": "builtin",
+    "fingerprint": []
   }
 ];
 
@@ -1626,11 +1590,63 @@ window.saveCustomComponent = function() {
     name: name,
     articleTitle: article || null,
     customDetail: customDetail || null,
+    source: "trained",
     fingerprint: trainingFingerprint
   });
 
   window.showToast("Training successful! Local AI now recognizes this component.");
   window.closeTrainingStudio();
+};
+
+/* ── Component selected manually from the visual selection list ── */
+window.selectComponentFromList = async function(idx, listId) {
+  const comp = registeredComponents[idx];
+  if (!comp) return;
+
+  // Replace the selection list bubble with the component result
+  const listEl = document.getElementById(listId);
+  if (listEl) listEl.closest('.bbot')?.remove();
+
+  if (comp.articleTitle) {
+    showTyping();
+    const linkedSolutions = await findMatches(comp.articleTitle);
+    removeTyping();
+    if (linkedSolutions && linkedSolutions.length > 0) {
+      displayVisualSearchResult(linkedSolutions, " visual-custom-triggered");
+      return;
+    }
+  }
+  if (comp.customDetail) {
+    const subBubbleId = 'vb' + Date.now();
+    const topic = comp.name;
+    const detail = comp.customDetail;
+    addBubble(`
+      <div class="font-sans visual-custom-triggered" id="${subBubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
+        <div class="flex items-center justify-between text-blue-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+          <span>🛠️ Component Info & Troubleshooting</span>
+          <span class="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100">Manual Select</span>
+        </div>
+        <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
+        <div class="border-t border-slate-100 pt-1">${formatDetailToSteps(detail)}</div>
+        <div style="margin-top:12px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap;align-items:center;">
+          <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0,200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height:24px;padding:0 8px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;color:#1E40AF;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🔊 Play TTS Audio</button>
+          <div style="position:relative;display:inline-block;">
+            <button onclick="window.toggleTranslateMenu('${subBubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
+            <div id="tmenu-${subBubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
+              <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Target Language</p>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <button onclick="window.translateContent('${subBubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
+                <button onclick="window.translateContent('${subBubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
+                <button onclick="window.translateContent('${subBubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
+                <button onclick="window.translateContent('${subBubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="tresult-${subBubbleId}" style="display:none;"></div>
+      </div>
+    `, 'bot', false);
+  }
 };
 
 /* ── Delete Registered Component ── */
@@ -1711,59 +1727,16 @@ function calculateFingerprintSimilarity(f1, f2) {
 async function processImageLocally(base64Img, userCaption) {
   showTyping();
 
-  const bubbleId = "analysis-" + Date.now();
-  addBubble(`
-    <div id="${bubbleId}" class="font-sans text-[12.5px] text-slate-700">
-      <div class="flex items-center gap-2 mb-2">
-        <div class="spinner animate-spin" style="width: 14px; height: 14px; border-width: 1.5px;"></div>
-        <p class="font-bold text-purple-600 animate-pulse m-0" id="${bubbleId}-status">Analyzing Image with Local AI...</p>
-      </div>
-      <div class="flex flex-col gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
-        <div class="flex justify-between text-[11px] text-slate-500">
-          <span>📷 Object Classification (ResNet-50)</span>
-          <span id="${bubbleId}-resnet-percent">Pending...</span>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-          <div id="${bubbleId}-resnet-fill" class="bg-blue-500 h-1.5 rounded-full" style="width: 0%"></div>
-        </div>
-        
-        <div class="flex justify-between text-[11px] text-slate-500 mt-1">
-          <span>📝 Text Recognition (Tesseract OCR)</span>
-          <span id="${bubbleId}-ocr-percent">Pending...</span>
-        </div>
-        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-          <div id="${bubbleId}-ocr-fill" class="bg-indigo-500 h-1.5 rounded-full" style="width: 0%"></div>
-        </div>
-      </div>
-    </div>
-  `, 'bot');
-
   let ocrText = '';
   let visionResults = [];
 
-  // 1. Run ResNet-50 first to decide if OCR is needed
+  // 1. Run ResNet-50 silently
   try {
-    const resFill = document.getElementById(`${bubbleId}-resnet-fill`);
-    const resPercent = document.getElementById(`${bubbleId}-resnet-percent`);
-    if (resPercent) resPercent.textContent = `Processing...`;
-    if (resFill) resFill.style.width = `50%`;
-
     if (isClassifierReady && aiClassifier) {
       visionResults = await aiClassifier(base64Img, { topk: 20 });
     }
-
-    const resLabel = document.getElementById(`${bubbleId}-resnet-percent`);
-    const resFillEl = document.getElementById(`${bubbleId}-resnet-fill`);
-    if (resLabel) resLabel.textContent = `Success`;
-    if (resFillEl) {
-      resFillEl.style.width = `100%`;
-      resFillEl.classList.remove('bg-blue-500');
-      resFillEl.classList.add('bg-emerald-400');
-    }
   } catch (e) {
     console.error("Classifier Error:", e);
-    const resLabel = document.getElementById(`${bubbleId}-resnet-percent`);
-    if (resLabel) resLabel.textContent = `Failed`;
   }
 
   // 2. Decide if OCR is needed based on ResNet labels and user caption
@@ -1786,60 +1759,16 @@ async function processImageLocally(base64Img, userCaption) {
   );
   const shouldRunOCR = visionSuggestsText || captionSuggestsText;
 
-  // 3. Conditionally run Tesseract OCR only when text is likely present
+  // 3. Conditionally run Tesseract OCR silently
   if (shouldRunOCR) {
     try {
-      const result = await Tesseract.recognize(
-        base64Img,
-        'eng',
-        {
-          logger: m => {
-            if (m.status === 'recognizing text') {
-              const progress = Math.round(m.progress * 100);
-              const label = document.getElementById(`${bubbleId}-ocr-percent`);
-              const fill = document.getElementById(`${bubbleId}-ocr-fill`);
-              if (label) label.textContent = `Scanning: ${progress}%`;
-              if (fill) fill.style.width = `${progress}%`;
-            }
-          }
-        }
-      );
-      const ocrLabel = document.getElementById(`${bubbleId}-ocr-percent`);
-      const ocrFill = document.getElementById(`${bubbleId}-ocr-fill`);
-      if (ocrLabel) ocrLabel.textContent = `Success`;
-      if (ocrFill) {
-        ocrFill.style.width = `100%`;
-        ocrFill.classList.remove('bg-indigo-500');
-        ocrFill.classList.add('bg-emerald-500');
-      }
+      const result = await Tesseract.recognize(base64Img, 'eng');
       ocrText = result.data.text ? result.data.text.trim() : '';
     } catch (e) {
       console.error("OCR Error:", e);
-      const ocrLabel = document.getElementById(`${bubbleId}-ocr-percent`);
-      if (ocrLabel) ocrLabel.textContent = `Failed`;
-    }
-  } else {
-    // Mark OCR as skipped — machinery/object image with no text indicators
-    const ocrLabel = document.getElementById(`${bubbleId}-ocr-percent`);
-    const ocrFill = document.getElementById(`${bubbleId}-ocr-fill`);
-    if (ocrLabel) ocrLabel.textContent = `Skipped`;
-    if (ocrFill) {
-      ocrFill.style.width = `100%`;
-      ocrFill.classList.remove('bg-indigo-500');
-      ocrFill.classList.add('bg-slate-400');
     }
   }
   removeTyping();
-
-  // Update Status Header inside the bubble
-  const statusEl = document.getElementById(`${bubbleId}-status`);
-  if (statusEl) {
-    statusEl.parentElement.innerHTML = `
-      <div class="flex items-center gap-1.5 text-emerald-600 font-bold mb-2 text-[13px]">
-        <span>✨ Analysis Complete (100% Offline Local AI)</span>
-      </div>
-    `;
-  }
 
   // ── 3. FIRST-STAGE CHECK: Check visual similarity against custom registered templates ──
   let customMatchedComponent = null;
@@ -1847,8 +1776,9 @@ async function processImageLocally(base64Img, userCaption) {
   
   if (visionResults && visionResults.length > 0 && registeredComponents.length > 0) {
     const extractedFingerprint = visionResults.map(item => ({ label: item.label, score: item.score }));
-    
+    // Only match against user-trained entries (source === "trained") that have real ResNet fingerprints
     registeredComponents.forEach(comp => {
+      if (comp.source !== 'trained' || !comp.fingerprint || comp.fingerprint.length === 0) return;
       const sim = calculateFingerprintSimilarity(extractedFingerprint, comp.fingerprint);
       if (sim > highestSim) {
         highestSim = sim;
@@ -1857,134 +1787,54 @@ async function processImageLocally(base64Img, userCaption) {
     });
   }
 
-  // Generate objects UI list & Expand query based on technical mapping
-  let objectsHtml = '';
+  // Build query expansion words from ResNet labels via technical mapping
   let queryExpansionWords = [];
-  
   if (visionResults && visionResults.length > 0) {
-    objectsHtml += `
-      <div class="mt-3">
-        <p class="text-[10px] text-blue-600 font-bold uppercase tracking-wider mb-1">📷 Object Classification (ResNet-50):</p>
-        <div class="flex flex-col gap-2 bg-blue-50/50 p-2.5 rounded-xl border border-blue-100">
-    `;
-    
-    // Display only top 3 visual labels to the user
-    const top3 = visionResults.slice(0, 3);
-    top3.forEach(item => {
-      const scorePercent = Math.round(item.score * 100);
+    visionResults.slice(0, 3).forEach(item => {
       const labelLower = item.label.toLowerCase();
-      
-      // Look up our technical mapping dictionary to expand search terms
-      let matchedTerms = [];
       for (const [techKey, htmlTerms] of Object.entries(TECHNICAL_MAPPINGS)) {
         if (labelLower.includes(techKey)) {
-          matchedTerms = matchedTerms.concat(htmlTerms);
+          queryExpansionWords = queryExpansionWords.concat(htmlTerms);
         }
       }
-      
-      if (matchedTerms.length > 0) {
-        queryExpansionWords = queryExpansionWords.concat(matchedTerms);
-      }
       queryExpansionWords.push(item.label);
-
-      objectsHtml += `
-        <div class="flex flex-col gap-0.5">
-          <div class="flex justify-between text-[11.5px] text-slate-700 font-medium">
-            <span>🔧 ${item.label}</span>
-            <span class="font-bold">${scorePercent}%</span>
-          </div>
-          <div class="w-full bg-slate-200 h-1 rounded-full overflow-hidden">
-            <div class="bg-blue-500 h-1 rounded-full" style="width: ${scorePercent}%"></div>
-          </div>
-        </div>
-      `;
     });
-    objectsHtml += `</div></div>`;
-  } else {
-    objectsHtml += `
-      <div class="mt-3">
-        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">📷 Detected Components:</p>
-        <p class="text-xs text-slate-500 italic bg-slate-50 p-2 rounded-lg">No confident objects detected or model not loaded.</p>
-      </div>
-    `;
-  }
-
-  // Generate OCR UI list
-  let ocrHtml = '';
-  if (ocrText && ocrText.length > 3) {
-    const cleanOcrDisplay = ocrText.replace(/\n+/g, ' ').substring(0, 150) + (ocrText.length > 150 ? '...' : '');
-    ocrHtml += `
-      <div class="mt-3">
-        <p class="text-[10px] text-indigo-600 font-bold uppercase tracking-wider mb-1">📝 Extracted Text (OCR Scan):</p>
-        <blockquote class="italic border-l-2 border-indigo-500 pl-2 text-[12px] text-slate-600 leading-relaxed bg-indigo-50/30 py-1.5 pr-1 rounded-r-lg">
-          "${cleanOcrDisplay}"
-        </blockquote>
-      </div>
-    `;
-  } else if (!shouldRunOCR) {
-    ocrHtml += `
-      <div class="mt-3">
-        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">📝 Text Recognition (OCR):</p>
-        <p class="text-xs text-slate-400 italic bg-slate-50 p-2 rounded-lg">Skipped — object/machinery image detected, no text scan needed.</p>
-      </div>
-    `;
-  } else {
-    ocrHtml += `
-      <div class="mt-3">
-        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">📝 Extracted Text (OCR Scan):</p>
-        <p class="text-xs text-slate-400 italic bg-slate-50 p-2 rounded-lg">No readable text detected.</p>
-      </div>
-    `;
-  }
-
-  // Update dynamic progress card to static report inside the chat panel
-  const mainReportContainer = document.getElementById(bubbleId);
-  if (mainReportContainer) {
-    mainReportContainer.innerHTML = `
-      <div class="flex items-center gap-1.5 text-purple-600 font-extrabold mb-1.5 text-[13px]">
-        <span>🤖 Local AI Multi-modal Report</span>
-      </div>
-      <p class="text-slate-500 text-[11.5px] leading-relaxed m-0 mb-3">Analysis successful via Local AI (100% Privacy-safe)</p>
-      ${objectsHtml}
-      ${ocrHtml}
-    `;
   }
 
   // ── 4. CONDITIONAL LOOKUP PATHWAY ──
-  // Check if similarity is above threshold (0.75 / 75%) to trigger Custom Component override
-  if (customMatchedComponent && highestSim >= 0.75) {
-    const simPercent = Math.round(highestSim * 100);
-    const customMatchNotify = `
-      <div class="mt-2 p-3 bg-purple-50 border border-purple-100 rounded-xl">
-        <p class="text-[10px] text-purple-600 font-extrabold uppercase mb-1 tracking-wider">🎯 Custom Registered Component Detected!</p>
-        <p class="text-slate-800 font-bold text-[13.5px] m-0">Component Name: ${customMatchedComponent.name}</p>
-        <p class="text-slate-500 text-[11px] m-0 mt-0.5">Visual Similarity Score: ${simPercent}% (Passed 75% threshold)</p>
+
+  // Helper: render customDetail or articleTitle bubble for a matched component
+  async function renderCustomComponentResult(comp, simPercent, isExactMatch) {
+    const badgeColor = isExactMatch ? 'purple' : 'amber';
+    const headerLabel = isExactMatch ? '🎯 Registered Component Detected' : '🔍 Best Visual Match (Below Threshold)';
+    const notify = `
+      <div class="mt-2 p-3 bg-${badgeColor}-50 border border-${badgeColor}-100 rounded-xl">
+        <p class="text-[10px] text-${badgeColor}-600 font-extrabold uppercase mb-1 tracking-wider">${headerLabel}</p>
+        <p class="text-slate-800 font-bold text-[13.5px] m-0">${comp.name}</p>
+        <p class="text-slate-500 text-[11px] m-0 mt-0.5">Visual Similarity: ${simPercent}%${isExactMatch ? ' (Passed 75% threshold)' : ' — partial match'}</p>
       </div>
     `;
-    addBubble(customMatchNotify, 'bot', false);
+    addBubble(notify, 'bot', false);
 
-    // If an article is linked to this visual component, trigger it automatically!
-    if (customMatchedComponent.articleTitle) {
+    if (comp.articleTitle) {
       showTyping();
-      // Search article using linked title
-      const linkedSolutions = await findMatches(customMatchedComponent.articleTitle);
+      const linkedSolutions = await findMatches(comp.articleTitle);
       removeTyping();
-
       if (linkedSolutions && linkedSolutions.length > 0) {
         displayVisualSearchResult(linkedSolutions, " visual-custom-triggered");
         return;
       }
-    } else if (customMatchedComponent.customDetail) {
-      // Direct solution display for custom typed detail
+    }
+
+    if (comp.customDetail) {
       const subBubbleId = 'vb' + Date.now();
-      const topic = customMatchedComponent.name;
-      const detail = customMatchedComponent.customDetail;
-      
-      let responseHtml = `
+      const topic = comp.name;
+      const detail = comp.customDetail;
+      const responseHtml = `
         <div class="font-sans visual-custom-triggered" id="${subBubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
-          <div class="flex items-center justify-between text-purple-400 text-[10px] font-bold uppercase tracking-wider mb-2">
-            <span>🛠️ Trained Troubleshooting Steps</span>
-            <span class="bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100">${simPercent}% Match Confidence</span>
+          <div class="flex items-center justify-between text-${badgeColor}-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+            <span>🛠️ Component Info & Troubleshooting</span>
+            <span class="bg-${badgeColor}-50 text-${badgeColor}-600 px-1.5 py-0.5 rounded border border-${badgeColor}-100">${simPercent}% Match</span>
           </div>
           <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
           <div class="border-t border-slate-100 pt-1">
@@ -2011,11 +1861,47 @@ async function processImageLocally(base64Img, userCaption) {
         </div>
       `;
       addBubble(responseHtml, 'bot', false);
-      return;
     }
   }
 
-  // Build standard search string combining Caption + OCR + Expanded proxy words
+  // ≥75% exact match → use registeredComponents data
+  if (customMatchedComponent && highestSim >= 0.75) {
+    await renderCustomComponentResult(customMatchedComponent, Math.round(highestSim * 100), true);
+    return;
+  }
+
+  // For machinery/no-text images: NEVER fall through to findMatches() with garbage ResNet labels
+  if (!shouldRunOCR) {
+    if (customMatchedComponent && highestSim >= 0.40) {
+      // Show best-guess match from registeredComponents with amber badge
+      await renderCustomComponentResult(customMatchedComponent, Math.round(highestSim * 100), false);
+    } else {
+      // No trained fingerprint match — show all registered components for manual selection
+      const listId = 'complist-' + Date.now();
+      let itemsHtml = registeredComponents.map((comp, idx) => `
+        <button onclick="window.selectComponentFromList(${idx},'${listId}')"
+          style="text-align:left;width:100%;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;background:white;cursor:pointer;margin-bottom:4px;display:flex;flex-direction:column;gap:2px;"
+          onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='white'">
+          <span style="font-size:12.5px;font-weight:700;color:#1E293B;">${comp.name}</span>
+          <span style="font-size:10.5px;color:#64748B;">${comp.articleTitle || comp.customDetail?.substring(0, 60) + '...' || ''}</span>
+        </button>
+      `).join('');
+      addBubble(`
+        <div class="font-sans" id="${listId}">
+          <div class="flex items-center gap-2 mb-3">
+            <p class="text-[10px] text-amber-600 font-extrabold uppercase tracking-wider m-0">📋 Select Component</p>
+          </div>
+          <p class="text-slate-600 text-[12px] mb-3 m-0">AI could not auto-identify this component. Please tap the correct one below to get its guide:</p>
+          <div style="max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:2px;">
+            ${itemsHtml}
+          </div>
+        </div>
+      `, 'bot');
+    }
+    return;
+  }
+
+  // For text/screen images: build query from OCR + ResNet labels and search the knowledge base
   const expandedQuery = [
     userCaption,
     ocrText,
@@ -2220,6 +2106,10 @@ window.sendMsg = async function() {
 
   // ── Handle pending image ──
   if (pendingImageData) {
+    if (!text) {
+      window.showToast("Please describe the image before sending (e.g. 'What is this part?')", "error");
+      return;
+    }
     const imageData = pendingImageData;
     const caption = text;
     window.clearPendingImage();
