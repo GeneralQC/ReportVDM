@@ -1741,8 +1741,53 @@ async function processImageLocally(base64Img, userCaption) {
   let ocrText = '';
   let visionResults = [];
 
-  // 1. Setup Tesseract OCR Promise
-  const ocrPromise = (async () => {
+  // 1. Run ResNet-50 first to decide if OCR is needed
+  try {
+    const resFill = document.getElementById(`${bubbleId}-resnet-fill`);
+    const resPercent = document.getElementById(`${bubbleId}-resnet-percent`);
+    if (resPercent) resPercent.textContent = `Processing...`;
+    if (resFill) resFill.style.width = `50%`;
+
+    if (isClassifierReady && aiClassifier) {
+      visionResults = await aiClassifier(base64Img, { topk: 20 });
+    }
+
+    const resLabel = document.getElementById(`${bubbleId}-resnet-percent`);
+    const resFillEl = document.getElementById(`${bubbleId}-resnet-fill`);
+    if (resLabel) resLabel.textContent = `Success`;
+    if (resFillEl) {
+      resFillEl.style.width = `100%`;
+      resFillEl.classList.remove('bg-blue-500');
+      resFillEl.classList.add('bg-emerald-400');
+    }
+  } catch (e) {
+    console.error("Classifier Error:", e);
+    const resLabel = document.getElementById(`${bubbleId}-resnet-percent`);
+    if (resLabel) resLabel.textContent = `Failed`;
+  }
+
+  // 2. Decide if OCR is needed based on ResNet labels and user caption
+  const TEXT_INDICATOR_LABELS = [
+    'screen','monitor','computer','television','display','menu','book',
+    'newspaper','notebook','paper','document','label','sign','banner',
+    'poster','scoreboard','panel','keyboard','remote','calculator',
+    'phone','tablet','dial','gauge','clock','meter','instrument','dashboard'
+  ];
+  const TEXT_CAPTION_KEYWORDS = [
+    'error','popup','screen','display','message','text','reading','code',
+    'warning','alert','dialog','window','software','app','interface','login'
+  ];
+
+  const visionSuggestsText = visionResults.some(item =>
+    TEXT_INDICATOR_LABELS.some(ind => item.label.toLowerCase().includes(ind))
+  );
+  const captionSuggestsText = TEXT_CAPTION_KEYWORDS.some(kw =>
+    (userCaption || '').toLowerCase().includes(kw)
+  );
+  const shouldRunOCR = visionSuggestsText || captionSuggestsText;
+
+  // 3. Conditionally run Tesseract OCR only when text is likely present
+  if (shouldRunOCR) {
     try {
       const result = await Tesseract.recognize(
         base64Img,
@@ -1759,55 +1804,31 @@ async function processImageLocally(base64Img, userCaption) {
           }
         }
       );
-      const label = document.getElementById(`${bubbleId}-ocr-percent`);
-      const fill = document.getElementById(`${bubbleId}-ocr-fill`);
-      if (label) label.textContent = `Success`;
-      if (fill) {
-        fill.style.width = `100%`;
-        fill.classList.remove('bg-indigo-500');
-        fill.classList.add('bg-emerald-500');
+      const ocrLabel = document.getElementById(`${bubbleId}-ocr-percent`);
+      const ocrFill = document.getElementById(`${bubbleId}-ocr-fill`);
+      if (ocrLabel) ocrLabel.textContent = `Success`;
+      if (ocrFill) {
+        ocrFill.style.width = `100%`;
+        ocrFill.classList.remove('bg-indigo-500');
+        ocrFill.classList.add('bg-emerald-500');
       }
       ocrText = result.data.text ? result.data.text.trim() : '';
-      return ocrText;
     } catch (e) {
       console.error("OCR Error:", e);
-      const label = document.getElementById(`${bubbleId}-ocr-percent`);
-      if (label) label.textContent = `Failed`;
-      return '';
+      const ocrLabel = document.getElementById(`${bubbleId}-ocr-percent`);
+      if (ocrLabel) ocrLabel.textContent = `Failed`;
     }
-  })();
-
-  // 2. Setup ResNet-50 Classifier Promise
-  const classifierPromise = (async () => {
-    try {
-      const resFill = document.getElementById(`${bubbleId}-resnet-fill`);
-      const resPercent = document.getElementById(`${bubbleId}-resnet-percent`);
-      if (resPercent) resPercent.textContent = `Processing...`;
-      if (resFill) resFill.style.width = `50%`;
-      
-      if (isClassifierReady && aiClassifier) {
-        visionResults = await aiClassifier(base64Img, { topk: 20 });
-      }
-      
-      const label = document.getElementById(`${bubbleId}-resnet-percent`);
-      const fill = document.getElementById(`${bubbleId}-resnet-fill`);
-      if (label) label.textContent = `Success`;
-      if (fill) {
-        fill.style.width = `100%`;
-        fill.classList.remove('bg-blue-500');
-        fill.classList.add('bg-emerald-400');
-      }
-      return visionResults;
-    } catch (e) {
-      console.error("Classifier Error:", e);
-      const label = document.getElementById(`${bubbleId}-resnet-percent`);
-      if (label) label.textContent = `Failed`;
-      return [];
+  } else {
+    // Mark OCR as skipped — machinery/object image with no text indicators
+    const ocrLabel = document.getElementById(`${bubbleId}-ocr-percent`);
+    const ocrFill = document.getElementById(`${bubbleId}-ocr-fill`);
+    if (ocrLabel) ocrLabel.textContent = `Skipped`;
+    if (ocrFill) {
+      ocrFill.style.width = `100%`;
+      ocrFill.classList.remove('bg-indigo-500');
+      ocrFill.classList.add('bg-slate-400');
     }
-  })();
-
-  // Run both in parallel
-  await Promise.allSettled([ocrPromise, classifierPromise]);
+  }
   removeTyping();
 
   // Update Status Header inside the bubble
@@ -1898,6 +1919,13 @@ async function processImageLocally(base64Img, userCaption) {
         <blockquote class="italic border-l-2 border-indigo-500 pl-2 text-[12px] text-slate-600 leading-relaxed bg-indigo-50/30 py-1.5 pr-1 rounded-r-lg">
           "${cleanOcrDisplay}"
         </blockquote>
+      </div>
+    `;
+  } else if (!shouldRunOCR) {
+    ocrHtml += `
+      <div class="mt-3">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">📝 Text Recognition (OCR):</p>
+        <p class="text-xs text-slate-400 italic bg-slate-50 p-2 rounded-lg">Skipped — object/machinery image detected, no text scan needed.</p>
       </div>
     `;
   } else {
