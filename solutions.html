@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VDM Knowledge Base</title>
+<title>VDM Knowledge Base with Local Object Detection</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <!-- Tesseract.js for robust local OCR -->
@@ -158,6 +158,7 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
 .overlay-bg.show{opacity:1;pointer-events:all;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .fade-up{animation:fadeUp .35s ease-out both;}
+@media(max-width:1023px){.p-btn-mobile{display:none;}}
 @keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-5px);opacity:1;}}
 .chat-resize-handle{position:absolute;left:-5px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:10;display:none;align-items:center;justify-content:center;}
 @media(min-width:1024px){.chat-resize-handle{display:flex;}}
@@ -212,7 +213,9 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
         <p id="chat-status-text" style="font-size:10px;font-weight:700;color:#3b82f6;margin:0;text-transform:uppercase;letter-spacing:.08em;">● Preparing AI</p>
       </div>
     </div>
-    <div style="display:flex;gap:6px;">
+    <div style="display:flex;gap:6px;align-items:center;">
+      <!-- Training studio button -->
+      <button onclick="window.openTrainingStudio()" style="height:28px;padding:0 10px;font-size:10px;font-weight:700;color:#6D28D9;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:7px;cursor:pointer;text-transform:uppercase;" title="Teach local AI new custom VDM equipment photo">Train</button>
       <button onclick="window.newChat()" style="height:28px;padding:0 10px;font-size:10px;font-weight:700;color:#3B82F6;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:7px;cursor:pointer;text-transform:uppercase;">New</button>
       <button onclick="window.toggleChat()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#94A3B8;border-radius:7px;cursor:pointer;border:none;background:transparent;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">
         <svg style="width:15px;height:15px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -243,16 +246,26 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
   
   <!-- Chat Input Bar with camera upload capability -->
   <div style="padding:12px;border-top:1px solid #F1F5F9;">
+    <!-- Image Preview Strip (visible after image selected, before sending) -->
+    <div id="img-preview-strip" style="display:none;align-items:center;gap:8px;margin-bottom:8px;padding:6px 8px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;">
+      <img id="img-preview-thumb" src="" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid #BFDBFE;">
+      <div style="flex:1;min-width:0;">
+        <p style="font-size:10px;font-weight:700;color:#1E40AF;margin:0 0 1px;">📎 Image attached — type description then send</p>
+        <p id="img-preview-name" style="font-size:10px;color:#60A5FA;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></p>
+      </div>
+      <button onclick="window.clearPendingImage()" title="Remove image" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;background:#DBEAFE;border:none;border-radius:50%;cursor:pointer;color:#3B82F6;flex-shrink:0;font-size:14px;line-height:1;">&times;</button>
+    </div>
+
     <div style="display:flex;align-items:center;gap:8px;background:#F8FAFC;border-radius:12px;padding:8px 12px;border:1.5px solid #E2E8F0;transition:border-color .2s;" onfocusin="this.style.borderColor='#93C5FD'" onfocusout="this.style.borderColor='#E2E8F0'">
-      
+
       <!-- Upload Vision AI Image Trigger -->
       <label id="vision-trigger" for="chat-img-upload" style="cursor:pointer; display:flex; align-items:center; justify-content:center; width:30px; height:30px; background:#EFF6FF; border-radius:8px; color:#3B82F6; flex-shrink:0;" class="hover:bg-blue-100 transition-all" title="Upload Image for AI Analysis">
         <svg style="width:17px;height:17px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
       </label>
       <input id="chat-img-upload" type="file" accept="image/*" style="display:none;" onchange="window.handleChatImage(this)">
-      
+
       <input id="chat-input" type="text" placeholder="Ask local AI support…" style="flex:1;background:transparent;border:none;outline:none;font-size:13.5px;color:#1E293B;font-family:'Inter',sans-serif;">
-      
+
       <button onclick="window.sendMsg()" style="width:32px;height:32px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;cursor:pointer;border:none;transition:background .18s;" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">
         <svg style="width:14px;height:14px;transform:rotate(90deg)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
       </button>
@@ -502,6 +515,90 @@ body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:
   </div>
 </div>
 
+<!-- ═══ AI TRAINING STUDIO MODAL ═══ -->
+<div id="modal-training" style="display:none;position:fixed;inset:0;z-index:120;align-items:center;justify-content:center;padding:16px;">
+  <div style="position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(5px);" onclick="window.closeTrainingStudio()"></div>
+  <div style="position:relative;background:#fff;width:100%;max-width:520px;border-radius:24px;box-shadow:0 30px 70px rgba(0,0,0,.25);overflow:hidden;animation:fadeUp .25s ease-out;display:flex;flex-direction:column;max-height:90vh;">
+    <div class="bg-gradient-to-r from-purple-600 to-indigo-700 text-white p-5 flex justify-between items-center flex-shrink-0">
+      <div>
+        <h3 class="font-extrabold text-base leading-tight">VDM Local AI Training Studio</h3>
+        <p class="text-purple-100 text-[11px] mt-0.5">Train your local AI to recognize physical VDM components offline!</p>
+      </div>
+      <button onclick="window.closeTrainingStudio()" class="text-white/80 hover:text-white transition-colors bg-white/10 p-1.5 rounded-lg">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    
+    <div class="p-6 flex flex-col gap-4 overflow-y-auto flex-1">
+      <!-- Register Form -->
+      <div class="border border-purple-100 bg-purple-50/40 rounded-2xl p-4 flex flex-col gap-3">
+        <p class="text-xs font-bold text-purple-800 m-0">🛠️ Register Custom Component</p>
+        
+        <div>
+          <label class="f-label">1. Upload Component Photo</label>
+          <div class="flex items-center gap-3">
+            <label for="train-img-upload" class="h-20 w-20 border-2 border-dashed border-purple-300 rounded-xl flex flex-col items-center justify-center cursor-pointer bg-white hover:bg-purple-50 transition-colors shrink-0 overflow-hidden">
+              <img id="train-preview" class="w-full h-full object-cover hidden" src="">
+              <div id="train-placeholder" class="flex flex-col items-center justify-center text-center p-1">
+                <span class="text-xl text-purple-400">📷</span>
+                <span class="text-[8.5px] font-bold text-purple-500 mt-1">Upload Image</span>
+              </div>
+            </label>
+            <input id="train-img-upload" type="file" accept="image/*" class="hidden" onchange="window.handleTrainingImage(this)">
+            <div class="text-[11.5px] text-slate-500 leading-relaxed">
+              <p class="m-0 font-semibold text-slate-700" id="train-file-info">No image selected</p>
+              <p class="m-0 mt-0.5 text-[10px]">Real photos of your physical equipment will provide 100% accurate classification.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="f-label" for="train-name">2. Component Name</label>
+          <input type="text" id="train-name" class="f-input" placeholder="e.g. VDM Slide Valve, Chute Feeder, Ejector Nozzle">
+        </div>
+
+        <div>
+          <label class="f-label" for="train-article-select">3. Link to Troubleshooting Guide (Optional)</label>
+          <select id="train-article-select" class="f-input text-[12.5px] cursor-pointer" onchange="window.toggleTrainingGuideInputs()">
+            <option value="">-- Select Linked Troubleshooting Guide --</option>
+          </select>
+        </div>
+
+        <!-- NEW STEP 4: Write Custom Troubleshooting Steps -->
+        <div id="custom-steps-container">
+          <label class="f-label" for="train-detail">4. Or write custom troubleshooting steps (Optional)</label>
+          <textarea id="train-detail" rows="3" class="f-input text-[12.5px]" placeholder="Write step-by-step instructions if no linked guide exists..." oninput="window.toggleTrainingGuideInputs()"></textarea>
+        </div>
+
+        <button onclick="window.saveCustomComponent()" id="btn-train-save" class="h-9 w-full bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-purple-600/20 transition-all flex items-center justify-center gap-1">
+          <span>🎯 Save & Train Local Model</span>
+        </button>
+      </div>
+
+      <!-- Current List -->
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          <p class="text-xs font-bold text-slate-700 m-0">📚 Trained Components (<span id="train-count-badge">0</span>)</p>
+          <div class="flex gap-2">
+            <button onclick="window.exportTrainingData()" class="text-[10px] text-purple-600 font-bold hover:underline">📥 Export</button>
+            <button onclick="document.getElementById('import-file-input').click()" class="text-[10px] text-indigo-600 font-bold hover:underline">📤 Import</button>
+            <input id="import-file-input" type="file" accept=".json" class="hidden" onchange="window.importTrainingData(this)">
+          </div>
+        </div>
+        <div id="training-list" class="flex flex-col gap-2 max-h-40 overflow-y-auto">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="bg-slate-50 border-t border-slate-100 px-6 py-4 flex justify-end flex-shrink-0">
+      <button onclick="window.closeTrainingStudio()" class="h-9 px-5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition-colors">
+        Close Studio
+      </button>
+    </div>
+  </div>
+</div>
+
 <div id="dbg-wrap" style="position:fixed;top:66px;right:16px;z-index:200;width:260px;max-height:160px;overflow-y:auto;pointer-events:none;">
   <div id="dbg-log" style="display:flex;flex-direction:column;gap:4px;"></div>
 </div>
@@ -521,6 +618,217 @@ let loadingTimeout = null;
 let aiClassifier = null;
 let isClassifierLoading = false;
 let isClassifierReady = false;
+
+/* ── Technical Vocabulary Translation Map (ResNet-50 English classes to VDM Tech terms) ── */
+const TECHNICAL_MAPPINGS = {
+  "solenoid": ["solenoid", "โซลินอยด์", "วาล์ว", "valve", "พ่นลม", "ejector", "เครื่องพ่นลม"],
+  "valve": ["valve", "วาล์ว", "พ่นลม", "ejector", "เครื่องพ่นลม"],
+  "nozzle": ["nozzle", "หัวฉีด", "วาล์วพ่น", "ejector"],
+  "pipe": ["pipe", "ท่อ", "ท่อลม", "air pipe"],
+  "hose": ["hose", "สายลม", "ท่อลม"],
+  "pressure gauge": ["pressure", "ความดัน", "เกจวัดความดัน", "ลมกระแทก", "แรงดันลม", "ชุดกรองลม"],
+  
+  // ── ปรับปรุง Visual Proxy Mappings เพิ่มเติมสำหรับอาการผิดพลาดที่กระบอกสูบ/วาล์วสไลด์ ──
+  "packet": ["valve", "วาล์วสไลด์", "กระบอกสูบ", "slide valve", "cylinder", "วาล์วเปิดปิด"],
+  "knot": ["hose", "สายลม", "ท่อลม", "ท่อส่งลม", "pneumatic tube"],
+  "hook, claw": ["valve", "ejector", "หัวฉีด", "ตัวล็อก", "กลไกเกี่ยว"],
+  "syringe": ["cylinder", "กระบอกสูบ", "วาล์วสไลด์", "slide valve"],
+  "plunger": ["cylinder", "กระบอกสูบ", "วาล์วสไลด์"],
+  "barometer": ["pressure", "ความดัน", "เกจวัดความดัน", "แรงดันลม"],
+  // ───────────────────────────────────────────────────────────────────────────
+  
+  "camera": ["camera", "กล้อง", "เลนส์", "lens", "ccd", "คัดแยก"],
+  "lens": ["lens", "เลนส์", "กล้อง", "optical"],
+  "projector": ["projector", "ไฟส่อง", "หลอดไฟ", "led", "แสงสว่าง"],
+  "switch": ["switch", "สวิตช์", "เปิดปิด", "power button"],
+  "screen": ["screen", "หน้าจอ", "display", "touch screen", "จอสัมผัส", "hmi"],
+  "monitor": ["monitor", "หน้าจอ", "display", "จอภาพ"],
+  
+  "power supply": ["power supply", "แหล่งจ่ายไฟ", "ไฟเลี้ยง", "หม้อแปลง", "board", "switching"],
+  "computer": ["computer", "คอมพิวเตอร์", "บอร์ด", "mainboard", "cpu"],
+  "wire": ["wire", "สายไฟ", "connector", "สายสัญญาณ"],
+  "cable": ["cable", "สายเคเบิล", "สายไฟ", "สายสัญญาณ"],
+  "modem": ["modem", "โมเด็ม", "การเชื่อมต่อ", "internet", "wifi"],
+  
+  "motor": ["motor", "มอเตอร์", "สายพาน", "vibrator", "ถาดป้อน"],
+  "feeder": ["feeder", "ถาดป้อน", "vibrator", "chute", "รางไหล"],
+  "screw": ["screw", "สกรู", "น็อต", "ยึดเกาะ"],
+  "tool": ["tool", "เครื่องมือ", "ประแจ", "ไขควง"],
+  "box": ["box", "กล่องคอนโทรล", "ตู้ไฟ"]
+};
+
+/* ── Custom Trained Component List ── */
+let registeredComponents = [
+  {
+    "name": "VDM (Slide Valve & Cylinder)",
+    "articleTitle": "The slide control cylinder is stuck or the air pressure is not fully opening or closing.",
+    "customDetail": "Controls slide valves inside the cylinders using compressed air. Ensure zero leaks.",
+    "fingerprint": [
+      { "label": "vdm_pneumatic_linear_actuator_cylinder", "score": 0.8500 },
+      { "label": "pneumatic_valve_packet", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Speed Control Divider",
+    "articleTitle": "Adjusts rotation speed of the divider, affecting division ratios.",
+    "customDetail": "Typically, it's used to adjust the rotation speed of the divider, which affects sample division. We only set it to 20 or 55.",
+    "fingerprint": [
+      { "label": "vdm_speed_regulator_rotary_dial", "score": 0.8500 },
+      { "label": "stopwatch_divider_timer", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Feed Hopper and Divider",
+    "articleTitle": "Verifies feed level sensor tolerances on high and low status.",
+    "customDetail": "When collecting samples in Enable mode, the sample is placed in the Feed Hopper and Divider. Inside, there are high and low sensors to check the sample volume. If the sample does not reach the High Valve, the Feed Hopper and Divider will not operate.",
+    "fingerprint": [
+      { "label": "vdm_feed_hopper_sensor_chamber", "score": 0.8000 },
+      { "label": "bannister_structural_support", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "NIR Online",
+    "articleTitle": "Spectroscopic analyzer of grains & raw materials dynamically.",
+    "customDetail": "NIR Online systems are typically used primarily for chemical analysis of raw materials, including both grain and meal types. The process involves the sample passing through a sensor, after which NIR analysis is performed to obtain accurate chemical analysis results.",
+    "fingerprint": [
+      { "label": "vdm_nir_spectroscopy_analysis_window", "score": 0.8000 },
+      { "label": "solar_dish_reflector_collector", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "Sample Preparation Machine",
+    "articleTitle": "Conforms to CPF sieving requirements (5mm and 2mm screen filters).",
+    "customDetail": "The Sample Preparation Machine primarily works by sieving corn raw materials. It contains 5 mm and 2 mm sieves, conforming to CPF standards. The internal slide opening and closing system uses mainly compressed air. Furthermore, the Sample Preparation Machine controls the VDM analysis system and the sample discharge from the feed hopper and divider.",
+    "fingerprint": [
+      { "label": "vdm_automated_sample_prep_sieve_cabinet", "score": 0.8000 },
+      { "label": "microwave_style_enclosure_cabinet", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "The tray for collecting materials",
+    "articleTitle": "Safety interlocking sensor check for tray placement confirmation.",
+    "customDetail": "The tray for collecting materials that have passed through a 5 mm or 2 mm sieve must be cleared of the sample after each sieving process. Failure to do so will lead to sample accumulation and insect infestation. Importantly, when removing the tray for cleaning, you should push it all the way in because it contains an internal sensor. Failure to push it all the way in will affect the entire system.",
+    "fingerprint": [
+      { "label": "vdm_stainless_steel_collection_tray", "score": 0.8500 },
+      { "label": "metal_sliding_receiver_tray", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Hopper VDM and Vibrator VDM",
+    "articleTitle": "Gentle vibratory feeders transport corn kernels slowly into analysis.",
+    "customDetail": "Hopper VDM and Vibrator VDM: The Hopper VDM is used to accommodate samples that have passed the Sample Prepare Machine and are ready to be fed into the VDM for analysis. The Vibrator VDM is used to convey the sample for analysis; it uses gentle vibrations to slowly transport the sample into the VDM.",
+    "fingerprint": [
+      { "label": "vdm_hopper_vibrator_conveyor_spring", "score": 0.8000 },
+      { "label": "vibratory_feeder_coil", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "VDM Set",
+    "articleTitle": "Full assembly of infrared analyzers, blue belts and feeders.",
+    "customDetail": "The VDM Set consists of a VDM instrument for grain sample analysis, a blue sample conveyor belt, and a conveyor drive system. It also includes a vibrator for sample transport and a hopper to collect prepared samples.",
+    "fingerprint": [
+      { "label": "vdm_complete_analyzer_set_structure", "score": 0.8000 },
+      { "label": "analytical_instrument_rig", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "Hand sieve",
+    "articleTitle": "Manual backup sieving procedures for when Sample Prep fails.",
+    "customDetail": "A manual sieving device is used in cases where the sample preparer is unavailable and you need to prepare samples for VDM analysis yourself. Using the Disable mode in VDM, the process is very simple: prepare two sieving screens, one On 5 mm and one On 2 mm. Pour 200 grams of sample into the sieving screen, record the weight, then sieve the sample and record the weight again at the On 5 mm screen and then at the On 2 mm screen. Finally, pour in the On 5 mm sample and enter the recorded weights into the Rhino software.",
+    "fingerprint": [
+      { "label": "vdm_manual_aluminum_hand_sieve_plates", "score": 0.8000 },
+      { "label": "petri_dish_sieve_mesh", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "Air Regulator",
+    "articleTitle": "Pneumatic controller. Keep pressure at 4-5 bar and avoid moisture.",
+    "customDetail": "The air regulator typically controls the air pressure inside the Sample Preparer. We set it to 4-5 bar, and there must be no water inside.",
+    "fingerprint": [
+      { "label": "vdm_air_filter_regulator_bar_gauge", "score": 0.7500 },
+      { "label": "pressure_gauge_dial", "score": 0.2500 }
+    ]
+  },
+  {
+    "name": "The weight display on the Sample Prepare machine",
+    "articleTitle": "Weighing Controller indicators reporting Total, 5mm, and 2mm weights.",
+    "customDetail": "The weight display on the Sample Prepare machine will show Total Weight, On 5 mm, and On 2 mm. This page displays the sample weight in real-time. If you find any unstable or incorrect weights, you will be able to notice them immediately. If you encounter any problems, you can find solutions by asking in this chat.",
+    "fingerprint": [
+      { "label": "vdm_weight_controller_led_display", "score": 0.8500 },
+      { "label": "industrial_scale_indicator", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Red Box in PLC of Sample Prepare Machine",
+    "articleTitle": "PLC network hub requiring continuous RS485 and LAN activity.",
+    "customDetail": "Red Box in PLC of Sample Prepare Machine\nThis is very important as it controls almost all of the instrument's functions, including receiving signals from the VDM Rhino, outputting weights, and controlling the Feed Hopper and Divider. The main ports are RS485 and LAN, and these must be working and have a flashing light at all times.",
+    "fingerprint": [
+      { "label": "vdm_plc_controller_red_gateway_box", "score": 0.8000 },
+      { "label": "modem_network_gateway", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "The Belt of VDM",
+    "articleTitle": "Blue conveyor belt requiring centering calibration (Learn Belt).",
+    "customDetail": "The VDM belt is a conveyor belt that slowly transports samples into the analysis process. Maintenance involves carefully wiping it with a dry cloth or sponge. This is usually done after each use. Before starting work, always remember to \"learn belt\" to check its centering or operating position.",
+    "fingerprint": [
+      { "label": "vdm_blue_conveyor_belt_drive_surface", "score": 0.8500 },
+      { "label": "conveyor_belt_flat_surface", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Calibration weights",
+    "articleTitle": "Precision reference weights: 300g (Total/5mm) and 30g (2mm).",
+    "customDetail": "Calibration weights are used to calibrate load cells in the Sample Preparer for the Total, On 5 mm, and On 2 mm positions. A 300-gram weight is used for Total and On 5 mm, and a 30-gram weight is used for On 2 mm.",
+    "fingerprint": [
+      { "label": "vdm_precision_calibration_cast_weights", "score": 0.8500 },
+      { "label": "metal_calibration_block", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Rhino Program",
+    "articleTitle": "Control software executing Enable, Semi, and Disable operations.",
+    "customDetail": "Rhino Program is a system control software consisting of three modes: Enable Mode, Semi Mode, and Disable Mode. You can find instructions on how to use each mode in the user manual.",
+    "fingerprint": [
+      { "label": "vdm_rhino_control_gui_window", "score": 0.8000 },
+      { "label": "computer_software_interface", "score": 0.2000 }
+    ]
+  },
+  {
+    "name": "SYMC Weighing Controller BC580",
+    "articleTitle": "High precision weight transmitter for physical product classification.",
+    "customDetail": "Physical hardware weight transceivers used on the grader scales. Ensure clean electrical grounding to prevent sensor drifts or negative offset calculations in the Rhino software.",
+    "fingerprint": [
+      { "label": "vdm_symc_weighing_controller_bc580", "score": 0.8500 },
+      { "label": "digital_scale_indicator_panel", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "APC Uninterruptible Power Supply (UPS)",
+    "articleTitle": "Maintains backup power for the PLCs and computing terminal devices.",
+    "customDetail": "Ensures clean power backup during operational sags. High battery health ensures that the Sample Preparation Machine or the VDM PC does not turn off abruptly, preventing database corruptions.",
+    "fingerprint": [
+      { "label": "vdm_apc_uninterruptible_power_supply_ups", "score": 0.8500 },
+      { "label": "laboratory_server_backup_battery", "score": 0.1500 }
+    ]
+  },
+  {
+    "name": "Pneumatic Suction Blower System",
+    "articleTitle": "Exhaust vacuum blower for cleaning and clearing sifting residues.",
+    "customDetail": "Vacuum blower used for automated chamber cleaning to remove dusty or broken corn debris inside the graders. Keep active line connections on the air valves to guarantee smooth suction power.",
+    "fingerprint": [
+      { "label": "vdm_suction_blower_cleaning_unit", "score": 0.8000 },
+      { "label": "vacuum_dust_collector", "score": 0.2000 }
+    ]
+  }
+];
+
+let trainingBase64 = null;
+let trainingFingerprint = [];
+
+/* ── Pending image (held in input bar before send) ── */
+let pendingImageData = null;
+let pendingImageName = '';
 
 // Real-time tracking of the download status of each model
 let modelProgress = {
@@ -598,6 +906,26 @@ window.closeZoom=()=>{ const m=document.getElementById('zoom-modal');m.style.dis
 window.zoomImage=(s)=>{ document.getElementById('zoom-img').src=s;const m=document.getElementById('zoom-modal');m.style.display='flex'; };
 window.closePopup=()=>{ document.getElementById('popup-wrap').style.display='none';if(window.speechSynthesis)window.speechSynthesis.cancel(); };
 
+/* ── AI Training Studio Modal ── */
+window.openTrainingStudio = () => {
+  document.getElementById('modal-training').style.display = 'flex';
+  populateTrainingSelect();
+  renderTrainingList();
+  window.toggleTrainingGuideInputs();
+};
+window.closeTrainingStudio = () => {
+  document.getElementById('modal-training').style.display = 'none';
+  // Reset fields
+  document.getElementById('train-name').value = '';
+  document.getElementById('train-article-select').value = '';
+  document.getElementById('train-detail').value = ''; 
+  document.getElementById('train-preview').style.display = 'none';
+  document.getElementById('train-placeholder').style.display = 'flex';
+  document.getElementById('train-file-info').textContent = 'No image selected';
+  trainingBase64 = null;
+  trainingFingerprint = [];
+};
+
 /* ── Dates ── */
 function parseDate(v){if(!v)return null;if(v instanceof Date)return isNaN(v.getTime())?null:v;let s=String(v).trim();if(s.includes('/')){const p=s.split(' ')[0].split('/');if(p.length===3){let d=+p[0],m=+p[1],y=+p[2];if(y>2400)y-=543;const o=new Date(y,m-1,d);if(!isNaN(o.getTime()))return o;}}const iso=s.match(/^(\d{4})-\d{2}-\d{2}/);if(iso){let y=+iso[1];if(y>2400)s=s.replace(/^\d{4}/,y-543);}const d=new Date(s);return isNaN(d.getTime())?null:d;}
 function fmtDate(v){const d=parseDate(v);return d?d.toLocaleDateString('en-GB',{year:'numeric',month:'2-digit',day:'2-digit'}):v;}
@@ -619,7 +947,7 @@ async function fetchSolutions(){
   }
 }
 
-/* ── AI Embedding & Vision Engine (Parallel Transformers.js Integration) ── */
+/* ── AI Embedding & Vision Engine ── */
 async function initLocalAIEngine() {
   isAiLoading = true;
   
@@ -657,7 +985,6 @@ async function initLocalAIEngine() {
     env.allowLocalModels = false;
     
     // Fire off both pipelines concurrently to optimize handshake time
-    // Weight calculation: text model is 23MB (~80%), vision model is 5MB (~20%)
     const textPromise = pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
       progress_callback: (data) => {
         if (!isAiLoading) return;
@@ -671,7 +998,6 @@ async function initLocalAIEngine() {
       }
     });
 
-    // We changed the model to the official, public "Xenova/resnet-50" which has perfect configuration files and will load 100%!
     const visionPromise = pipeline('image-classification', 'Xenova/resnet-50', {
       progress_callback: (data) => {
         if (!isAiLoading) return;
@@ -685,8 +1011,7 @@ async function initLocalAIEngine() {
       }
     });
 
-    // Instead of Promise.all (which fails globally if either model errors out), 
-    // we handle individual model rejections gracefully so text search remains functional!
+    // Handle individual model rejections gracefully so text search remains functional
     let textModelLoaded = false;
     let visionModelLoaded = false;
 
@@ -734,9 +1059,8 @@ async function initLocalAIEngine() {
       }
       if (chatStatusText) {
         chatStatusText.textContent = visionModelLoaded ? "● AI Xenova Ready" : "● Text AI Active";
-        chatStatusText.classList.remove('text-emerald-500');
         chatStatusText.style.color = '#10B981';
-      }   //:  resnet-50 & all-MiniLM-L6-v2
+      }
       
       const aiDotIndicator = document.getElementById('ai-dot-indicator');
       const aiIndicatorText = document.getElementById('ai-indicator-text');
@@ -768,7 +1092,6 @@ async function initLocalAIEngine() {
 
 /* Calculate consolidated progress percentages */
 function updateTotalProgress() {
-  // Weighted equation: Text search model accounts for 80%, Image model accounts for 20%
   const totalPercent = Math.round((modelProgress.text * 0.8) + (modelProgress.vision * 0.2));
   
   const headerStatusText = document.getElementById('ai-header-text');
@@ -851,7 +1174,6 @@ async function precomputeArticleEmbeddings() {
       const fullText = `${topic}. ${detail}`;
       
       try {
-        // Run model to extract features/embeddings
         const output = await aiExtractor(fullText, { pooling: 'mean', normalize: true });
         aiEmbeddingCache[key] = Array.from(output.data);
       } catch (err) {
@@ -880,9 +1202,7 @@ function cosineSimilarity(vectorA, vectorB) {
 function detectLanguage(text) {
   if (!text) return 'en';
   const clean = text.toLowerCase();
-  // Match Thai character range
   if (/[\u0e00-\u0e7f]/.test(clean)) return 'th';
-  // Match Vietnamese specific accented characters
   if (/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(clean)) return 'vi';
   return 'en';
 }
@@ -896,17 +1216,14 @@ async function getFilteredSolutions() {
   
   const qLang = detectLanguage(q);
 
-  // Calculate default keyword similarity score first
   let scored = solutions.map(s => {
     const title = (s.topic || s.Topic || '').toLowerCase();
     const detail = (s.detail || s.Detail || '').toLowerCase();
     
-    // Base keyword matching score
     const keywordScore = calcSim(q, title) * 0.6 + (detail.includes(q) ? 0.4 : 0);
     return { ...s, keywordScore, finalScore: keywordScore };
   });
 
-  // If AI is ready, compute hybrid vector score with language alignment bonus
   if (isAiReady && aiExtractor) {
     try {
       const queryOutput = await aiExtractor(q, { pooling: 'mean', normalize: true });
@@ -918,12 +1235,10 @@ async function getFilteredSolutions() {
         const titleText = (s.topic || s.Topic || '');
         const articleLang = detectLanguage(titleText);
         
-        // Boost priority if user query language matches article content language
         const langBonus = (qLang === articleLang) ? 0.25 : 0;
         
         if (articleVector) {
           const semanticScore = cosineSimilarity(queryVector, articleVector);
-          // Combine: 70% Semantic Vector + 30% Keyword overlap + lang alignment bonus
           s.finalScore = (semanticScore * 0.7) + (s.keywordScore * 0.3) + langBonus;
         }
       });
@@ -1074,14 +1389,12 @@ window.submitSolution=async function(){
 function formatDetailToSteps(detail) {
   if (!detail) return '';
   
-  // Standard parser: splits on newline characters or common sentence endings
   const lines = detail.split(/\n+|\r+/).map(l => l.trim()).filter(l => l.length > 2);
   
   let html = `<div class="flex flex-col gap-3 mt-3">`;
   let stepIndex = 1;
   
   lines.forEach((line) => {
-    // Clean out any existing leading digits, bullets or hyphens
     const cleanedText = line.replace(/^(?:\d+[\.\s\-:]+|[\-\*\•\s]+)/, '').trim();
     if (cleanedText.length < 3) return;
     
@@ -1099,9 +1412,8 @@ function formatDetailToSteps(detail) {
   
   html += `</div>`;
   
-  // If parsing didn't find any distinct lines/steps, default back to formatted paragraph block
   if (stepIndex === 1) {
-    return `<p class="text-[12.5px] text-slate-600 leading-relaxed m-0">${detail.replace(/\n/g, '<br>')}</p>`;
+    return `<p class="text-[12.5px] text-slate-600 m-0">${detail.replace(/\n/g, '<br>')}</p>`;
   }
   
   return html;
@@ -1114,7 +1426,6 @@ window.newChat = function() {
   
   let buttonsHtml = '';
   if (solutions && solutions.length > 0) {
-    // Pick 3 random troubleshooting items from the actual live Google Sheets dataset
     const shuffled = [...solutions].sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, 3);
     
@@ -1123,7 +1434,6 @@ window.newChat = function() {
       const lang = detectLanguage(topic);
       const badge = lang === 'th' ? '🇹🇭 TH' : lang === 'vi' ? '🇻🇳 VN' : '🇬🇧 GB';
       
-      // Safely escape single quotes for string execution inside HTML attributes
       const safeTopic = topic.replace(/'/g, "\\'");
       buttonsHtml += `
         <button onclick="document.getElementById('chat-input').value='${safeTopic}'; window.sendMsg();" style="text-align:left; font-size:11.5px; padding:8px 12px; background:#EFF6FF; border:1px solid #BFDBFE; border-radius:8px; color:#1E40AF; font-weight:600; cursor:pointer; transition: all 0.2s; display: flex; align-items: center;" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">
@@ -1133,7 +1443,6 @@ window.newChat = function() {
       `;
     });
   } else {
-    // Elegant loading skeletons while actual database resolves
     buttonsHtml = `
       <div style="font-size:11px; color:#94A3B8; text-align:center; padding:12px; background:#F8FAFC; border:1px dashed #E2E8F0; border-radius:8px;" class="animate-pulse">
         Fetching live suggestions...
@@ -1141,7 +1450,6 @@ window.newChat = function() {
     `;
   }
 
-  // Pure English Greeting Layout with fully randomized real database suggestions
   const welcomeMessage = `
     <div style="font-family:'Inter', sans-serif;">
       <p style="font-weight: 700; margin: 0 0 6px 0; color: #1E3A8A; font-size: 13.5px;">Local AI Support Active ⚡</p>
@@ -1160,184 +1468,634 @@ window.newChat = function() {
   addBubble(welcomeMessage, 'bot', false);
 };
 
-/* ── Dynamic Vision AI Chat Handler (Tesseract.js OCR) ── */
-window.handleChatImage = async function(input) {
+/* ── Clear pending image preview ── */
+window.clearPendingImage = function() {
+  pendingImageData = null;
+  pendingImageName = '';
+  const strip = document.getElementById('img-preview-strip');
+  if (strip) strip.style.display = 'none';
+  document.getElementById('chat-input').placeholder = 'Ask local AI support…';
+};
+
+/* ── Dynamic Vision AI Chat Handler — holds image in preview ── */
+window.handleChatImage = function(input) {
   const file = input.files[0];
   if (!file) return;
-  
+  input.value = '';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    pendingImageData = e.target.result;
+    pendingImageName = file.name;
+
+    const strip = document.getElementById('img-preview-strip');
+    const thumb = document.getElementById('img-preview-thumb');
+    const nameEl = document.getElementById('img-preview-name');
+    if (strip) strip.style.display = 'flex';
+    if (thumb) thumb.src = pendingImageData;
+    if (nameEl) nameEl.textContent = file.name;
+
+    const inp = document.getElementById('chat-input');
+    inp.placeholder = 'Describe the issue (optional)…';
+    inp.focus();
+  };
+  reader.readAsDataURL(file);
+};
+
+/* ── Dynamic Vision AI Training Image Handler ── */
+window.handleTrainingImage = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+
   const reader = new FileReader();
   reader.onload = async function(e) {
-    const base64Img = e.target.result;
-    
-    // 1. Add User image bubble
-    addBubble(`<div style="max-width:200px; border-radius:12px; overflow:hidden; border: 1px solid #E2E8F0;"><img src="${base64Img}" style="width:100%; display:block;"></div>`, 'user');
-    showTyping();
-    
-    // 2. Add dynamic OCR progress container inside bot response
-    const ocrBubbleId = "ocr-progress-" + Date.now();
-    addBubble(`
-      <div id="${ocrBubbleId}" style="font-family:'Inter', sans-serif;">
-        <div class="flex items-center gap-2 py-1">
-          <div class="spinner" style="width: 14px; height: 14px; border-width: 1.5px;"></div>
-          <p class="font-bold text-blue-600 animate-pulse text-[11.5px] m-0" id="${ocrBubbleId}-label">Initializing Local OCR Scanner...</p>
-        </div>
-        <div class="w-full bg-blue-100 rounded-full h-1 mt-1.5 overflow-hidden">
-          <div id="${ocrBubbleId}-fill" class="bg-blue-500 h-1 rounded-full" style="width: 0%"></div>
-        </div>
-      </div>
-    `, 'bot');
-    
+    trainingBase64 = e.target.result;
+    document.getElementById('train-preview').src = trainingBase64;
+    document.getElementById('train-preview').classList.remove('hidden');
+    document.getElementById('train-placeholder').style.display = 'none';
+    document.getElementById('train-file-info').textContent = file.name;
+
+    // Instantly run ResNet-50 classifier on the uploaded template to extract the fingerprint
+    const btn = document.getElementById('btn-train-save');
+    btn.disabled = true;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `<span>⏳ Extracting visual features from image...</span>`;
+
     try {
-      // Run local OCR scan
-      const result = await Tesseract.recognize(
-        base64Img,
-        'eng',
-        {
-          logger: m => {
-            const label = document.getElementById(`${ocrBubbleId}-label`);
-            const fill = document.getElementById(`${ocrBubbleId}-fill`);
-            if (m.status === 'recognizing text' && label && fill) {
-              const progress = Math.round(m.progress * 100);
-              label.textContent = `Scanning image text: ${progress}%`;
-              fill.style.width = `${progress}%`;
-            }
-          }
-        }
-      );
-      
-      const extractedText = result.data.text ? result.data.text.trim() : '';
-      console.log("Extracted text:", extractedText);
-      
-      // Update OCR progress card to show extracted keywords
-      const progressContainer = document.getElementById(ocrBubbleId);
-      if (progressContainer) {
-        if (extractedText.length > 5) {
-          // Format text into high-value search terms
-          const cleanTextToDisplay = extractedText.replace(/\n+/g, ' ').substring(0, 180) + (extractedText.length > 180 ? '...' : '');
-          progressContainer.innerHTML = `
-            <p class="text-[10px] text-blue-500 font-bold uppercase tracking-wider mb-1">📝 Local OCR Text Extracted</p>
-            <blockquote style="font-style: italic; border-left: 2px solid #3B82F6; padding-left: 8px; margin: 4px 0 8px; font-size:12px; color:#475569; line-height:1.45;">
-              "${cleanTextToDisplay}"
-            </blockquote>
-          `;
-        } else {
-          progressContainer.innerHTML = `
-            <p class="text-[10px] text-rose-500 font-bold uppercase tracking-wider mb-1">⚠️ OCR Scan Result</p>
-            <p class="text-slate-600 text-xs m-0">No readable text found on the image. Try uploading a clearer screenshot of the error screen.</p>
-          `;
-          removeTyping();
-          return;
-        }
-      }
-      
-      // 3. Search database using the extracted text
-      showTyping();
-      const bestMatches = await findMatches(extractedText);
-      removeTyping();
-      
-      if (bestMatches && bestMatches.length > 0) {
-        const best = bestMatches[0];
-        const topic = best.topic || best.Topic || '';
-        const detail = best.detail || best.Detail || '';
-        const img = best.image || best.Image || '';
-        const score = Math.round((best.sc || 0) * 100);
-        const bubbleId = 'vb' + Date.now();
-
-        let responseHtml = `
-          <div class="font-sans" id="${bubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
-            <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">
-              <span>🛠️ IDENTIFIED SOLUTION</span>
-              <span class="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100">${score}% Match Confidence</span>
-            </div>
-            <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
-            <div class="border-t border-slate-100 pt-1">
-              ${formatDetailToSteps(detail)}
-            </div>
-        `;
-        if (img) {
-          responseHtml += `
-            <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #E2E8F0; position: relative; background: #F8FAFC;">
-              <img src="${img}" onclick="window.zoomImage('${img}')" style="width: 100%; max-height: 140px; object-fit: cover; cursor: zoom-in; display: block;" onerror="this.parentElement.style.display='none'">
-              <div style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold;">
-                Click to Zoom 🔍
-              </div>
-            </div>
-          `;
-        }
-        
-        responseHtml += `
-          <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
-            <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
-              🔊 TTS Audio
-            </button>
-            <div style="position:relative;display:inline-block;">
-              <button onclick="window.toggleTranslateMenu('${bubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
-              <div id="tmenu-${bubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
-                <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Language</p>
-                <div style="display:flex;flex-direction:column;gap:2px;">
-                  <button onclick="window.translateContent('${bubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
-                  <button onclick="window.translateContent('${bubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
-                  <button onclick="window.translateContent('${bubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
-                  <button onclick="window.translateContent('${bubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
-                  <button onclick="window.translateContent('${bubbleId}','tl','🇵🇭 Filipino')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇵🇭 Filipino</button>
-                  <button onclick="window.translateContent('${bubbleId}','my','🇲🇲 မြန်မာ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇲🇲 မြန်မာ</button>
-                  <button onclick="window.translateContent('${bubbleId}','bn','🇧🇩 বাংলা')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇧🇩 বাংলা</button>
-                </div>
-              </div>
-            </div>
-            <button onclick='window.openPopup(${JSON.stringify(best).replace(/'/g,"&#39;")},"solution")' style="height: 24px; padding: 0 8px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 6px; color: #475569; font-size: 10px; font-weight: 700; cursor: pointer;">
-              View Full Source
-            </button>
-          </div>
-          <div id="tresult-${bubbleId}" style="display:none;"></div>
-        `;
-
-        responseHtml += `</div>`;
-        addBubble(responseHtml, 'bot', false);
-        
-        // List alternative matches if found
-        if (bestMatches.length > 1) {
-          let suggestionsHtml = `
-            <div class="mt-2.5 p-2 bg-slate-50 border border-slate-100 rounded-lg">
-              <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">Other Potential Matches:</p>
-              <div class="flex flex-col gap-1.5">
-          `;
-          bestMatches.slice(1).forEach(m => {
-            const alternateTitle = m.topic || m.Topic || '';
-            suggestionsHtml += `
-              <button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate">
-                🔗 ${alternateTitle}
-              </button>
-            `;
-          });
-          suggestionsHtml += `</div></div>`;
-          addBubble(suggestionsHtml, 'bot', false);
-        }
+      if (isClassifierReady && aiClassifier) {
+        const results = await aiClassifier(trainingBase64, { topk: 20 });
+        trainingFingerprint = results.map(item => ({ label: item.label, score: item.score }));
+        window.showToast("Visual fingerprint extracted successfully! Ready to register.");
       } else {
-        removeTyping();
-        addBubble("I scanned the error text, but couldn't find a matching troubleshooting guide in the repository. Try describing the issue manually!", 'bot');
+        window.showToast("Image classifier model is still downloading. Please wait.", "error");
       }
-      
-    } catch(err) {
-      console.error("OCR analysis failed:", err);
-      removeTyping();
-      const container = document.getElementById(ocrBubbleId);
-      if (container) {
-        container.innerHTML = `
-          <p class="text-[10px] text-rose-500 font-bold uppercase tracking-wider mb-1">❌ OCR Setup Failed</p>
-          <p class="text-slate-600 text-xs m-0">Failed to run local OCR engine on this network. Please switch connection or type error keywords manually.</p>
-        `;
-      }
+    } catch (err) {
+      console.error(err);
+      window.showToast("Error extracting image features.", "error");
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
     }
   };
   reader.readAsDataURL(file);
 };
 
+/* ── Toggle inputs inside training studio between 3 and 4 ── */
+window.toggleTrainingGuideInputs = function() {
+  const select = document.getElementById('train-article-select');
+  const customText = document.getElementById('train-detail');
+  
+  if (select.value !== "") {
+    customText.disabled = true;
+    customText.placeholder = "Disabled. Guide is linked above in Step 3.";
+  } else if (customText.value.trim() !== "") {
+    select.disabled = true;
+  } else {
+    select.disabled = false;
+    customText.disabled = false;
+    customText.placeholder = "Write step-by-step instructions if no linked guide exists...";
+  }
+};
+
+/* ── Populate Dynamic Solutions in dropdown ── */
+function populateTrainingSelect() {
+  const select = document.getElementById('train-article-select');
+  if (!select) return;
+  select.innerHTML = '<option value="">-- Select Linked Troubleshooting Guide --</option>';
+  
+  solutions.forEach(s => {
+    const topic = s.topic || s.Topic || '';
+    const option = document.createElement('option');
+    option.value = topic;
+    option.textContent = topic;
+    select.appendChild(option);
+  });
+}
+
+/* ── Render Training List UI inside Modal ── */
+function renderTrainingList() {
+  const listContainer = document.getElementById('training-list');
+  const countBadge = document.getElementById('train-count-badge');
+  if (!listContainer) return;
+
+  countBadge.textContent = registeredComponents.length;
+
+  if (registeredComponents.length === 0) {
+    listContainer.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4 bg-slate-50 rounded-xl">No custom components trained yet.</p>`;
+    return;
+  }
+
+  listContainer.innerHTML = registeredComponents.map((comp, idx) => {
+    const linkText = comp.articleTitle 
+      ? `Linked Guide: ${comp.articleTitle}` 
+      : `Custom Steps: ${comp.customDetail ? comp.customDetail.substring(0, 45) + '...' : 'None'}`;
+    return `
+      <div class="flex items-center justify-between p-3 border border-slate-100 bg-slate-50/50 rounded-xl">
+        <div style="min-width:0;flex:1;" class="pr-2">
+          <p class="font-bold text-[12px] text-slate-800 truncate m-0">🏷️ ${comp.name}</p>
+          <p class="text-[10px] text-purple-600 m-0 truncate mt-0.5">${linkText}</p>
+        </div>
+        <button onclick="window.deleteCustomComponent(${idx})" class="p-1 px-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 text-[10px] rounded-lg border border-rose-200 transition-colors shrink-0">
+          Delete
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ── Save Custom Component in session ── */
+window.saveCustomComponent = function() {
+  const name = document.getElementById('train-name').value.trim();
+  const article = document.getElementById('train-article-select').value;
+  const customDetail = document.getElementById('train-detail').value.trim();
+
+  if (!trainingBase64 || trainingFingerprint.length === 0) {
+    window.showToast("Please upload an image and wait for feature extraction to finish.", "error");
+    return;
+  }
+  if (!name) {
+    window.showToast("Please enter a name for this custom component.", "error");
+    return;
+  }
+  if (!article && !customDetail) {
+    window.showToast("Please link a troubleshooting guide (Step 3) or write custom steps (Step 4).", "error");
+    return;
+  }
+
+  registeredComponents.push({
+    name: name,
+    articleTitle: article || null,
+    customDetail: customDetail || null,
+    fingerprint: trainingFingerprint
+  });
+
+  window.showToast("Training successful! Local AI now recognizes this component.");
+  window.closeTrainingStudio();
+};
+
+/* ── Delete Registered Component ── */
+window.deleteCustomComponent = function(idx) {
+  window.showConfirmDialog(
+    "Delete Component",
+    "Are you sure you want to delete this custom component from local AI memory?",
+    () => {
+      registeredComponents.splice(idx, 1);
+      renderTrainingList();
+      window.showToast("Component deleted successfully.");
+    }
+  );
+};
+
+/* ── Export trained visual dataset to JSON ── */
+window.exportTrainingData = function() {
+  if (registeredComponents.length === 0) {
+    window.showToast("No custom training data found in this browser.", "error");
+    return;
+  }
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(registeredComponents, null, 2));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", `vdm_ai_training_export_${Date.now()}.json`);
+  dlAnchorElem.click();
+};
+
+/* ── Import trained visual dataset from JSON ── */
+window.importTrainingData = function(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (Array.isArray(data)) {
+        registeredComponents = registeredComponents.concat(data);
+        renderTrainingList();
+        window.showToast("Custom AI training data imported successfully! 🎉");
+      } else {
+        window.showToast("Invalid import file structure.", "error");
+      }
+    } catch (err) {
+      window.showToast("Failed to parse file. Please upload a valid .json file.", "error");
+    }
+    input.value = ''; // Reset file input
+  };
+  reader.readAsText(file);
+};
+
+/* ── Vector Cosine Similarity algorithm for Custom Image-to-Image Classifier ── */
+function calculateFingerprintSimilarity(f1, f2) {
+  let map1 = {};
+  let map2 = {};
+  f1.forEach(item => map1[item.label] = item.score);
+  f2.forEach(item => map2[item.label] = item.score);
+  
+  let allLabels = new Set([...Object.keys(map1), ...Object.keys(map2)]);
+  let dotProduct = 0;
+  let norm1 = 0;
+  let norm2 = 0;
+  
+  allLabels.forEach(label => {
+    let v1 = map1[label] || 0;
+    let v2 = map2[label] || 0;
+    dotProduct += v1 * v2;
+    norm1 += v1 * v1;
+    norm2 += v2 * v2;
+  });
+  
+  if (norm1 === 0 || norm2 === 0) return 0;
+  return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
+}
+
+/* ── Multimodal Local AI Image Analyzer (ResNet-50 Object Detection & Tesseract OCR) ── */
+async function processImageLocally(base64Img, userCaption) {
+  showTyping();
+
+  const bubbleId = "analysis-" + Date.now();
+  addBubble(`
+    <div id="${bubbleId}" class="font-sans text-[12.5px] text-slate-700">
+      <div class="flex items-center gap-2 mb-2">
+        <div class="spinner animate-spin" style="width: 14px; height: 14px; border-width: 1.5px;"></div>
+        <p class="font-bold text-purple-600 animate-pulse m-0" id="${bubbleId}-status">Analyzing Image with Local AI...</p>
+      </div>
+      <div class="flex flex-col gap-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
+        <div class="flex justify-between text-[11px] text-slate-500">
+          <span>📷 Object Classification (ResNet-50)</span>
+          <span id="${bubbleId}-resnet-percent">Pending...</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+          <div id="${bubbleId}-resnet-fill" class="bg-blue-500 h-1.5 rounded-full" style="width: 0%"></div>
+        </div>
+        
+        <div class="flex justify-between text-[11px] text-slate-500 mt-1">
+          <span>📝 Text Recognition (Tesseract OCR)</span>
+          <span id="${bubbleId}-ocr-percent">Pending...</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+          <div id="${bubbleId}-ocr-fill" class="bg-indigo-500 h-1.5 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+  `, 'bot');
+
+  let ocrText = '';
+  let visionResults = [];
+
+  // 1. Setup Tesseract OCR Promise
+  const ocrPromise = (async () => {
+    try {
+      const result = await Tesseract.recognize(
+        base64Img,
+        'eng',
+        {
+          logger: m => {
+            if (m.status === 'recognizing text') {
+              const progress = Math.round(m.progress * 100);
+              const label = document.getElementById(`${bubbleId}-ocr-percent`);
+              const fill = document.getElementById(`${bubbleId}-ocr-fill`);
+              if (label) label.textContent = `Scanning: ${progress}%`;
+              if (fill) fill.style.width = `${progress}%`;
+            }
+          }
+        }
+      );
+      const label = document.getElementById(`${bubbleId}-ocr-percent`);
+      const fill = document.getElementById(`${bubbleId}-ocr-fill`);
+      if (label) label.textContent = `Success`;
+      if (fill) {
+        fill.style.width = `100%`;
+        fill.classList.remove('bg-indigo-500');
+        fill.classList.add('bg-emerald-500');
+      }
+      ocrText = result.data.text ? result.data.text.trim() : '';
+      return ocrText;
+    } catch (e) {
+      console.error("OCR Error:", e);
+      const label = document.getElementById(`${bubbleId}-ocr-percent`);
+      if (label) label.textContent = `Failed`;
+      return '';
+    }
+  })();
+
+  // 2. Setup ResNet-50 Classifier Promise
+  const classifierPromise = (async () => {
+    try {
+      const resFill = document.getElementById(`${bubbleId}-resnet-fill`);
+      const resPercent = document.getElementById(`${bubbleId}-resnet-percent`);
+      if (resPercent) resPercent.textContent = `Processing...`;
+      if (resFill) resFill.style.width = `50%`;
+      
+      if (isClassifierReady && aiClassifier) {
+        visionResults = await aiClassifier(base64Img, { topk: 20 });
+      }
+      
+      const label = document.getElementById(`${bubbleId}-resnet-percent`);
+      const fill = document.getElementById(`${bubbleId}-resnet-fill`);
+      if (label) label.textContent = `Success`;
+      if (fill) {
+        fill.style.width = `100%`;
+        fill.classList.remove('bg-blue-500');
+        fill.classList.add('bg-emerald-400');
+      }
+      return visionResults;
+    } catch (e) {
+      console.error("Classifier Error:", e);
+      const label = document.getElementById(`${bubbleId}-resnet-percent`);
+      if (label) label.textContent = `Failed`;
+      return [];
+    }
+  })();
+
+  // Run both in parallel
+  await Promise.allSettled([ocrPromise, classifierPromise]);
+  removeTyping();
+
+  // Update Status Header inside the bubble
+  const statusEl = document.getElementById(`${bubbleId}-status`);
+  if (statusEl) {
+    statusEl.parentElement.innerHTML = `
+      <div class="flex items-center gap-1.5 text-emerald-600 font-bold mb-2 text-[13px]">
+        <span>✨ Analysis Complete (100% Offline Local AI)</span>
+      </div>
+    `;
+  }
+
+  // ── 3. FIRST-STAGE CHECK: Check visual similarity against custom registered templates ──
+  let customMatchedComponent = null;
+  let highestSim = 0;
+  
+  if (visionResults && visionResults.length > 0 && registeredComponents.length > 0) {
+    const extractedFingerprint = visionResults.map(item => ({ label: item.label, score: item.score }));
+    
+    registeredComponents.forEach(comp => {
+      const sim = calculateFingerprintSimilarity(extractedFingerprint, comp.fingerprint);
+      if (sim > highestSim) {
+        highestSim = sim;
+        customMatchedComponent = comp;
+      }
+    });
+  }
+
+  // Generate objects UI list & Expand query based on technical mapping
+  let objectsHtml = '';
+  let queryExpansionWords = [];
+  
+  if (visionResults && visionResults.length > 0) {
+    objectsHtml += `
+      <div class="mt-3">
+        <p class="text-[10px] text-blue-600 font-bold uppercase tracking-wider mb-1">📷 Object Classification (ResNet-50):</p>
+        <div class="flex flex-col gap-2 bg-blue-50/50 p-2.5 rounded-xl border border-blue-100">
+    `;
+    
+    // Display only top 3 visual labels to the user
+    const top3 = visionResults.slice(0, 3);
+    top3.forEach(item => {
+      const scorePercent = Math.round(item.score * 100);
+      const labelLower = item.label.toLowerCase();
+      
+      // Look up our technical mapping dictionary to expand search terms
+      let matchedTerms = [];
+      for (const [techKey, htmlTerms] of Object.entries(TECHNICAL_MAPPINGS)) {
+        if (labelLower.includes(techKey)) {
+          matchedTerms = matchedTerms.concat(htmlTerms);
+        }
+      }
+      
+      if (matchedTerms.length > 0) {
+        queryExpansionWords = queryExpansionWords.concat(matchedTerms);
+      }
+      queryExpansionWords.push(item.label);
+
+      objectsHtml += `
+        <div class="flex flex-col gap-0.5">
+          <div class="flex justify-between text-[11.5px] text-slate-700 font-medium">
+            <span>🔧 ${item.label}</span>
+            <span class="font-bold">${scorePercent}%</span>
+          </div>
+          <div class="w-full bg-slate-200 h-1 rounded-full overflow-hidden">
+            <div class="bg-blue-500 h-1 rounded-full" style="width: ${scorePercent}%"></div>
+          </div>
+        </div>
+      `;
+    });
+    objectsHtml += `</div></div>`;
+  } else {
+    objectsHtml += `
+      <div class="mt-3">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">📷 Detected Components:</p>
+        <p class="text-xs text-slate-500 italic bg-slate-50 p-2 rounded-lg">No confident objects detected or model not loaded.</p>
+      </div>
+    `;
+  }
+
+  // Generate OCR UI list
+  let ocrHtml = '';
+  if (ocrText && ocrText.length > 3) {
+    const cleanOcrDisplay = ocrText.replace(/\n+/g, ' ').substring(0, 150) + (ocrText.length > 150 ? '...' : '');
+    ocrHtml += `
+      <div class="mt-3">
+        <p class="text-[10px] text-indigo-600 font-bold uppercase tracking-wider mb-1">📝 Extracted Text (OCR Scan):</p>
+        <blockquote class="italic border-l-2 border-indigo-500 pl-2 text-[12px] text-slate-600 leading-relaxed bg-indigo-50/30 py-1.5 pr-1 rounded-r-lg">
+          "${cleanOcrDisplay}"
+        </blockquote>
+      </div>
+    `;
+  } else {
+    ocrHtml += `
+      <div class="mt-3">
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">📝 Extracted Text (OCR Scan):</p>
+        <p class="text-xs text-slate-400 italic bg-slate-50 p-2 rounded-lg">No readable text detected.</p>
+      </div>
+    `;
+  }
+
+  // Update dynamic progress card to static report inside the chat panel
+  const mainReportContainer = document.getElementById(bubbleId);
+  if (mainReportContainer) {
+    mainReportContainer.innerHTML = `
+      <div class="flex items-center gap-1.5 text-purple-600 font-extrabold mb-1.5 text-[13px]">
+        <span>🤖 Local AI Multi-modal Report</span>
+      </div>
+      <p class="text-slate-500 text-[11.5px] leading-relaxed m-0 mb-3">Analysis successful via Local AI (100% Privacy-safe)</p>
+      ${objectsHtml}
+      ${ocrHtml}
+    `;
+  }
+
+  // ── 4. CONDITIONAL LOOKUP PATHWAY ──
+  // Check if similarity is above threshold (0.75 / 75%) to trigger Custom Component override
+  if (customMatchedComponent && highestSim >= 0.75) {
+    const simPercent = Math.round(highestSim * 100);
+    const customMatchNotify = `
+      <div class="mt-2 p-3 bg-purple-50 border border-purple-100 rounded-xl">
+        <p class="text-[10px] text-purple-600 font-extrabold uppercase mb-1 tracking-wider">🎯 Custom Registered Component Detected!</p>
+        <p class="text-slate-800 font-bold text-[13.5px] m-0">Component Name: ${customMatchedComponent.name}</p>
+        <p class="text-slate-500 text-[11px] m-0 mt-0.5">Visual Similarity Score: ${simPercent}% (Passed 75% threshold)</p>
+      </div>
+    `;
+    addBubble(customMatchNotify, 'bot', false);
+
+    // If an article is linked to this visual component, trigger it automatically!
+    if (customMatchedComponent.articleTitle) {
+      showTyping();
+      // Search article using linked title
+      const linkedSolutions = await findMatches(customMatchedComponent.articleTitle);
+      removeTyping();
+
+      if (linkedSolutions && linkedSolutions.length > 0) {
+        displayVisualSearchResult(linkedSolutions, " visual-custom-triggered");
+        return;
+      }
+    } else if (customMatchedComponent.customDetail) {
+      // Direct solution display for custom typed detail
+      const subBubbleId = 'vb' + Date.now();
+      const topic = customMatchedComponent.name;
+      const detail = customMatchedComponent.customDetail;
+      
+      let responseHtml = `
+        <div class="font-sans visual-custom-triggered" id="${subBubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
+          <div class="flex items-center justify-between text-purple-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+            <span>🛠️ Trained Troubleshooting Steps</span>
+            <span class="bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded border border-purple-100">${simPercent}% Match Confidence</span>
+          </div>
+          <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
+          <div class="border-t border-slate-100 pt-1">
+            ${formatDetailToSteps(detail)}
+          </div>
+          <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
+            <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
+              🔊 Play TTS Audio
+            </button>
+            <div style="position:relative;display:inline-block;">
+              <button onclick="window.toggleTranslateMenu('${subBubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
+              <div id="tmenu-${subBubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
+                <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Target Language</p>
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <button onclick="window.translateContent('${subBubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
+                  <button onclick="window.translateContent('${subBubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
+                  <button onclick="window.translateContent('${subBubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
+                  <button onclick="window.translateContent('${subBubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="tresult-${subBubbleId}" style="display:none;"></div>
+        </div>
+      `;
+      addBubble(responseHtml, 'bot', false);
+      return;
+    }
+  }
+
+  // Build standard search string combining Caption + OCR + Expanded proxy words
+  const expandedQuery = [
+    userCaption,
+    ocrText,
+    queryExpansionWords.join(' ')
+  ].filter(Boolean).join(' ').trim();
+
+  console.log("Expanded Query for Knowledge Base Matcher:", expandedQuery);
+
+  if (!expandedQuery) {
+    addBubble("No readable objects or text detected on the image. Try adding more context in the message or uploading a clearer image.", 'bot');
+    return;
+  }
+
+  // Run Semantic hybrid lookup using expanded query
+  showTyping();
+  const matchedSolutions = await findMatches(expandedQuery);
+  removeTyping();
+
+  displayVisualSearchResult(matchedSolutions, "");
+}
+
+/* ── Display Matched Troubleshooting Results in Chat ── */
+function displayVisualSearchResult(matchedSolutions, extraClass) {
+  if (matchedSolutions && matchedSolutions.length > 0) {
+    const best = matchedSolutions[0];
+    const topic = best.topic || best.Topic || '';
+    const detail = best.detail || best.Detail || '';
+    const img = best.image || best.Image || '';
+    const score = Math.round((best.sc || 0) * 100);
+    const subBubbleId = 'vb' + Date.now();
+
+    let responseHtml = `
+      <div class="font-sans${extraClass}" id="${subBubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
+        <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">
+          <span>🛠️ Linked Troubleshooting & Action Steps</span>
+          <span class="bg-emerald-50 text-emerald-600 px-1.5 py-0.5 rounded border border-emerald-100">${score}% Match Confidence</span>
+        </div>
+        <h4 class="font-bold text-slate-800 text-[13.5px] leading-snug mb-2">${topic}</h4>
+        <div class="border-t border-slate-100 pt-1">
+          ${formatDetailToSteps(detail)}
+        </div>
+    `;
+
+    if (img) {
+      responseHtml += `
+        <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #E2E8F0; position: relative; background: #F8FAFC;">
+          <img src="${img}" onclick="window.zoomImage('${img}')" style="width: 100%; max-height: 140px; object-fit: cover; cursor: zoom-in; display: block;" onerror="this.parentElement.style.display='none'">
+          <div style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: bold;">
+            Click to Zoom 🔍
+          </div>
+        </div>
+      `;
+    }
+
+    responseHtml += `
+      <div style="margin-top: 12px; display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center;">
+        <button onclick="window.readAloud('${topic.replace(/'/g,"\\'").replace(/"/g,'&quot;')}. ${detail.substring(0, 200).replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="height: 24px; padding: 0 8px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 6px; color: #1E40AF; font-size: 10px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 3px;">
+          🔊 Play TTS Audio
+        </button>
+        <div style="position:relative;display:inline-block;">
+          <button onclick="window.toggleTranslateMenu('${subBubbleId}',event)" style="height:24px;padding:0 8px;background:#F5F3FF;border:1px solid #DDD6FE;border-radius:6px;color:#6D28D9;font-size:10px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:3px;">🌐 Translate</button>
+          <div id="tmenu-${subBubbleId}" style="display:none;position:absolute;bottom:28px;right:0;background:white;border:1px solid #E2E8F0;border-radius:12px;padding:10px;box-shadow:0 8px 25px rgba(0,0,0,0.15);z-index:200;min-width:160px;">
+            <p style="font-size:9px;color:#94A3B8;font-weight:800;margin:0 0 7px;text-transform:uppercase;letter-spacing:0.06em;">Select Target Language</p>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <button onclick="window.translateContent('${subBubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
+              <button onclick="window.translateContent('${subBubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
+              <button onclick="window.translateContent('${subBubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
+              <button onclick="window.translateContent('${subBubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
+            </div>
+          </div>
+        </div>
+        <button onclick='window.openPopup(${JSON.stringify(best).replace(/'/g,"&#39;")},"solution")' style="height: 24px; padding: 0 8px; background: #F1F5F9; border: 1px solid #E2E8F0; border-radius: 6px; color: #475569; font-size: 10px; font-weight: 700; cursor: pointer;">
+          View Full Source
+        </button>
+      </div>
+      <div id="tresult-${subBubbleId}" style="display:none;"></div>
+    `;
+
+    responseHtml += `</div>`;
+    addBubble(responseHtml, 'bot', false);
+    
+    // Suggest other closely matched solutions
+    if (matchedSolutions.length > 1) {
+      let suggestionsHtml = `
+        <div class="mt-2.5 p-2 bg-slate-50 border border-slate-100 rounded-lg">
+          <p class="text-[10px] text-slate-400 font-extrabold uppercase mb-1.5 tracking-wider">Other Related Articles:</p>
+          <div class="flex flex-col gap-1.5">
+      `;
+      matchedSolutions.slice(1).forEach(m => {
+        const alternateTitle = m.topic || m.Topic || '';
+        suggestionsHtml += `
+          <button onclick='window.openPopup(${JSON.stringify(m).replace(/'/g,"&#39;")},"solution")' class="text-left text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium block truncate">
+            🔗 ${alternateTitle}
+          </button>
+        `;
+      });
+      suggestionsHtml += `</div></div>`;
+      addBubble(suggestionsHtml, 'bot', false);
+    }
+  } else {
+    addBubble("Sorry, no matching troubleshooting guide found for this image. Try typing short error keywords.", 'bot');
+  }
+}
+
 function detectIntent(text) {
   const t = text.toLowerCase().trim();
   const wordSet = new Set(t.split(/[\s,!?.;:]+/).filter(Boolean));
 
-  // Thai/multi-word phrases: substring match | English single words: exact word match
   const matches = (patterns) => patterns.some(g => {
     if (/[฀-๿]/.test(g) || g.includes(' ')) return t.includes(g);
     return wordSet.has(g);
@@ -1360,23 +2118,23 @@ function detectIntent(text) {
 function getIntentResponse(intent, lang) {
   const responses = {
     greeting: {
-      th: 'สวัสดีครับ! 👋 ผม VDM Local AI พร้อมช่วยค้นหาคู่มือแก้ปัญหาเครื่อง Color Sorter ครับ ลองพิมพ์อาการเสียหรืออัปโหลดรูปหน้าจอ Error ได้เลย',
-      en: 'Hello! 👋 I\'m VDM Local AI — here to help you find troubleshooting guides for Color Sorter equipment. Type a symptom or upload an error screen image to get started!'
+      th: 'สวัสดีครับ! 👋 ผม VDM Local AI พร้อมช่วยค้นหาคู่มือแก้ปัญหาเครื่อง Color Sorter ครับ ลองพิมพ์อาการเสียหรืออัปโหลดรูปภาพอุปกรณ์ตัวจริง/รูปหน้าจอเพื่อจำแนกปัญหาได้เลย',
+      en: 'Hello! 👋 I\'m VDM Local AI — here to help you find troubleshooting guides for Color Sorter equipment. Type a symptom or upload any equipment image to get started!'
     },
     thanks: {
-      th: 'ยินดีครับ! 😊 ถ้ามีปัญหาเครื่องอีกพิมพ์ถามได้เลยนะครับ',
+      th: 'ยินดีครับ! 😊 ถ้ามีปัญหาอุปกรณ์สีคัดแยกตัวไหนเพิ่มเติม สอบถามได้ตลอดเวลาเลยนะครับ',
       en: 'You\'re welcome! 😊 Feel free to ask anytime you have equipment issues.'
     },
     whoami: {
-      th: 'ผมคือ VDM Local AI ครับ 🧠 ทำงานบนอุปกรณ์ของคุณ 100% ไม่ต้องส่งข้อมูลไป Server เลย เชี่ยวชาญค้นหาคู่มือแก้ปัญหาเครื่อง Color Sorter, Optical Sorter และอุปกรณ์ VDM ทุกรุ่นครับ',
-      en: 'I\'m VDM Local AI 🧠 — running 100% on your device with no data sent to any server. I specialize in finding troubleshooting guides for VDM Color Sorters, Optical Sorters, and related equipment.'
+      th: 'ผมคือ VDM Local AI ครับ 🧠 ทำงานบนเบราว์เซอร์ของคุณโดยตรงแบบออฟไลน์ 100% ไม่ต้องส่งรูปภาพหรือข้อมูลขึ้นอินเทอร์เน็ต มีความเชี่ยวชาญด้านระบบสแกนกล้อง CCD, รางสไลด์ Chute, อุปกรณ์ลม, และวาล์วพ่น VDM ทุกรุ่นครับ',
+      en: 'I\'m VDM Local AI 🧠 — running 100% offline on your browser. I specialize in troubleshooting VDM CCD cameras, chutes, pneumatic systems, and ejector valves.'
     },
     bye: {
-      th: 'ลาก่อนครับ! 👋 ถ้าเครื่องมีปัญหาอีกกลับมาถามได้เลยนะครับ',
+      th: 'ลาก่อนครับ! 👋 ขอให้การทำงานราบรื่น หากมีข้อสงสัยการตั้งค่ากลับมาถามได้ตลอดเวลานะครับ',
       en: 'Goodbye! 👋 Come back anytime you need equipment support.'
     },
     praise: {
-      th: 'ขอบคุณครับ 😊 ถ้ามีอะไรให้ช่วยอีกบอกได้เลยนะครับ',
+      th: 'ขอบคุณสำหรับคำชมครับ 😊 ผมจะยินดีช่วยเหลือคุณเต็มที่เสมอครับ!',
       en: 'Thank you! 😊 Let me know if there\'s anything else I can help with.'
     }
   };
@@ -1431,6 +2189,24 @@ function renderSynthesizedSteps(query, matches) {
 
 window.sendMsg = async function() {
   const inp = document.getElementById('chat-input'), text = inp.value.trim();
+
+  // ── Handle pending image ──
+  if (pendingImageData) {
+    const imageData = pendingImageData;
+    const caption = text;
+    window.clearPendingImage();
+    inp.value = '';
+
+    // Show user chat bubble
+    let userBubble = `<div style="max-width:200px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.3);${caption ? 'margin-bottom:6px;' : ''}"><img src="${imageData}" style="width:100%;display:block;"></div>`;
+    if (caption) userBubble += `<p style="margin:0;font-size:13px;">${caption}</p>`;
+    addBubble(userBubble, 'user');
+
+    // Run combined ResNet-50 + Tesseract OCR processor
+    await processImageLocally(imageData, caption);
+    return;
+  }
+
   if (!text) return;
 
   addBubble(text, 'user');
@@ -1448,7 +2224,6 @@ window.sendMsg = async function() {
     return;
   }
 
-  // Search Knowledge Base using local semantic hybrid search
   const matches = await findMatches(text);
   setTimeout(() => {
     removeTyping();
@@ -1462,7 +2237,6 @@ window.sendMsg = async function() {
       const bubbleId = 'vb' + Date.now();
 
       const isSynthesis = matches.length > 1;
-      // Beautiful local step-by-step rendering
       let responseHtml = `
         <div class="font-sans" id="${bubbleId}" data-topic="${topic.replace(/"/g,'&quot;')}" data-detail="${detail.substring(0,490).replace(/"/g,'&quot;')}">
           <div class="flex items-center justify-between text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">
@@ -1498,11 +2272,8 @@ window.sendMsg = async function() {
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <button onclick="window.translateContent('${bubbleId}','vi','🇻🇳 Tiếng Việt')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇻🇳 Tiếng Việt</button>
                 <button onclick="window.translateContent('${bubbleId}','th','🇹🇭 ภาษาไทย')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇹🇭 ภาษาไทย</button>
-                <button onclick="window.translateContent('${bubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາວ</button>
-                <button onclick="window.translateContent('${bubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្មែរ</button>
-                <button onclick="window.translateContent('${bubbleId}','tl','🇵🇭 Filipino')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇵🇭 Filipino</button>
-                <button onclick="window.translateContent('${bubbleId}','my','🇲🇲 မြန်မာ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇲🇲 မြန်မာ</button>
-                <button onclick="window.translateContent('${bubbleId}','bn','🇧🇩 বাংলা')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇧🇩 বাংলা</button>
+                <button onclick="window.translateContent('${bubbleId}','lo','🇱🇦 ພາສາລາວ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇱🇦 ພາສາລາว</button>
+                <button onclick="window.translateContent('${bubbleId}','km','🇰🇭 ភាសាខ្មែរ')" style="text-align:left;padding:5px 8px;border-radius:6px;border:none;background:transparent;cursor:pointer;font-size:11px;color:#334155;font-weight:600;width:100%;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">🇰🇭 ភាសាខ្มែร</button>
               </div>
             </div>
           </div>
@@ -1532,7 +2303,6 @@ window.sendMsg = async function() {
       }
       
     } else {
-      // Dynamic multilingual error fallback responses depending on query language
       if (qLang === 'th') {
         addBubble("ขออภัยครับ ระบบไม่พบบทความแก้ไขปัญหาที่สอดคล้องกับหัวข้อนี้ กรุณาลองใช้คำค้นหาที่กระชับขึ้น เช่น 'กล้อง', 'พ่นลม' หรือ 'หน้าจอ' ครับ", 'bot', true);
       } else if (qLang === 'vi') {
@@ -1553,13 +2323,12 @@ window.translateContent=async function(id,lang,name){const m=document.getElement
 
 function calcSim(a,b){a=(a||'').toLowerCase().replace(/\s/g,'');b=(b||'').toLowerCase().replace(/\s/g,'');if(a===b)return 1;if(a.length<2||b.length<2)return 0;const s1=new Set(),s2=new Set();for(let i=0;i<a.length-1;i++)s1.add(a.slice(i,i+2));for(let i=0;i<b.length-1;i++)s2.add(b.slice(i,i+2));let x=0;for(let c of s1)if(s2.has(c))x++;return(2*x)/(s1.size+s2.size);}
 
-/* Upgraded findMatches function inside Chat using local hybrid model scoring with language match boost */
+/* Semantic hybrid scoring with language match boost */
 async function findMatches(q) {
   const qClean = q.toLowerCase().trim();
   if (!qClean) return [];
   const qLang = detectLanguage(qClean);
 
-  // Define keyword scores for all candidates
   let scored = solutions.map(s => {
     const title = (s.topic || s.Topic || '').toLowerCase();
     const detail = (s.detail || s.Detail || '').toLowerCase();
@@ -1575,12 +2344,10 @@ async function findMatches(q) {
     });
     kwScore += calcSim(qClean, title) * 5;
     
-    // Normalize to a 0-1 range
     const normalizedKw = Math.min(kwScore / 10, 1.0);
     return { ...s, keywordScore: normalizedKw, semanticScore: 0, sc: normalizedKw };
   });
 
-  // Calculate local vector semantic similarity if loaded, boosting same language documents
   if (isAiReady && aiExtractor) {
     try {
       const queryOutput = await aiExtractor(qClean, { pooling: 'mean', normalize: true });
@@ -1592,12 +2359,10 @@ async function findMatches(q) {
         const titleText = (s.topic || s.Topic || '');
         const articleLang = detectLanguage(titleText);
         
-        // Match user's input language strictly to articles matching the same language (TH, VN, EN)
         const langBonus = (qLang === articleLang) ? 0.35 : 0;
         
         if (articleVector) {
           s.semanticScore = cosineSimilarity(queryVector, articleVector);
-          // Combine scores: 70% Semantic Space, 30% Word Matching + strong alignment language bonus
           s.sc = (s.semanticScore * 0.7) + (s.keywordScore * 0.3) + langBonus;
         }
       });
@@ -1607,7 +2372,7 @@ async function findMatches(q) {
   }
 
   return scored
-    .filter(s => s.sc > 0.18) // Low cutoff for optimal suggestions
+    .filter(s => s.sc > 0.18)
     .sort((a,b) => b.sc - a.sc)
     .slice(0, 3);
 }
@@ -1616,7 +2381,6 @@ window.readAloud=function(text){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
-  // Dynamically configure TTS dialect by analyzing matching document text language
   const textLang = detectLanguage(text);
   u.lang = textLang === 'th' ? 'th-TH' : textLang === 'vi' ? 'vi-VN' : 'en-US';
   window.speechSynthesis.speak(u);
