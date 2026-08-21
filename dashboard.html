@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VDM Dashboard — Oversea Report AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+body{font-family:'Inter',sans-serif;background:#EEF2F7;color:#1A202C;overflow-x:hidden;margin:0;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#F8FAFC;}
+::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px;}
+
+/* ── HEADER (same as solutions.html) ── */
+.site-header{background:rgba(255,255,255,0.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(0,0,0,0.06);position:fixed;top:0;left:0;right:0;height:58px;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:0 20px;}
+.nav-link{padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;color:#64748B;text-decoration:none;transition:.18s;}
+.nav-link:hover{background:#F1F5F9;}
+.nav-link.active{color:#fff;background:#3B82F6;}
+
+/* ── CHAT PANEL (same as solutions.html) ── */
+.chat-panel{position:fixed;top:58px;right:0;bottom:0;width:360px;background:#fff;border-left:1px solid #E8EDF3;display:flex;flex-direction:column;transition:transform 0.38s cubic-bezier(0.16,1,0.3,1);z-index:50;}
+@media(min-width:1024px){.chat-panel{top:74px;right:14px;bottom:14px;border-radius:20px;border:1px solid #E8EDF3;box-shadow:0 24px 64px -12px rgba(0,0,0,0.10);width:348px;}.chat-panel.away{transform:translateX(calc(100% + 28px));}}
+@media(max-width:1023px){.chat-panel{top:0;width:100%;max-width:320px;z-index:70;transform:translateX(100%);}.chat-panel.open{transform:translateX(0);}}
+.page-body{transition:padding-right 0.38s cubic-bezier(0.16,1,0.3,1);}
+@media(min-width:1024px){.page-body{padding-right:388px;}.page-body.full{padding-right:0;}}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px;}
+.bubble{max-width:90%;padding:10px 14px;border-radius:18px;font-size:.875rem;line-height:1.55;margin-bottom:8px;}
+.buser{background:linear-gradient(135deg,#3B82F6,#2563EB);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.bbot{background:#F8FAFC;color:#334155;border:1px solid #E8EDF3;align-self:flex-start;border-bottom-left-radius:4px;}
+.chat-resize-handle{position:absolute;left:-5px;top:0;bottom:0;width:10px;cursor:col-resize;z-index:10;display:none;align-items:center;justify-content:center;}
+@media(min-width:1024px){.chat-resize-handle{display:flex;}}
+.chat-resize-handle::after{content:'';width:3px;height:48px;background:#CBD5E1;border-radius:3px;opacity:0;transition:opacity .2s;}
+.chat-resize-handle:hover::after,.chat-resize-handle.dragging::after{opacity:1;background:#93C5FD;}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.5;}30%{transform:translateY(-5px);opacity:1;}}
+.overlay-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);z-index:55;opacity:0;pointer-events:none;transition:opacity .3s;}
+.overlay-bg.show{opacity:1;pointer-events:all;}
+
+/* ── MISC (same as solutions.html) ── */
+.f-input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #E2E8F0;outline:none;font-size:.875rem;background:#fff;transition:border-color .15s,box-shadow .15s;font-family:'Inter',sans-serif;}
+.f-input:focus{border-color:#3B82F6;box-shadow:0 0 0 3px rgba(59,130,246,.1);}
+.spinner{width:24px;height:24px;border:2.5px solid rgba(59,130,246,.15);border-top-color:#3B82F6;border-radius:50%;animation:spin .9s infinite linear;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.ext-btn{background:#1E293B;color:#fff;padding:7px 14px;border-radius:10px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:6px;transition:background .18s;white-space:nowrap;text-decoration:none;}
+.ext-btn:hover{background:#334155;}
+@media(max-width:640px){.ext-btn span{display:none;}.ext-btn{padding:8px;border-radius:50%;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .35s ease-out both;}
+
+/* ── HERO ── */
+.hero{padding-top:58px;background:linear-gradient(135deg,#03091A 0%,#061530 35%,#0D2660 70%,#1842A8 100%);position:relative;overflow:hidden;}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(96,165,250,0.18) 1px,transparent 1px);background-size:32px 32px;animation:gridScroll 25s linear infinite;}
+@keyframes gridScroll{from{background-position:0 0;}to{background-position:32px 32px;}}
+.glow-blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.glow-blob.b1{width:520px;height:520px;background:radial-gradient(circle,rgba(37,99,235,0.22) 0%,transparent 70%);top:-160px;right:5%;}
+.glow-blob.b2{width:260px;height:260px;background:radial-gradient(circle,rgba(0,200,100,0.18) 0%,transparent 70%);bottom:0px;right:34%;animation:blobPulse 5s ease-in-out infinite;}
+@keyframes blobPulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.25);}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);color:#93C5FD;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:5px 14px;border-radius:999px;margin-bottom:16px;}
+.hero-badge .live{width:6px;height:6px;border-radius:50%;background:#34D399;animation:livePulse 2s ease-in-out infinite;}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:22px;}
+.kpi-tile{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 14px;backdrop-filter:blur(8px);}
+.kpi-val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#fff;line-height:1.1;}
+.kpi-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+
+/* ── SECTION / FILTERS ── */
+.page-wrap{max-width:1240px;margin:0 auto;padding:28px 20px 96px;}
+.sh{display:flex;align-items:center;gap:10px;margin:30px 0 14px;flex-wrap:wrap;}
+.sh-title{font-size:16px;font-weight:700;color:#1E293B;}
+.sh-sub{font-size:12px;color:#94A3B8;}
+.sh-right{margin-left:auto;font-size:11px;color:#94A3B8;}
+.filter-pill{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;padding:6px 13px;border-radius:20px;font-weight:700;background:#fff;border:1px solid #E2E8F0;color:#64748B;cursor:pointer;transition:.15s;white-space:nowrap;}
+.filter-pill:hover{border-color:#93C5FD;color:#3B82F6;}
+.filter-pill.active{background:#3B82F6;border-color:#3B82F6;color:#fff;}
+
+/* ── LANG TOGGLE ── */
+.lang-toggle{display:flex;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;overflow:hidden;}
+.lang-btn{padding:6px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#64748B;border:none;background:transparent;font-family:'Inter',sans-serif;transition:.18s;}
+.lang-btn.active{background:#3B82F6;color:#fff;}
+
+/* ── BRANCH CARDS ── */
+.branch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.bc{background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:16px;position:relative;overflow:hidden;transition:box-shadow .18s,border-color .18s,transform .18s;cursor:pointer;}
+.bc:hover{border-color:#93C5FD;box-shadow:0 6px 22px -4px rgba(59,130,246,.15);transform:translateY(-2px);}
+.bc::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;}
+.bc.ok::before{background:#10B981;}
+.bc.mid::before{background:#F59E0B;}
+.bc.low::before{background:#EF4444;}
+.bc.na::before{background:#CBD5E1;}
+.bname{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;margin-bottom:10px;color:#1E293B;}
+.flag{font-size:19px;}
+.pct-badge{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;margin-left:auto;}
+.pct-ok{background:#D1FAE5;color:#065F46;}
+.pct-mid{background:#FEF3C7;color:#92400E;}
+.pct-low{background:#FEE2E2;color:#991B1B;}
+.pct-na{background:#F1F5F9;color:#94A3B8;}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #F8FAFC;font-size:11.5px;gap:8px;}
+.stat-row:last-child{border-bottom:none;}
+.stat-lbl{color:#94A3B8;flex-shrink:0;}
+.stat-val{font-family:'JetBrains Mono',monospace;font-weight:600;color:#334155;font-size:11px;text-align:right;}
+.ok{color:#10B981;}.warn{color:#F59E0B;}.bad{color:#EF4444;}.dim{color:#CBD5E1;}
+.mode-segs{display:flex;height:7px;border-radius:4px;overflow:hidden;gap:1px;margin-top:9px;background:#F1F5F9;}
+.seg-a{background:#10B981;}.seg-s{background:#F59E0B;}.seg-b{background:#EF4444;}.seg-d{background:#7C3AED;}
+.mode-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:7px;margin-bottom:9px;}
+.leg-item{display:flex;align-items:center;gap:4px;font-size:9.5px;color:#94A3B8;font-weight:600;}
+.leg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.no-mode{font-size:10.5px;color:#CBD5E1;font-style:italic;margin:9px 0;}
+.card-divider{border-top:1px dashed #F1F5F9;margin:9px 0 6px;}
+
+/* ── MODALS ── */
+.detail-modal{display:none;position:fixed;inset:0;z-index:100;align-items:center;justify-content:center;padding:16px;}
+.detail-card{position:relative;background:#fff;width:100%;max-width:580px;border-radius:20px;box-shadow:0 30px 70px rgba(0,0,0,.25);overflow:hidden;max-height:88vh;display:flex;flex-direction:column;animation:fadeUp .22s ease-out;}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 9px;border-radius:20px;font-weight:700;}
+.chip-ok{background:#D1FAE5;color:#065F46;}
+.chip-warn{background:#FEF3C7;color:#92400E;}
+.chip-bad{background:#FEE2E2;color:#991B1B;}
+.chip-na{background:#F1F5F9;color:#94A3B8;}
+.chip-progress{background:#EDE9FE;color:#5B21B6;}
+
+/* ── TOAST ── */
+#toast-container{position:fixed;bottom:24px;left:24px;z-index:250;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
+
+@media(max-width:640px){.page-wrap{padding:20px 14px 80px;}.branch-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="site-header">
+  <a href="solutions.html" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+    <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#3B82F6,#1D4ED8);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(59,130,246,.35);">
+      <svg style="width:15px;height:15px;color:white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+    </div>
+    <span style="font-weight:700;font-size:15px;color:#1E293B;letter-spacing:-.02em;">VDM <span style="color:#3B82F6;font-weight:400;">Solutions</span><span style="color:#19ff04;font-weight:900;"> AI</span></span>
+  </a>
+  <div style="display:flex;align-items:center;gap:6px;">
+    <a href="solutions.html" class="nav-link">Knowledge Base</a>
+    <a href="dashboard.html" class="nav-link active">Dashboard</a>
+    <div style="width:1px;height:20px;background:#E2E8F0;margin:0 4px;"></div>
+    <a href="https://www.appsheet.com/start/5321e28e-6b24-4704-b097-28aac113e0b7?refresh=1&platform=desktop#appName=RecordCalibrationLoadcell-209674834&vss=H4sIAAAAAAAAA63PPQ_CIBAG4L_S3MwvYG0cjB-DGhdxuMI1IVJogKoN4b9L_Yibix15uTz3XoKrpts-orwAP6Xva0UjcEgCDmNPAriA2tnonRHABGyxe4U7ks6rqkajG49RO1utHapKkimTGfKZfcxIAXj6n-Tzt2SgFdmoW01-8ietuG-rfE9SCX45kBl0Q8TG0PPY4uRcstbJIZA6lsozVQ1Lu7j3aNXGqbKmRRMoPwCfwSiliconYyQEA==&view=Record%20Calibration%20Load%20cell" target="_blank" class="ext-btn">
+      <svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+      <span>Smart VDM APP</span>
+    </a>
+    <div class="lang-toggle">
+      <button class="lang-btn" id="lang-th-btn" onclick="window.setLang('th')">TH</button>
+      <button class="lang-btn active" id="lang-en-btn" onclick="window.setLang('en')">EN</button>
+    </div>
+    <button onclick="window.toggleChat()" style="position:relative;width:36px;height:36px;background:#EFF6FF;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#3B82F6;cursor:pointer;border:none;transition:background .18s;" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">
+      <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-4 4v-4z"></path></svg>
+      <span id="chat-badge" style="display:none;position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#34D399;border-radius:50%;border:2px solid #fff;"></span>
+    </button>
+  </div>
+</header>
+
+<div id="overlay-bg" class="overlay-bg" onclick="window.closeMobileChat()"></div>
+
+<!-- ═══ CHAT PANEL (Local AI Data Assistant) ═══ -->
+<aside id="chat-panel" class="chat-panel away">
+  <div id="chat-resize-handle" class="chat-resize-handle" title="Drag to resize"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #F1F5F9;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#3B82F6,#6366F1);display:flex;align-items:center;justify-content:center;color:white;">
+        <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+      </div>
+      <div>
+        <p style="font-weight:600;font-size:13px;color:#1E293B;margin:0;line-height:1.3;">VDM Dashboard AI</p>
+        <p style="font-size:10px;font-weight:700;color:#10B981;margin:0;text-transform:uppercase;letter-spacing:.08em;display:flex;align-items:center;gap:6px;">
+          <span id="chat-status-text">● Local AI Ready</span>
+          <button id="ai-skip-btn" onclick="window.skipAiLoading()" style="display:none;font-size:9px;font-weight:700;color:#3B82F6;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:5px;padding:1px 6px;cursor:pointer;text-transform:none;letter-spacing:0;">Skip</button>
+        </p>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <button onclick="window.newChat()" style="height:28px;padding:0 10px;font-size:10px;font-weight:700;color:#3B82F6;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:7px;cursor:pointer;text-transform:uppercase;">New</button>
+      <button onclick="window.toggleChat()" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:#94A3B8;border-radius:7px;cursor:pointer;border:none;background:transparent;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'">
+        <svg style="width:15px;height:15px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="chat-msgs" class="chat-msgs" style="display:flex;flex-direction:column;"></div>
+
+  <div style="padding:12px;border-top:1px solid #F1F5F9;">
+    <div style="display:flex;align-items:center;gap:8px;background:#F8FAFC;border-radius:12px;padding:8px 12px;border:1.5px solid #E2E8F0;transition:border-color .2s;" onfocusin="this.style.borderColor='#93C5FD'" onfocusout="this.style.borderColor='#E2E8F0'">
+      <input id="chat-input" type="text" placeholder="ถามเกี่ยวกับข้อมูล VDM เช่น 'Binh Dinh เป็นยังไงบ้าง'…" style="flex:1;background:transparent;border:none;outline:none;font-size:13.5px;color:#1E293B;font-family:'Inter',sans-serif;">
+      <button onclick="window.sendMsg()" style="width:32px;height:32px;background:#3B82F6;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;flex-shrink:0;cursor:pointer;border:none;transition:background .18s;" onmouseover="this.style.background='#2563EB'" onmouseout="this.style.background='#3B82F6'">
+        <svg style="width:14px;height:14px;transform:rotate(90deg)" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="glow-blob b1"></div>
+  <div class="glow-blob b2"></div>
+  <div style="max-width:1240px;margin:0 auto;padding:56px 20px 40px;position:relative;z-index:10;">
+    <div class="hero-badge"><span class="live"></span>VDM Oversea Report</div>
+    <h1 style="font-size:clamp(26px,4vw,40px);font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin:0 0 10px;">
+      Report <span style="color:#60A5FA;">Dashboard</span>
+    </h1>
+    <p id="hero-subtitle" style="color:rgba(255,255,255,.5);font-size:13.5px;margin:0;max-width:600px;line-height:1.6;">
+      สถานะการใช้งาน · Mode · VDM vs QC Diff (DY) · Calibration · PM · Prediction Class (CompareVDMQC) — จาก LogFile และ Google Sheet จริง พิมพ์ถาม Local AI ทางขวาได้ทันที
+    </p>
+    <div class="kpi-strip" id="kpi-strip">
+      <div class="kpi-tile"><div class="kpi-val">…</div><div class="kpi-lbl">Loading</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE BODY ═══ -->
+<div id="page-body" class="page-body full">
+  <div class="page-wrap">
+
+    <!-- Status / refresh bar -->
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:12px 16px;margin-top:-38px;position:relative;z-index:15;box-shadow:0 8px 24px -8px rgba(15,23,42,.12);">
+      <button id="btn-refresh" onclick="window.loadReport()" style="display:flex;align-items:center;gap:7px;height:34px;padding:0 15px;background:#3B82F6;color:#fff;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:background .18s;">
+        <svg id="refresh-ico" style="width:13px;height:13px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        <span id="refresh-lbl">Refresh</span>
+      </button>
+      <span id="status-txt" style="font-size:11.5px;color:#94A3B8;">Loading latest data…</span>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+        <div id="freshness-dot" style="width:7px;height:7px;border-radius:50%;background:#CBD5E1;"></div>
+        <span id="freshness-txt" style="font-size:11px;color:#94A3B8;font-weight:600;"></span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-state" style="display:flex;flex-direction:column;align-items:center;padding:70px 0;gap:12px;">
+      <div class="spinner"></div>
+      <p id="loading-txt" style="font-size:11px;font-weight:600;color:#94A3B8;text-transform:uppercase;letter-spacing:.1em;">Loading report…</p>
+    </div>
+
+    <!-- Error -->
+    <div id="error-state" style="display:none;text-align:center;padding:50px 20px;background:#FEF2F2;border:1px solid #FECACA;border-radius:16px;margin-top:20px;">
+      <p id="error-title" style="font-weight:700;color:#991B1B;margin:0 0 6px;">⚠ ไม่สามารถโหลดข้อมูลได้</p>
+      <p id="error-msg" style="font-size:12.5px;color:#B91C1C;margin:0 0 10px;"></p>
+      <p id="error-hint" style="font-size:11.5px;color:#94A3B8;">ไฟล์ <code>report_data.json</code> ต้องอยู่โฟลเดอร์เดียวกับ dashboard.html — รัน <code>generate_report.py</code> ก่อน แล้วเปิดหน้านี้ผ่าน local server (เช่น VS Code Live Server) ไม่ใช่ดับเบิลคลิกเปิดไฟล์ตรงๆ (เบราว์เซอร์บล็อก fetch() ของไฟล์ local ด้วยเหตุผลความปลอดภัย)</p>
+    </div>
+
+    <!-- Main content -->
+    <div id="main-content" style="display:none;">
+
+      <div class="sh">
+        <span class="sh-title" id="branches-title">🌏 Branches</span>
+        <span class="sh-sub" id="branch-count-sub"></span>
+        <div class="sh-right">
+          <input id="branch-search" type="text" class="f-input" style="width:200px;height:32px;padding:6px 10px;font-size:12px;" placeholder="ค้นหาสาขา / ประเทศ…" oninput="window.renderBranchGrid()">
+        </div>
+      </div>
+
+      <div id="country-filters" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+
+      <div id="branch-grid" class="branch-grid"></div>
+      <div id="branch-empty" style="display:none;text-align:center;padding:50px 0;color:#94A3B8;font-size:13px;">ไม่พบสาขาที่ตรงกับคำค้นหา</div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ BRANCH DETAIL MODAL ═══ -->
+<div id="detail-modal" class="detail-modal">
+  <div style="position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(5px);" onclick="window.closeDetail()"></div>
+  <div id="detail-card" class="detail-card"></div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════
+   CONFIG — อ่านจากไฟล์ local ที่อยู่โฟลเดอร์เดียวกัน (สร้างโดย generate_report.py)
+   ════════════════════════════════════════════════════════ */
+const dataUrl = () => "report_data.json?t=" + Date.now();
+
+let REPORT = null;
+let BRANCHES = [];   // normalized array
+let activeCountry = 'all';
+let chatHistory = [];
+
+/* ── Local AI engine (Transformers.js — same model as solutions.html's Knowledge Base search) ──
+   Used ONLY to understand which intent a question maps to (semantic classification).
+   All numbers in every answer still come straight from report_data.json via the intent
+   handler functions — the model never generates or touches a statistic. ── */
+let aiExtractor = null;
+let isAiLoading = false;
+let isAiReady = false;
+let loadingTimeout = null;
+let intentEmbeddings = [];   // [{key, vector}] — one per example phrase in INTENT_EXAMPLES
+
+/* ── Bilingual mode (TH/EN toggle) ── */
+let LANG = 'en';
+const T = (th, en) => LANG === 'th' ? th : en;
+
+window.setLang = function(l){
+  LANG = l;
+  document.getElementById('lang-th-btn').classList.toggle('active', l==='th');
+  document.getElementById('lang-en-btn').classList.toggle('active', l==='en');
+  applyStaticText();
+  if(REPORT){
+    renderHeroKPI();
+    renderCountryFilters();
+    renderBranchGrid();
+    updateFreshness();
+    window.newChat();
+  }
+};
+
+function applyStaticText(){
+  const set = (id, txt) => { const el=document.getElementById(id); if(el) el.textContent = txt; };
+  set('hero-subtitle', T(
+    'สถานะการใช้งาน · Mode · VDM vs QC Diff (DY) · Calibration · PM · Prediction Class (CompareVDMQC) — จาก LogFile และ Google Sheet จริง พิมพ์ถาม Local AI ทางขวาได้ทันที',
+    'Usage status · Mode · VDM vs QC Diff (DY) · Calibration · PM · Prediction Class (CompareVDMQC) — from real LogFile and Google Sheet data. Ask the Local AI on the right anytime.'
+  ));
+  set('loading-txt', T('กำลังโหลดรายงาน…','Loading report…'));
+  set('error-title', T('⚠ ไม่สามารถโหลดข้อมูลได้','⚠ Failed to load data'));
+  set('error-hint', T(
+    'ไฟล์ report_data.json ต้องอยู่โฟลเดอร์เดียวกับ dashboard.html — รัน generate_report.py ก่อน แล้วเปิดหน้านี้ผ่าน local server (เช่น VS Code Live Server) ไม่ใช่ดับเบิลคลิกเปิดไฟล์ตรงๆ (เบราว์เซอร์บล็อก fetch() ของไฟล์ local ด้วยเหตุผลความปลอดภัย)',
+    'report_data.json must sit in the same folder as dashboard.html — run generate_report.py first, then open this page via a local server (e.g. VS Code Live Server), not by double-clicking the file directly (browsers block fetch() of local files for security reasons).'
+  ));
+  set('branches-title', T('🌏 สาขา','🌏 Branches'));
+  const search = document.getElementById('branch-search');
+  if(search) search.placeholder = T('ค้นหาสาขา / ประเทศ…','Search branch / country…');
+  const chatInput = document.getElementById('chat-input');
+  if(chatInput) chatInput.placeholder = T("ถามเกี่ยวกับข้อมูล VDM เช่น 'Binh Dinh เป็นยังไงบ้าง'…","Ask about VDM data e.g. 'How is Binh Dinh doing'…");
+  const chatStatus = document.getElementById('chat-status-text');
+  if(chatStatus){
+    if(isAiReady) chatStatus.textContent = T('● Local AI พร้อมใช้งาน 🧠','● Local AI Ready 🧠');
+    else if(isAiLoading) chatStatus.textContent = T('● กำลังโหลด AI Engine…','● Loading AI Engine…');
+    else chatStatus.textContent = T('● โหมดคำหลัก','● Keyword mode');
+  }
+}
+
+/* ════════════════════════════════════════════════════════
+   UTILS
+   ════════════════════════════════════════════════════════ */
+function detectLanguage(text){
+  if(!text) return 'en';
+  return /[฀-๿]/.test(text) ? 'th' : 'en';
+}
+function calcSim(a,b){a=(a||'').toLowerCase().replace(/\s/g,'');b=(b||'').toLowerCase().replace(/\s/g,'');if(a===b)return 1;if(a.length<2||b.length<2)return 0;const s1=new Set(),s2=new Set();for(let i=0;i<a.length-1;i++)s1.add(a.slice(i,i+2));for(let i=0;i<b.length-1;i++)s2.add(b.slice(i,i+2));let x=0;for(let c of s1)if(s2.has(c))x++;return(2*x)/(s1.size+s2.size);}
+
+function fmtISODate(s){
+  if(!s) return '—';
+  const d=new Date(s+'T00:00:00');
+  if(isNaN(d.getTime())) return s;
+  return d.toLocaleDateString(LANG==='th'?'th-TH':'en-GB',{year:'numeric',month:'short',day:'numeric'});
+}
+function daysSince(iso){
+  if(!iso) return null;
+  const d=new Date(iso+'T00:00:00');
+  if(isNaN(d.getTime())) return null;
+  return Math.round((Date.now()-d.getTime())/864e5);
+}
+function numOr(v,dash){ return (v===null||v===undefined||isNaN(v)) ? (dash===undefined?'—':dash) : v; }
+function diffClass(v, warnThr, badThr){
+  if(v===null||v===undefined||isNaN(v)) return 'dim';
+  const a=Math.abs(v);
+  if(a<=warnThr) return 'ok';
+  if(a<=badThr) return 'warn';
+  return 'bad';
+}
+
+window.showToast = function(message, type='success'){
+  const container=document.getElementById('toast-container');
+  if(!container) return;
+  const toast=document.createElement('div');
+  toast.className='fade-up';
+  toast.style.cssText=`background:${type==='error'?'#FEF2F2':'#EFF6FF'};border:1px solid ${type==='error'?'#FCA5A5':'#BFDBFE'};color:${type==='error'?'#991B1B':'#1E40AF'};padding:10px 16px;border-radius:12px;font-size:12.5px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,0.08);display:flex;align-items:center;gap:8px;pointer-events:auto;min-width:220px;`;
+  toast.innerHTML=`<span>${type==='error'?'✕':'✓'}</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transition='opacity .3s ease';setTimeout(()=>toast.remove(),300);},3500);
+};
+
+function activityTier(n){ return n>=5?'ok':n>=3?'mid':n>0?'low':'na'; }
+function activityPctClass(n){ return n>=5?'pct-ok':n>=3?'pct-mid':n>0?'pct-low':'pct-na'; }
+function statValClass(n){ return n>=5?'ok':n>=3?'warn':n>0?'bad':'dim'; }
+
+/* ════════════════════════════════════════════════════════
+   LOAD & NORMALIZE DATA
+   schema (from generate_report.py build_json_report):
+   { generated_at, logfile_window, dy_window, compare_window,
+     branches: { name: { country, flag, product_group,
+       usage:{n_active_days,total_days,pct_active,last_day},
+       mode:{active_pct,semi_pct,bypass_pct,disable_pct,total_records},
+       dy:{total_diff,on5_diff,on2_diff,n} | null,
+       calibration:{date,status} | null,
+       pm:{date,status} | null,
+       compare_qc:{diff_dg,diff_mg,diff_bg,diff_adm,n} | null
+     } } }
+   ════════════════════════════════════════════════════════ */
+window.loadReport = async function(){
+  applyStaticText();
+  const btn=document.getElementById('btn-refresh'), ico=document.getElementById('refresh-ico'),
+        lbl=document.getElementById('refresh-lbl'), status=document.getElementById('status-txt');
+  document.getElementById('error-state').style.display='none';
+  btn.disabled=true; ico.style.animation='spin .8s linear infinite'; lbl.textContent=T('กำลังโหลด…','Loading…');
+  status.textContent=T('กำลังดึงข้อมูลจาก report_data.json…','Fetching report_data.json…');
+
+  try{
+    const res = await fetch(dataUrl());
+    if(!res.ok) throw new Error(T(`HTTP ${res.status} — ไม่พบไฟล์ report_data.json`, `HTTP ${res.status} — report_data.json not found`));
+    REPORT = await res.json();
+    normalizeReport();
+    document.getElementById('loading-state').style.display='none';
+    document.getElementById('main-content').style.display='block';
+    renderHeroKPI();
+    renderCountryFilters();
+    renderBranchGrid();
+    updateFreshness();
+    status.textContent = T(`✓ โหลดสำเร็จ — สร้างเมื่อ ${REPORT.generated_at}`, `✓ Loaded — generated ${REPORT.generated_at}`);
+    window.newChat();
+  }catch(e){
+    document.getElementById('error-state').style.display='block';
+    document.getElementById('error-msg').textContent = e.message;
+    document.getElementById('loading-state').style.display='none';
+    status.textContent=T('✕ โหลดข้อมูลไม่สำเร็จ','✕ Failed to load data');
+  }
+  btn.disabled=false; ico.style.animation=''; lbl.textContent=T('รีเฟรช','Refresh');
+};
+
+function normalizeReport(){
+  const branchesObj = REPORT.branches || {};
+  BRANCHES = Object.keys(branchesObj).map(name=>{
+    const d = branchesObj[name];
+    return {
+      name,
+      country: d.country || '—',
+      flag: d.flag || '🌍',
+      product_group: d.product_group || '—',
+      usage: d.usage || {n_active_days:0,total_days:7,pct_active:0,last_day:null},
+      mode: d.mode || {active_pct:null,semi_pct:null,bypass_pct:null,disable_pct:null,total_records:0},
+      dy: d.dy || null,
+      calibration: d.calibration || null,
+      pm: d.pm || null,
+      compare_qc: d.compare_qc || null,
+    };
+  }).sort((a,b)=> b.usage.pct_active - a.usage.pct_active);
+}
+
+function realBranches(){ return BRANCHES.filter(b=>b.country && b.country!=='—'); }
+
+/* ════════════════════════════════════════════════════════
+   RENDER: HERO KPI
+   ════════════════════════════════════════════════════════ */
+function renderHeroKPI(){
+  const real = realBranches();
+  const activeNow = real.filter(b=>b.usage.n_active_days>0).length;
+  const avgPct = real.length ? (real.reduce((s,b)=>s+b.usage.pct_active,0)/real.length) : 0;
+  const attention = real.filter(b=>b.usage.n_active_days===0).length;
+  const notDone = real.filter(b=>!b.compare_qc).length;
+  const lw = REPORT.logfile_window || {};
+  const windowTxt = (lw.start && lw.end) ? `${fmtISODate(lw.start)} → ${fmtISODate(lw.end)}` : '—';
+
+  const tiles = [
+    {v: real.length, l:T('สาขาที่ติดตาม','Branches tracked')},
+    {v: `${activeNow}/${real.length}`, l:T('ใช้งานอยู่ (7 วัน)','Active now (7d)')},
+    {v: avgPct.toFixed(1)+'%', l:T('Active % เฉลี่ย','Avg Active %')},
+    {v: attention, l:T('ต้องตรวจสอบ (0 วัน)','Needs attention (0d)')},
+    {v: notDone, l:T('ยังไม่ได้ทำ QC Compare','QC Compare not done')},
+    {v: windowTxt, l:T('ช่วงข้อมูล LogFile','LogFile data window')},
+  ];
+  document.getElementById('kpi-strip').innerHTML = tiles.map(t=>`
+    <div class="kpi-tile"><div class="kpi-val" style="font-size:${typeof t.v==='string'&&t.v.length>10?'13px':'20px'}">${t.v}</div><div class="kpi-lbl">${t.l}</div></div>
+  `).join('');
+}
+
+function updateFreshness(){
+  const dot=document.getElementById('freshness-dot'), txt=document.getElementById('freshness-txt');
+  if(!REPORT?.generated_at){ txt.textContent=''; return; }
+  const d = new Date(REPORT.generated_at.replace(' ','T'));
+  const hrs = isNaN(d.getTime()) ? null : (Date.now()-d.getTime())/3600000;
+  if(hrs===null){ dot.style.background='#CBD5E1'; txt.textContent=REPORT.generated_at; return; }
+  dot.style.background = hrs<6 ? '#34D399' : hrs<24 ? '#F59E0B' : '#EF4444';
+  const h = T(
+    hrs<1 ? 'เมื่อครู่นี้' : hrs<24 ? `${Math.round(hrs)} ชม.ที่แล้ว` : `${Math.round(hrs/24)} วันที่แล้ว`,
+    hrs<1 ? 'just now' : hrs<24 ? `${Math.round(hrs)}h ago` : `${Math.round(hrs/24)}d ago`
+  );
+  txt.textContent = T(`อัปเดต ${h} (${REPORT.generated_at})`, `Updated ${h} (${REPORT.generated_at})`);
+}
+
+/* ════════════════════════════════════════════════════════
+   RENDER: COUNTRY FILTERS
+   ════════════════════════════════════════════════════════ */
+function renderCountryFilters(){
+  const real = realBranches();
+  const countries = [...new Set(real.map(b=>b.country))];
+  const box = document.getElementById('country-filters');
+  let html = `<button class="filter-pill ${activeCountry==='all'?'active':''}" onclick="window.setCountryFilter('all')">🌐 ${T('ทั้งหมด','All')} (${real.length})</button>`;
+  countries.forEach(c=>{
+    const flag = real.find(b=>b.country===c)?.flag || '🌍';
+    const count = real.filter(b=>b.country===c).length;
+    html += `<button class="filter-pill ${activeCountry===c?'active':''}" onclick="window.setCountryFilter('${c.replace(/'/g,"\\'")}')">${flag} ${c} (${count})</button>`;
+  });
+  box.innerHTML = html;
+}
+window.setCountryFilter = function(c){
+  activeCountry = c;
+  renderCountryFilters();
+  window.renderBranchGrid();
+};
+
+/* ════════════════════════════════════════════════════════
+   RENDER: BRANCH GRID
+   ════════════════════════════════════════════════════════ */
+window.renderBranchGrid = function(){
+  const q = (document.getElementById('branch-search')?.value || '').toLowerCase().trim();
+  let list = realBranches();
+  if(activeCountry!=='all') list = list.filter(b=>b.country===activeCountry);
+  if(q) list = list.filter(b=> b.name.toLowerCase().includes(q) || b.country.toLowerCase().includes(q));
+
+  document.getElementById('branch-count-sub').textContent = T(`${list.length} จาก ${realBranches().length} สาขา`, `${list.length} of ${realBranches().length} branches`);
+  const grid = document.getElementById('branch-grid'), empty = document.getElementById('branch-empty');
+
+  if(!list.length){ grid.style.display='none'; empty.style.display='block'; return; }
+  grid.style.display='grid'; empty.style.display='none';
+
+  grid.innerHTML = list.map((b,idx)=>{
+    const u = b.usage, m = b.mode;
+    const tier = activityTier(u.n_active_days);
+    const pc = activityPctClass(u.n_active_days);
+
+    let modeHtml;
+    if(m.total_records>0){
+      const a=m.active_pct||0, s=m.semi_pct||0, bp=m.bypass_pct||0, dv=m.disable_pct||0;
+      modeHtml = `
+        <div class="mode-segs">
+          <div class="seg-a" style="flex:${a}"></div>
+          <div class="seg-s" style="flex:${s}"></div>
+          <div class="seg-b" style="flex:${bp}"></div>
+          ${dv>0?`<div class="seg-d" style="flex:${dv}"></div>`:''}
+        </div>
+        <div class="mode-legend">
+          <div class="leg-item"><div class="leg-dot" style="background:#10B981"></div>Active ${a.toFixed(0)}%</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#F59E0B"></div>Semi ${s.toFixed(0)}%</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#EF4444"></div>Bypass ${bp.toFixed(0)}%</div>
+        </div>`;
+    } else {
+      modeHtml = `<div class="no-mode">${T('ไม่มีข้อมูล Mode ในช่วงนี้','No Mode data this period')}</div>`;
+    }
+
+    const noData = T('ไม่มีข้อมูล','No data');
+    const dyRow = b.dy
+      ? `<div class="stat-row"><span class="stat-lbl">DY Diff (Total/On5/On2)</span><span class="stat-val"><span class="${diffClass(b.dy.total_diff,0.6,Infinity)}">${b.dy.total_diff}</span> / <span class="${diffClass(b.dy.on5_diff,0.6,Infinity)}">${b.dy.on5_diff}</span> / <span class="${diffClass(b.dy.on2_diff,0.6,Infinity)}">${b.dy.on2_diff}</span></span></div>`
+      : `<div class="stat-row"><span class="stat-lbl">DY Diff</span><span class="stat-val dim">${noData}</span></div>`;
+    const calRow = b.calibration
+      ? `<div class="stat-row"><span class="stat-lbl">${T('Calibration ล่าสุด','Latest Calibration')}</span><span class="stat-val">${fmtISODate(b.calibration.date)}</span></div>`
+      : `<div class="stat-row"><span class="stat-lbl">Calibration</span><span class="stat-val dim">${noData}</span></div>`;
+    const pmRow = b.pm
+      ? `<div class="stat-row"><span class="stat-lbl">${T('PM ล่าสุด','Latest PM')}</span><span class="stat-val">${fmtISODate(b.pm.date)}</span></div>`
+      : `<div class="stat-row"><span class="stat-lbl">PM</span><span class="stat-val dim">${noData}</span></div>`;
+    const cmpRow = b.compare_qc
+      ? `<div class="stat-row"><span class="stat-lbl">QC Class Diff (DG/MG/BG)</span><span class="stat-val"><span class="${diffClass(b.compare_qc.diff_dg,1,Infinity)}">${b.compare_qc.diff_dg}</span> / <span class="${diffClass(b.compare_qc.diff_mg,0.5,Infinity)}">${b.compare_qc.diff_mg}</span> / <span class="${diffClass(b.compare_qc.diff_bg,2,Infinity)}">${b.compare_qc.diff_bg}</span></span></div>`
+      : `<div class="stat-row"><span class="stat-lbl">QC Class Diff</span><span class="stat-val dim">${T('ยังไม่ได้ทำ','Not done yet')}</span></div>`;
+
+    return `<div class="bc ${tier} fade-up" style="animation-delay:${idx*.035}s" onclick="window.openDetail('${b.name.replace(/'/g,"\\'")}')">
+      <div class="bname">
+        <span class="flag">${b.flag}</span>${b.name}
+        <span class="pct-badge ${pc}">${u.pct_active}%</span>
+      </div>
+      <div class="stat-row"><span class="stat-lbl">${T('ประเทศ / PG','Country / PG')}</span><span class="stat-val">${b.country} / ${b.product_group}</span></div>
+      <div class="stat-row"><span class="stat-lbl">${T('วันที่มีข้อมูล','Active days')}</span><span class="stat-val ${statValClass(u.n_active_days)}">${u.n_active_days} / ${u.total_days} ${T('วัน','days')}</span></div>
+      ${modeHtml}
+      <div class="card-divider"></div>
+      ${dyRow}
+      ${calRow}
+      ${pmRow}
+      ${cmpRow}
+    </div>`;
+  }).join('');
+};
+
+/* ════════════════════════════════════════════════════════
+   BRANCH DETAIL MODAL
+   ════════════════════════════════════════════════════════ */
+window.openDetail = function(name){
+  const b = BRANCHES.find(x=>x.name===name);
+  if(!b) return;
+  const modal = document.getElementById('detail-modal'), card = document.getElementById('detail-card');
+  modal.style.display='flex';
+  const u=b.usage, m=b.mode;
+
+  let modeBlock = `<p style="font-size:12.5px;color:#94A3B8;font-style:italic;margin:0;">${T('ไม่มีข้อมูล Mode ในช่วง 7 วันนี้','No Mode data for this 7-day period')}</p>`;
+  if(m.total_records>0){
+    const a=m.active_pct||0, s=m.semi_pct||0, bp=m.bypass_pct||0, dv=m.disable_pct||0;
+    modeBlock = `
+      <div class="mode-segs" style="height:9px;">
+        <div class="seg-a" style="flex:${a}"></div><div class="seg-s" style="flex:${s}"></div>
+        <div class="seg-b" style="flex:${bp}"></div>${dv>0?`<div class="seg-d" style="flex:${dv}"></div>`:''}
+      </div>
+      <div class="mode-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#10B981"></div>Active ${a.toFixed(1)}%</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#F59E0B"></div>Semi ${s.toFixed(1)}%</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#EF4444"></div>Bypass ${bp.toFixed(1)}%</div>
+        ${dv>0?`<div class="leg-item"><div class="leg-dot" style="background:#7C3AED"></div>Disable ${dv.toFixed(1)}%</div>`:''}
+      </div>
+      <p style="font-size:10.5px;color:#CBD5E1;margin:8px 0 0;">${T(`รวม ${m.total_records} รายการ`,`Total ${m.total_records} records`)}</p>`;
+  }
+
+  function chipFor(ds){
+    if(ds===null) return 'chip-na';
+    if(ds>60) return 'chip-bad';
+    if(ds>21) return 'chip-warn';
+    return 'chip-ok';
+  }
+  const calDs = b.calibration ? daysSince(b.calibration.date) : null;
+  const pmDs = b.pm ? daysSince(b.pm.date) : null;
+
+  card.innerHTML = `
+    <div style="padding:18px 20px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:26px;">${b.flag}</span><div><p style="font-weight:700;color:#1E293B;font-size:15px;margin:0;">${b.name}</p><p style="font-size:11px;color:#94A3B8;margin:2px 0 0;">${b.country} · Product Group ${b.product_group}</p></div></div>
+      <button onclick="window.closeDetail()" style="width:30px;height:30px;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#94A3B8;border-radius:8px;cursor:pointer;border:none;background:transparent;" onmouseover="this.style.background='#F1F5F9'" onmouseout="this.style.background='transparent'"><svg style="width:14px;height:14px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+        <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:12px;padding:12px;"><p style="font-size:10px;color:#94A3B8;font-weight:700;text-transform:uppercase;margin:0 0 4px;">Active %</p><p style="font-size:20px;font-weight:800;color:#1E293B;margin:0;font-family:'JetBrains Mono',monospace;">${u.pct_active}%</p></div>
+        <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:12px;padding:12px;"><p style="font-size:10px;color:#94A3B8;font-weight:700;text-transform:uppercase;margin:0 0 4px;">${T('วันที่ใช้งาน','Active Days')}</p><p style="font-size:20px;font-weight:800;color:#1E293B;margin:0;font-family:'JetBrains Mono',monospace;">${u.n_active_days}/${u.total_days}</p></div>
+      </div>
+
+      <p style="font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">${T('Mode Distribution — จาก LogFile','Mode Distribution — from LogFile')}</p>
+      ${modeBlock}
+
+      <p style="font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;">${T('VDM vs QC — Avg Diff (Sheet: DY)','VDM vs QC — Avg Diff (Sheet: DY)')}</p>
+      ${b.dy ? `
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9.5px;color:#94A3B8;margin:0 0 3px;">Total</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;" class="${diffClass(b.dy.total_diff,0.6,Infinity)}">${b.dy.total_diff}</p></div>
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9.5px;color:#94A3B8;margin:0 0 3px;">On5</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;" class="${diffClass(b.dy.on5_diff,0.6,Infinity)}">${b.dy.on5_diff}</p></div>
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9.5px;color:#94A3B8;margin:0 0 3px;">On2</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;" class="${diffClass(b.dy.on2_diff,0.6,Infinity)}">${b.dy.on2_diff}</p></div>
+        </div>
+        <p style="font-size:10.5px;color:#CBD5E1;margin:6px 0 0;">${T(`n=${b.dy.n} รายการ`,`n=${b.dy.n} records`)}</p>
+      ` : `<p style="font-size:12.5px;color:#94A3B8;font-style:italic;margin:0;">${T('ไม่มีข้อมูล/ไม่บันทึกใน DY ช่วงนี้','No DY data recorded this period')}</p>`}
+
+      <p style="font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;">${T('Calibration ล่าสุด (Sheet: Sheet1)','Latest Calibration (Sheet: Sheet1)')}</p>
+      ${b.calibration ? `<div style="display:flex;align-items:center;gap:8px;"><span class="chip ${chipFor(calDs)}">${fmtISODate(b.calibration.date)} — ${b.calibration.status}</span>${calDs!==null?`<span style="font-size:11px;color:#94A3B8;">${T(`${calDs} วันที่แล้ว`,`${calDs}d ago`)}</span>`:''}</div>` : `<p style="font-size:12.5px;color:#94A3B8;font-style:italic;margin:0;">${T('ไม่มีข้อมูล Calibration','No Calibration data')}</p>`}
+
+      <p style="font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;">${T('PM ล่าสุด (Sheet: Check list sample prap)','Latest PM (Sheet: Check list sample prap)')}</p>
+      ${b.pm ? `<div style="display:flex;align-items:center;gap:8px;"><span class="chip ${b.pm.status==='In Process'?'chip-progress':chipFor(pmDs)}">${fmtISODate(b.pm.date)} — ${b.pm.status}</span>${pmDs!==null?`<span style="font-size:11px;color:#94A3B8;">${T(`${pmDs} วันที่แล้ว`,`${pmDs}d ago`)}</span>`:''}</div>` : `<p style="font-size:12.5px;color:#94A3B8;font-style:italic;margin:0;">${T('ไม่มีข้อมูล PM','No PM data')}</p>`}
+
+      <p style="font-size:10px;font-weight:800;color:#94A3B8;text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px;">${T('VDM vs QC Prediction Class (Sheet: CompareVDMQC)','VDM vs QC Prediction Class (Sheet: CompareVDMQC)')}</p>
+      ${b.compare_qc ? `
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9px;color:#94A3B8;margin:0 0 3px;">DG</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;font-size:12px;" class="${diffClass(b.compare_qc.diff_dg,1,Infinity)}">${b.compare_qc.diff_dg}</p></div>
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9px;color:#94A3B8;margin:0 0 3px;">MG</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;font-size:12px;" class="${diffClass(b.compare_qc.diff_mg,0.5,Infinity)}">${b.compare_qc.diff_mg}</p></div>
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9px;color:#94A3B8;margin:0 0 3px;">BG</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;font-size:12px;" class="${diffClass(b.compare_qc.diff_bg,2,Infinity)}">${b.compare_qc.diff_bg}</p></div>
+          <div style="background:#F8FAFC;border:1px solid #F1F5F9;border-radius:10px;padding:9px;text-align:center;"><p style="font-size:9px;color:#94A3B8;margin:0 0 3px;">ADM</p><p style="font-family:'JetBrains Mono',monospace;font-weight:700;margin:0;font-size:12px;" class="${diffClass(b.compare_qc.diff_adm,0.3,0.6)}">${b.compare_qc.diff_adm}</p></div>
+        </div>
+        <p style="font-size:10.5px;color:#CBD5E1;margin:6px 0 0;">${T(`n=${b.compare_qc.n} รายการ`,`n=${b.compare_qc.n} records`)}</p>
+      ` : `<p style="font-size:12.5px;color:#94A3B8;font-style:italic;margin:0;">${T('สาขานี้ยังไม่ได้ทำ VDM vs QC Compare ในช่วงนี้','This branch has not done VDM vs QC Compare this period')}</p>`}
+
+    </div>
+    <div style="padding:12px 20px;border-top:1px solid #F1F5F9;background:#FAFBFC;display:flex;justify-content:flex-end;flex-shrink:0;">
+      <button onclick="window.closeDetail()" style="height:32px;padding:0 16px;font-size:12px;font-weight:600;color:#94A3B8;border-radius:8px;cursor:pointer;border:none;background:transparent;">Close</button>
+    </div>
+  `;
+};
+window.closeDetail = function(){ document.getElementById('detail-modal').style.display='none'; };
+
+/* ════════════════════════════════════════════════════════
+   CHAT — Local rule-based data assistant (100% offline, no external API)
+   ════════════════════════════════════════════════════════ */
+window.toggleChat=function(){
+  const p=document.getElementById('chat-panel'),b=document.getElementById('page-body');
+  if(window.innerWidth>=1024){const away=p.classList.toggle('away');b.classList.toggle('full',away);}
+  else{p.classList.toggle('open');document.getElementById('overlay-bg').classList.toggle('show');}
+  document.getElementById('chat-badge').style.display='none';
+};
+window.closeMobileChat=function(){document.getElementById('chat-panel').classList.remove('open');document.getElementById('overlay-bg').classList.remove('show');};
+
+function addBubble(html,who,typewriter=false){
+  const w=document.getElementById('chat-msgs'),el=document.createElement('div');
+  el.className=`bubble b${who}`;
+  w.appendChild(el);
+  if(typewriter && !html.includes('<')){
+    let i=0; const iv=setInterval(()=>{el.textContent=html.slice(0,i)+'▊';i++;if(i>html.length){clearInterval(iv);el.textContent=html;w.scrollTop=w.scrollHeight;}},12);
+  } else { el.innerHTML=html; }
+  w.scrollTop=w.scrollHeight;
+}
+function showTyping(){
+  removeTyping();
+  const w=document.getElementById('chat-msgs'),el=document.createElement('div');
+  el.id='typing'; el.className='bubble bbot'; el.style.width='50px';
+  el.innerHTML='<div style="display:flex;gap:4px;justify-content:center;align-items:center;height:14px;"><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.15s;"></span><span style="width:6px;height:6px;background:#CBD5E1;border-radius:50%;animation:typingDot .9s infinite;animation-delay:.3s;"></span></div>';
+  w.appendChild(el); w.scrollTop=w.scrollHeight;
+}
+function removeTyping(){ document.getElementById('typing')?.remove(); }
+
+window.newChat = function(){
+  chatHistory=[];
+  document.getElementById('chat-msgs').innerHTML='';
+  const real = realBranches();
+  const suggestions = [];
+  if(real.length){
+    const top = [...real].sort((a,b)=>b.usage.pct_active-a.usage.pct_active)[0];
+    const notDone = real.filter(b=>!b.compare_qc)[0];
+    suggestions.push(T('สรุปภาพรวมทั้งหมด','Overall summary'));
+    if(top) suggestions.push(T(`${top.name} เป็นยังไงบ้าง`,`How is ${top.name} doing`));
+    suggestions.push(T('สาขาไหนต้องตรวจสอบบ้าง','Which branches need attention'));
+    if(notDone) suggestions.push(T('สาขาไหนยังไม่ได้ทำ compare QC','Which branches have not done QC compare'));
+  } else {
+    suggestions.push(T('สรุปภาพรวมทั้งหมด','Overall summary'));
+  }
+  const btnHtml = suggestions.map(s=>`<button onclick="document.getElementById('chat-input').value='${s.replace(/'/g,"\\'")}'; window.sendMsg();" style="text-align:left;font-size:11.5px;padding:8px 12px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;color:#1E40AF;font-weight:600;cursor:pointer;" onmouseover="this.style.background='#DBEAFE'" onmouseout="this.style.background='#EFF6FF'">💬 ${s}</button>`).join('');
+
+  addBubble(`
+    <div style="font-family:'Inter',sans-serif;">
+      <p style="font-weight:700;margin:0 0 6px;color:#1E3A8A;font-size:13.5px;">VDM Dashboard AI ⚡</p>
+      
+      <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#94A3B8;margin-bottom:8px;">${T('ลองถามดู:','Try asking:')}</p>
+      <div style="display:flex;flex-direction:column;gap:6px;">${btnHtml}</div>
+    </div>
+  `, 'bot', false);
+};
+
+window.sendMsg = function(){
+  const inp=document.getElementById('chat-input'), text=inp.value.trim();
+  if(!text) return;
+  addBubble(text.replace(/</g,'&lt;'),'user');
+  chatHistory.push(text);
+  inp.value='';
+  showTyping();
+  setTimeout(async ()=>{
+    const html = await analyzeQuery(text);
+    removeTyping();
+    addBubble(html,'bot',false);
+  }, 380);
+};
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('chat-input')?.addEventListener('keypress', e=>{ if(e.key==='Enter') window.sendMsg(); });
+});
+
+function miniBar(pct, color){
+  return `<div style="background:#F1F5F9;border-radius:5px;height:6px;overflow:hidden;margin-top:3px;"><div style="width:${Math.min(100,Math.max(0,pct))}%;height:100%;background:${color};border-radius:5px;"></div></div>`;
+}
+function branchListHtml(list){
+  if(!list.length) return `<p style="font-size:12px;color:#94A3B8;margin:6px 0 0;">${T('ไม่พบข้อมูล','No data found')}</p>`;
+  return `<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">` + list.map(b=>{
+    const n=b.usage.n_active_days;
+    const color = n>=5?'#10B981':n>=3?'#F59E0B':n>0?'#EF4444':'#CBD5E1';
+    return `<div style="background:#fff;border:1px solid #E8EDF3;border-radius:10px;padding:9px 11px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;"><span style="font-weight:700;color:#1E293B;">${b.flag} ${b.name}</span><span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${color};">${b.usage.pct_active}%</span></div>
+      ${miniBar(b.usage.pct_active,color)}
+      <p style="font-size:10.5px;color:#94A3B8;margin:5px 0 0;">${b.country} · ${n}/${b.usage.total_days} ${T('วัน','days')} · ${T('ล่าสุด','last')} ${b.usage.last_day?fmtISODate(b.usage.last_day):'—'}</p>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function detectSmallTalk(text){
+  const t=text.toLowerCase().trim();
+  const has=(arr)=>arr.some(g=> t.includes(g));
+  if(has(['สวัสดี','หวัดดี','hello','hi ','hey'])) return 'greeting';
+  if(has(['ขอบคุณ','thank'])) return 'thanks';
+  if(has(['คุณคือใคร','ใครคือ','who are you','ทำอะไรได้','คุณทำอะไรได้'])) return 'whoami';
+  if(has(['บาย','goodbye','bye'])) return 'bye';
+  return null;
+}
+function smallTalkResponse(intent){
+  const r={
+    greeting: T('สวัสดีครับ! 👋 ถามผมได้เลยเกี่ยวกับข้อมูล Dashboard เช่น สถานะการใช้งาน, Mode, DY Diff, Calibration, PM หรือ Compare QC ของแต่ละสาขา','Hello! 👋 Ask me anything about this dashboard data — usage status, Mode, DY Diff, Calibration, PM, or Compare QC for any branch.'),
+    thanks: T('ยินดีครับ! มีอะไรให้ช่วยวิเคราะห์เพิ่มเติมไหมครับ 😊','You are welcome! Anything else to analyze?'),
+    whoami: T('ผมคือ VDM Dashboard AI — ผู้ช่วยวิเคราะห์ข้อมูลจาก report_data.json แบบออฟไลน์ ครอบคลุมทั้ง Usage, Mode, DY Diff, Calibration, PM และ Compare QC ครับ','I am VDM Dashboard AI — a local offline assistant analyzing report_data.json, covering Usage, Mode, DY Diff, Calibration, PM, and Compare QC.'),
+    bye: T('แล้วเจอกันครับ 👋','See you! 👋')
+  };
+  return r[intent] || null;
+}
+
+/* ── Intent handlers: pure functions, called by both the AI classifier and the keyword fallback.
+   These never invent numbers — every value comes straight from `real`/REPORT (report_data.json). ── */
+function intentOverview(real){
+  const activeNow = real.filter(b=>b.usage.n_active_days>0).length;
+  const avgPct = real.length ? (real.reduce((s,b)=>s+b.usage.pct_active,0)/real.length).toFixed(1) : '0';
+  const top = [...real].sort((a,b)=>b.usage.pct_active-a.usage.pct_active)[0];
+  const worst = real.filter(b=>b.usage.n_active_days===0);
+  const notDone = real.filter(b=>!b.compare_qc);
+  const lw = REPORT.logfile_window || {};
+  return `
+    <div style="font-size:12.5px;line-height:1.7;">
+      <p style="margin:0 0 8px;">📊 ${T(`<b>สรุปภาพรวม ${real.length} สาขา</b> (ช่วง ${fmtISODate(lw.start)} → ${fmtISODate(lw.end)})`,`<b>Overview of ${real.length} branches</b> (${fmtISODate(lw.start)} → ${fmtISODate(lw.end)})`)}</p>
+      <ul style="margin:0;padding-left:18px;">
+        <li>${T(`ใช้งานอยู่ <b>${activeNow}/${real.length}</b> สาขา · Active % เฉลี่ย <b>${avgPct}%</b>`,`Active in <b>${activeNow}/${real.length}</b> branches · Avg Active % <b>${avgPct}%</b>`)}</li>
+        ${top?`<li>${T(`สาขาที่ active สูงสุด: <b>${top.flag} ${top.name}</b> (${top.usage.pct_active}%)`,`Highest active branch: <b>${top.flag} ${top.name}</b> (${top.usage.pct_active}%)`)}</li>`:''}
+        <li>${T(`สาขาที่ไม่มีข้อมูลเลยในช่วงนี้: <b>${worst.length}</b> สาขา${worst.length?` (${worst.map(b=>b.name).join(', ')})`:''}`,`Branches with no data this period: <b>${worst.length}</b>${worst.length?` (${worst.map(b=>b.name).join(', ')})`:''}`)}</li>
+        <li>${T(`ยังไม่ได้ทำ VDM vs QC Compare: <b>${notDone.length}</b> สาขา`,`Not done VDM vs QC Compare: <b>${notDone.length}</b> branches`)}</li>
+        <li>${T('อัปเดตข้อมูลล่าสุด','Last updated')}: ${REPORT.generated_at}</li>
+      </ul>
+    </div>`;
+}
+function intentLowest(real){
+  const list = [...real].sort((a,b)=>a.usage.pct_active-b.usage.pct_active).slice(0,5);
+  return `<p style="margin:0 0 4px;font-size:13px;">⚠️ <b>${T('สาขาที่ต้องตรวจสอบ (Active % ต่ำสุด)','Branches needing attention (lowest Active %)')}</b></p>${branchListHtml(list)}`;
+}
+function intentHighest(real){
+  const list = [...real].sort((a,b)=>b.usage.pct_active-a.usage.pct_active).slice(0,5);
+  return `<p style="margin:0 0 4px;font-size:13px;">🏆 <b>${T('สาขาที่ Active % สูงสุด','Branches with highest Active %')}</b></p>${branchListHtml(list)}`;
+}
+function intentCompareQC(real){
+  const done = real.filter(b=>b.compare_qc);
+  const notDone = real.filter(b=>!b.compare_qc);
+  if(!done.length) return `<p style="font-size:12.5px;margin:0;">${T('ยังไม่มีสาขาไหนมีข้อมูล VDM vs QC Compare ในช่วงนี้เลยครับ','No branch has VDM vs QC Compare data for this period yet.')}</p>`;
+  const worst = [...done].sort((a,b)=>Math.abs(b.compare_qc.diff_dg)-Math.abs(a.compare_qc.diff_dg))[0];
+  return `<div style="font-size:12.5px;line-height:1.7;">
+    <p style="margin:0 0 6px;">🔬 ${T(`<b>VDM vs QC Prediction Class</b> — ทำแล้ว ${done.length}/${real.length} สาขา`,`<b>VDM vs QC Prediction Class</b> — done in ${done.length}/${real.length} branches`)}</p>
+    <ul style="margin:0;padding-left:18px;">
+      <li>${T(`DIFF_DG ต่างมากที่สุด: <b>${worst.name}</b> (${worst.compare_qc.diff_dg})`,`Largest DIFF_DG: <b>${worst.name}</b> (${worst.compare_qc.diff_dg})`)}</li>
+      ${notDone.length?`<li>${T('ยังไม่ได้ทำ','Not done yet')}: <b>${notDone.map(b=>b.name).join(', ')}</b></li>`:''}
+    </ul></div>`;
+}
+function intentDY(real){
+  const done = real.filter(b=>b.dy);
+  const notDone = real.filter(b=>!b.dy);
+  if(!done.length) return `<p style="font-size:12.5px;margin:0;">${T('ยังไม่มีข้อมูล DY (VDM vs QC Avg Diff) ในช่วงนี้ครับ','No DY data (VDM vs QC Avg Diff) for this period yet.')}</p>`;
+  return `<div style="font-size:12.5px;line-height:1.7;">
+    <p style="margin:0 0 6px;">⚖️ ${T(`<b>DY — VDM vs QC Avg Diff</b> — มีข้อมูล ${done.length}/${real.length} สาขา`,`<b>DY — VDM vs QC Avg Diff</b> — data for ${done.length}/${real.length} branches`)}</p>
+    <ul style="margin:0;padding-left:18px;">
+      ${done.map(b=>`<li>${b.flag} ${b.name}: Total ${b.dy.total_diff} | On5 ${b.dy.on5_diff} | On2 ${b.dy.on2_diff}</li>`).join('')}
+    </ul>
+    ${notDone.length?`<p style="margin:8px 0 0;">⚠ ${T('ไม่มีข้อมูล/ไม่บันทึก','No data / not recorded')}: ${notDone.map(b=>b.name).join(', ')}</p>`:''}
+  </div>`;
+}
+function intentCalibration(real){
+  const done = real.filter(b=>b.calibration);
+  const stale = done.filter(b=>daysSince(b.calibration.date)>30).sort((a,b)=>daysSince(b.calibration.date)-daysSince(a.calibration.date));
+  return `<div style="font-size:12.5px;line-height:1.7;">
+    <p style="margin:0 0 6px;">📐 ${T(`<b>Calibration ล่าสุด</b> — มีข้อมูล ${done.length}/${real.length} สาขา`,`<b>Latest Calibration</b> — data for ${done.length}/${real.length} branches`)}</p>
+    ${stale.length?`<p style="margin:0;">⚠ ${T('นานเกิน 30 วัน','Over 30 days ago')}: ${stale.map(b=>`${b.name} (${daysSince(b.calibration.date)}d)`).join(', ')}</p>`:`<p style="margin:0;color:#10B981;">✅ ${T('ทุกสาขา Calibrate ภายใน 30 วันล่าสุด','All branches calibrated within the last 30 days')}</p>`}
+  </div>`;
+}
+function intentPM(real){
+  const done = real.filter(b=>b.pm);
+  const notDone = real.filter(b=>!b.pm);
+  const inProcess = done.filter(b=>b.pm.status==='In Process');
+  return `<div style="font-size:12.5px;line-height:1.7;">
+    <p style="margin:0 0 6px;">🛠️ ${T(`<b>PM ล่าสุด</b> — มีข้อมูล ${done.length}/${real.length} สาขา`,`<b>Latest PM</b> — data for ${done.length}/${real.length} branches`)}</p>
+    ${inProcess.length?`<p style="margin:0 0 4px;">🔄 ${T('กำลังดำเนินการ (In Process)','In Process')}: ${inProcess.map(b=>b.name).join(', ')}</p>`:''}
+    ${notDone.length?`<p style="margin:0;">⚠ ${T('ไม่มีข้อมูล PM','No PM data')}: ${notDone.map(b=>b.name).join(', ')}</p>`:''}
+  </div>`;
+}
+function intentMode(real){
+  const risky = real.filter(b=> b.mode.total_records>0 && ((b.mode.bypass_pct||0)>40 || (b.mode.disable_pct||0)>0));
+  if(!risky.length) return `<p style="font-size:12.5px;margin:0;">✅ ${T('ไม่พบสาขาที่มีสัดส่วน Bypass/Disable สูงผิดปกติในช่วงนี้ครับ','No branches with unusually high Bypass/Disable ratio this period.')}</p>`;
+  return `<p style="margin:0 0 4px;font-size:13px;">🔧 <b>${T('สาขาที่ Mode น่าเป็นห่วง (Bypass/Disable สูง)','Branches with concerning Mode (high Bypass/Disable)')}</b></p>` +
+    `<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">` + risky.map(b=>`
+      <div style="background:#fff;border:1px solid #E8EDF3;border-radius:10px;padding:9px 11px;">
+        <div style="font-weight:700;font-size:12px;color:#1E293B;">${b.flag} ${b.name}</div>
+        <p style="font-size:10.5px;color:#64748B;margin:4px 0 0;">Active ${(b.mode.active_pct||0).toFixed(0)}% · Semi ${(b.mode.semi_pct||0).toFixed(0)}% · <span style="color:#EF4444;font-weight:700;">Bypass ${(b.mode.bypass_pct||0).toFixed(0)}%</span>${b.mode.disable_pct>0?` · <span style="color:#7C3AED;font-weight:700;">Disable ${b.mode.disable_pct.toFixed(0)}%</span>`:''}</p>
+      </div>`).join('') + `</div>`;
+}
+function intentLastUpdated(){
+  const lw = REPORT.logfile_window || {};
+  return `<p style="margin:0;font-size:12.5px;line-height:1.7;">🕐 ${T(`ข้อมูลชุดนี้สร้างเมื่อ <b>${REPORT.generated_at}</b><br>ช่วง LogFile: <b>${fmtISODate(lw.start)} → ${fmtISODate(lw.end)}</b>`,`This data was generated at <b>${REPORT.generated_at}</b><br>LogFile window: <b>${fmtISODate(lw.start)} → ${fmtISODate(lw.end)}</b>`)}</p>`;
+}
+
+/* ── Intent registry: example phrases (TH+EN) used to precompute embeddings for AI semantic matching ── */
+const INTENT_EXAMPLES = {
+  overview: ['สรุปภาพรวมทั้งหมด','ภาพรวมเป็นยังไงบ้าง','สรุปให้หน่อย','overall summary','give me an overview','summarize everything','how is everything doing'],
+  lowest: ['สาขาไหนต้องตรวจสอบบ้าง','สาขาไหนมีปัญหา','สาขาไหนใช้งานน้อยที่สุด','which branches need attention','worst performing branches','lowest active percentage','branches with problems'],
+  highest: ['สาขาไหน active สูงสุด','สาขาที่ดีที่สุด','สาขาไหนใช้งานเยอะที่สุด','which branch is most active','top performing branches','best branches this week'],
+  compareQC: ['compare qc เป็นยังไงบ้าง','สาขาไหนยังไม่ได้ทำ compare qc','ผล vdm เทียบ qc','vdm vs qc prediction class','dg mg bg values','how accurate is the prediction class'],
+  dy: ['dy diff เท่าไหร่','ค่า diff น้ำหนักเป็นยังไงบ้าง','น้ำหนักต่างกันเท่าไหร่','what is the dy weight difference','total on5 on2 diff','weight accuracy vs qc'],
+  calibration: ['calibration ล่าสุดเป็นยังไงบ้าง','สอบเทียบล่าสุดเมื่อไหร่','สาขาไหนยังไม่ได้ calibrate','when was the last calibration','calibration status','which branches need calibration'],
+  pm: ['pm ล่าสุดเป็นยังไงบ้าง','บำรุงรักษาล่าสุดเมื่อไหร่','สาขาไหนยังไม่ได้ทำ pm','preventive maintenance status','when was the last pm','maintenance schedule'],
+  mode: ['mode การใช้งานเป็นยังไงบ้าง','bypass semi active เท่าไหร่','สาขาไหน bypass เยอะ','which branches have high bypass','machine mode distribution','is anyone running in bypass too much'],
+  lastUpdated: ['ข้อมูลอัปเดตล่าสุดเมื่อไหร่','เมื่อไหร่ที่สร้างรายงานนี้','ข้อมูลนี้ของวันไหน','when was this data generated','last updated timestamp','how fresh is this data'],
+};
+const INTENT_HANDLERS = {
+  overview: intentOverview, lowest: intentLowest, highest: intentHighest,
+  compareQC: intentCompareQC, dy: intentDY, calibration: intentCalibration,
+  pm: intentPM, mode: intentMode, lastUpdated: (real)=>intentLastUpdated(),
+};
+
+/* ════════════════════════════════════════════════════════
+   AI ENGINE — load Transformers.js text-embedding model,
+   embed the intent example phrases once, then classify each
+   new question by cosine similarity against those vectors.
+   ════════════════════════════════════════════════════════ */
+function cosineSimilarity(a, b){
+  let dot=0, na=0, nb=0;
+  for(let i=0;i<a.length;i++){ dot+=a[i]*b[i]; na+=a[i]*a[i]; nb+=b[i]*b[i]; }
+  return (na===0||nb===0) ? 0 : dot/(Math.sqrt(na)*Math.sqrt(nb));
+}
+
+async function precomputeIntentEmbeddings(){
+  const chatStatus = document.getElementById('chat-status-text');
+  if(chatStatus) chatStatus.textContent = T('● กำลังทำความเข้าใจคำถามตัวอย่าง…','● Indexing example questions…');
+  const list = [];
+  for(const [key, phrases] of Object.entries(INTENT_EXAMPLES)){
+    for(const phrase of phrases){
+      try{
+        const out = await aiExtractor(phrase, { pooling:'mean', normalize:true });
+        list.push({ key, vector: Array.from(out.data) });
+      }catch(e){ console.error('Embedding failed for', phrase, e); }
+    }
+  }
+  intentEmbeddings = list;
+}
+
+function classifyIntentAI(queryVector){
+  let best=null, bestScore=0;
+  for(const item of intentEmbeddings){
+    const score = cosineSimilarity(queryVector, item.vector);
+    if(score>bestScore){ bestScore=score; best=item.key; }
+  }
+  return (best && bestScore>0.55) ? { key: best, score: bestScore } : null;
+}
+
+async function initLocalAIEngine(){
+  isAiLoading = true;
+  const chatStatus = document.getElementById('chat-status-text');
+  const skipBtn = document.getElementById('ai-skip-btn');
+  if(chatStatus) chatStatus.textContent = T('● กำลังโหลด AI Engine (0%)','● Loading AI Engine (0%)');
+  if(skipBtn) skipBtn.style.display = 'inline';
+
+  loadingTimeout = setTimeout(()=>{
+    if(!isAiReady && isAiLoading){
+      window.showToast(T('AI โหลดช้ากว่าปกติ — กด Skip เพื่อใช้โหมดคำหลักไปก่อนได้','AI is loading slowly — you can Skip to use keyword mode for now'), 'error');
+    }
+  }, 15000);
+
+  try{
+    const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+    if(!isAiLoading) return; // user skipped while the module was downloading
+    env.allowLocalModels = false;
+
+    aiExtractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+      progress_callback: (data)=>{
+        if(!isAiLoading) return;
+        if(data.status==='progress' && chatStatus){
+          chatStatus.textContent = T(`● กำลังโหลด AI Engine (${Math.round(data.progress)}%)`,`● Loading AI Engine (${Math.round(data.progress)}%)`);
+        }
+      }
+    });
+
+    if(!isAiLoading) return;
+    clearTimeout(loadingTimeout);
+
+    if(chatStatus) chatStatus.textContent = T('● กำลังสร้างดัชนีคำถาม…','● Indexing questions…');
+    await precomputeIntentEmbeddings();
+
+    isAiReady = true;
+    isAiLoading = false;
+    if(chatStatus){ chatStatus.textContent = T('● Local AI พร้อมใช้งาน 🧠','● Local AI Ready 🧠'); chatStatus.style.color='#10B981'; }
+    if(skipBtn) skipBtn.style.display = 'none';
+    window.showToast(T('Local AI พร้อมใช้งานแล้ว — เข้าใจคำถามได้ยืดหยุ่นขึ้น','Local AI is ready — questions are now understood semantically'));
+  }catch(e){
+    console.error('Local AI failed to load:', e);
+    clearTimeout(loadingTimeout);
+    isAiLoading = false;
+    if(chatStatus){ chatStatus.textContent = T('● โหมดคำหลัก (AI โหลดไม่สำเร็จ)','● Keyword mode (AI failed to load)'); chatStatus.style.color='#F59E0B'; }
+    if(skipBtn) skipBtn.style.display = 'none';
+  }
+}
+
+window.skipAiLoading = function(){
+  isAiLoading = false;
+  clearTimeout(loadingTimeout);
+  const chatStatus = document.getElementById('chat-status-text');
+  const skipBtn = document.getElementById('ai-skip-btn');
+  if(chatStatus){ chatStatus.textContent = T('● โหมดคำหลัก (ข้าม AI)','● Keyword mode (AI skipped)'); chatStatus.style.color='#F59E0B'; }
+  if(skipBtn) skipBtn.style.display = 'none';
+  window.showToast(T('ใช้โหมดคำหลักแทน — ยังตอบคำถามได้ปกติ','Switched to keyword mode — questions still work as before'));
+};
+
+async function analyzeQuery(rawText){
+  if(!REPORT || !BRANCHES.length){
+    return `<p style="font-size:12.5px;color:#94A3B8;">${T('ข้อมูลยังโหลดไม่เสร็จ กรุณารอสักครู่แล้วลองใหม่ครับ','Data is still loading, please wait a moment and try again.')}</p>`;
+  }
+  const st = detectSmallTalk(rawText);
+  if(st){ const r=smallTalkResponse(st); if(r) return `<p style="margin:0;font-size:13px;">${r}</p>`; }
+
+  const t = rawText.toLowerCase();
+  const real = realBranches();
+
+  /* AI semantic intent classification (Transformers.js embeddings) — tried first when the
+     model is loaded; falls through to keyword matching below if unavailable or not confident. */
+  if(isAiReady && intentEmbeddings.length && aiExtractor){
+    try{
+      const out = await aiExtractor(rawText, { pooling:'mean', normalize:true });
+      const queryVector = Array.from(out.data);
+      const aiIntent = classifyIntentAI(queryVector);
+      if(aiIntent && INTENT_HANDLERS[aiIntent.key]){
+        return INTENT_HANDLERS[aiIntent.key](real);
+      }
+    }catch(e){ console.warn('AI classification failed, falling back to keywords:', e); }
+  }
+
+  /* Overview / summary */
+  if(/สรุป|ภาพรวม|overview|summary/.test(t)) return intentOverview(real);
+
+  /* Needs attention / lowest */
+  if(/ต้องตรวจสอบ|ปัญหา|น้อยสุด|น้อยที่สุด|ต่ำสุด|worst|lowest|attention|ไม่ได้ใช้งาน/.test(t)) return intentLowest(real);
+
+  /* Top / highest */
+  if(/สูงสุด|มากสุด|มากที่สุด|top|highest|most active/.test(t)) return intentHighest(real);
+
+  /* Compare QC / prediction class */
+  if(/compare|prediction class|qc class|dg|mg|bg|adm/.test(t)) return intentCompareQC(real);
+
+  /* DY diff */
+  if(/dy|diff|เทียบ|ผิดพลาด|น้ำหนัก/.test(t)) return intentDY(real);
+
+  /* Calibration */
+  if(/calibrat|สอบเทียบ|calib/.test(t)) return intentCalibration(real);
+
+  /* PM */
+  if(/\bpm\b|บำรุงรักษา|maintenance/.test(t)) return intentPM(real);
+
+  /* Mode / bypass / semi / disable concerns */
+  if(/bypass|semi|disable|mode/.test(t)) return intentMode(real);
+
+  /* Last updated */
+  if(/อัปเดต|อัพเดท|เมื่อไหร่|last update|generated/.test(t)) return intentLastUpdated();
+
+  /* Country filter */
+  const countries = [...new Set(real.map(b=>b.country))];
+  const matchedCountry = countries.find(c=> t.includes(c.toLowerCase()) || calcSim(t,c.toLowerCase())>0.5);
+  if(matchedCountry){
+    const list = real.filter(b=>b.country===matchedCountry).sort((a,b)=>b.usage.pct_active-a.usage.pct_active);
+    return `<p style="margin:0 0 4px;font-size:13px;">${list[0]?.flag||'🌍'} <b>${T(`สาขาในประเทศ ${matchedCountry}`,`Branches in ${matchedCountry}`)}</b> (${list.length})</p>${branchListHtml(list)}`;
+  }
+
+  /* Specific branch name (fuzzy match) */
+  let best=null, bestScore=0;
+  BRANCHES.forEach(b=>{
+    const score = Math.max(calcSim(t,b.name.toLowerCase()), t.includes(b.name.toLowerCase())?0.9:0);
+    if(score>bestScore){ bestScore=score; best=b; }
+  });
+  if(best && bestScore>0.35){
+    const u=best.usage, m=best.mode;
+    const noData = T('ไม่มีข้อมูล','No data');
+    let modeTxt = m.total_records>0
+      ? `Active ${(m.active_pct||0).toFixed(0)}% · Semi ${(m.semi_pct||0).toFixed(0)}% · Bypass ${(m.bypass_pct||0).toFixed(0)}%${m.disable_pct>0?` · Disable ${m.disable_pct.toFixed(0)}%`:''}`
+      : T('ไม่มีข้อมูล Mode ในช่วงนี้','No Mode data this period');
+    return `
+      <div style="font-size:12.5px;line-height:1.7;">
+        <p style="margin:0 0 6px;font-size:13.5px;font-weight:700;color:#1E293B;">${best.flag} ${best.name}</p>
+        <ul style="margin:0;padding-left:18px;">
+          <li>${T('ประเทศ','Country')}: <b>${best.country}</b> · Product Group: <b>${best.product_group}</b></li>
+          <li>Active %: <b>${u.pct_active}%</b> (${u.n_active_days}/${u.total_days} ${T('วัน','days')}) · ${T('ล่าสุด','last')} <b>${u.last_day?fmtISODate(u.last_day):'—'}</b></li>
+          <li>Mode: ${modeTxt}</li>
+          <li>DY Diff: ${best.dy?`Total ${best.dy.total_diff} | On5 ${best.dy.on5_diff} | On2 ${best.dy.on2_diff}`:noData}</li>
+          <li>${T('Calibration ล่าสุด','Latest Calibration')}: ${best.calibration?`${fmtISODate(best.calibration.date)} — ${best.calibration.status}`:noData}</li>
+          <li>${T('PM ล่าสุด','Latest PM')}: ${best.pm?`${fmtISODate(best.pm.date)} — ${best.pm.status}`:noData}</li>
+          <li>Compare QC: ${best.compare_qc?`DG ${best.compare_qc.diff_dg} | MG ${best.compare_qc.diff_mg} | BG ${best.compare_qc.diff_bg} | ADM ${best.compare_qc.diff_adm}`:T('ยังไม่ได้ทำ','Not done yet')}</li>
+        </ul>
+        <button onclick="window.openDetail('${best.name.replace(/'/g,"\\'")}')" style="margin-top:10px;height:26px;padding:0 10px;background:#EFF6FF;border:1px solid #BFDBFE;border-radius:7px;color:#1E40AF;font-size:10.5px;font-weight:700;cursor:pointer;">${T('ดูรายละเอียดเต็ม','View full details')} →</button>
+      </div>`;
+  }
+
+  /* Fallback */
+  return `<p style="font-size:12.5px;margin:0;line-height:1.6;">${T('ไม่พบข้อมูลที่ตรงกับคำถามครับ','Could not find data matching your question.')} 🤔<br>${T('ลองถามเช่น','Try asking things like')} <i>"${T('สาขาไหน active สูงสุด','which branch has the highest active')}"</i>, <i>"Binh Dinh ${T('เป็นยังไงบ้าง','how is it doing')}"</i>, <i>"calibration"</i>, <i>"compare qc"</i> ${T('หรือ','or')} <i>"${T('สรุปภาพรวม','overview')}"</i></p>`;
+}
+
+/* ════════════════════════════════════════════════════════
+   CHAT PANEL RESIZE (same as solutions.html)
+   ════════════════════════════════════════════════════════ */
+(function(){
+  const handle=document.getElementById('chat-resize-handle'), panel=document.getElementById('chat-panel'), body=document.getElementById('page-body');
+  const MIN_W=280, MAX_W=640;
+  let startX, startW;
+  handle.addEventListener('mousedown', e=>{
+    if(window.innerWidth<1024) return;
+    startX=e.clientX; startW=panel.offsetWidth;
+    handle.classList.add('dragging');
+    document.body.style.cursor='col-resize'; document.body.style.userSelect='none';
+    panel.style.transition='none'; body.style.transition='none';
+    function onMove(e){
+      const newW=Math.min(MAX_W,Math.max(MIN_W, startW+(startX-e.clientX)));
+      panel.style.width=newW+'px';
+      if(!panel.classList.contains('away')) body.style.paddingRight=(newW+40)+'px';
+    }
+    function onUp(){
+      handle.classList.remove('dragging');
+      document.body.style.cursor=''; document.body.style.userSelect='';
+      panel.style.transition=''; body.style.transition='';
+      document.removeEventListener('mousemove',onMove); document.removeEventListener('mouseup',onUp);
+    }
+    document.addEventListener('mousemove',onMove); document.addEventListener('mouseup',onUp);
+    e.preventDefault();
+  });
+})();
+
+applyStaticText();
+window.addEventListener('load', ()=>{
+  window.loadReport();
+  initLocalAIEngine();
+});
+</script>
+</body>
+</html>
