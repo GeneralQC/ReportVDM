@@ -1,2784 +1,480 @@
 {
-  "generated_at": "2026-08-20 15:42:22",
-  "window_start": "2026-08-13",
-  "window_end": "2026-08-20",
-  "window_dates": [
-    "2026-08-13",
-    "2026-08-14",
-    "2026-08-15",
-    "2026-08-17",
-    "2026-08-18",
-    "2026-08-19",
-    "2026-08-20"
-  ],
-  "compare_vdm_qc_sheet": [
-    {
-      "branch": "1/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5048",
-      "diff_pct": "1.8",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "1/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "485151",
-      "diff_pct": "0.9",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "1/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5657",
-      "diff_pct": "0.7",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "2/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5250",
-      "diff_pct": "0.4",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "2/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4954",
-      "diff_pct": "1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "2/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5555",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "30/6/2569",
-      "vdm_class": "Yangon",
-      "qc_class": "4956",
-      "diff_pct": "0.4",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5750",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5649",
-      "diff_pct": "0.4",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "4853",
-      "diff_pct": "0.8",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "555049",
-      "diff_pct": "0.2",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5253",
-      "diff_pct": "1.3",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "4957",
-      "diff_pct": "0.4",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "575549",
-      "diff_pct": "1.3",
-      "status": "0.7",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5052",
-      "diff_pct": "0.7",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "4948",
-      "diff_pct": "1.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "7/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4957",
-      "diff_pct": "1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "7/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5551",
-      "diff_pct": "0.8",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5752",
-      "diff_pct": "0.8",
-      "status": "-0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "525256",
-      "diff_pct": "0.2",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "525354",
-      "diff_pct": "0.2",
-      "status": "0.9",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "4852",
-      "diff_pct": "0.6",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "9/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5357",
-      "diff_pct": "0.5",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "9/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "555155",
-      "diff_pct": "0.3",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "9/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5256",
-      "diff_pct": "2.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "29/6/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5251",
-      "diff_pct": "0.1",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "30/6/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5554",
-      "diff_pct": "1",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "1/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5655",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "2/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "4952",
-      "diff_pct": "0.5",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5749 MGF",
-      "diff_pct": "0.4",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "9/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5649 MGF",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "53575357",
-      "diff_pct": "0.4",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "485056",
-      "diff_pct": "0.3",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5049",
-      "diff_pct": "0.5",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4955",
-      "diff_pct": "0.4",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5353",
-      "diff_pct": "0.7",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "1000",
-      "diff_pct": "1.4",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/7/2569",
-      "vdm_class": "Laos",
-      "qc_class": "IQC TES CORN#2S",
-      "diff_pct": "1.4",
-      "status": "-0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "54545352",
-      "diff_pct": "1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5355",
-      "diff_pct": "0.4",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4854",
-      "diff_pct": "0.5",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5553",
-      "diff_pct": "0.2",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5253",
-      "diff_pct": "0.8",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "4953",
-      "diff_pct": "0.5",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "15/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "26524855504848",
-      "diff_pct": "0.4",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "15/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5057",
-      "diff_pct": "0.2",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "16/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5251",
-      "diff_pct": "0.7",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "16/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4853",
-      "diff_pct": "0.9",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "16/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "4951",
-      "diff_pct": "1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "16/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5557",
-      "diff_pct": "0.2",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5057",
-      "diff_pct": "0.5",
-      "status": "-0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5555",
-      "diff_pct": "0.7",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Laos",
-      "qc_class": "5750",
-      "diff_pct": "3",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5052",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "1111",
-      "diff_pct": "1.6",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5151",
-      "diff_pct": "0.1",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5457",
-      "diff_pct": "1.1",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "0000",
-      "diff_pct": "1.3",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "19/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5650",
-      "diff_pct": "0.1",
-      "status": "0.6",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "20/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5552",
-      "diff_pct": "0.4",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5052",
-      "diff_pct": "0.4",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5457",
-      "diff_pct": "2.3",
-      "status": "-0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "4848",
-      "diff_pct": "0.2",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5055",
-      "diff_pct": "0.6",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "15/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5251",
-      "diff_pct": "1.1",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "16/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5450",
-      "diff_pct": "0.2",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5456",
-      "diff_pct": "1.3",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5751",
-      "diff_pct": "0.4",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "20/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "4957",
-      "diff_pct": "0.2",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "21/7/2569",
-      "vdm_class": "Laos",
-      "qc_class": "IQC#2S",
-      "diff_pct": "1.9",
-      "status": "-0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "21/7/2569",
-      "vdm_class": "Laos",
-      "qc_class": "IQC#2",
-      "diff_pct": "3.7",
-      "status": "-1.7",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "21/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5453",
-      "diff_pct": "0.7",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "20/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5351",
-      "diff_pct": "0.1",
-      "status": "1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "21/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5552",
-      "diff_pct": "0.1",
-      "status": "0.8",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "22/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5050",
-      "diff_pct": "0.4",
-      "status": "0.7",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "22/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5053",
-      "diff_pct": "0.7",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "16/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "5448",
-      "diff_pct": "0.2",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "5049",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "4850",
-      "diff_pct": "0.1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "19/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "5656",
-      "diff_pct": "0.1",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "20/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "5257",
-      "diff_pct": "0.2",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "21/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "4848",
-      "diff_pct": "0.2",
-      "status": "0.8",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "22/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "5156",
-      "diff_pct": "0.2",
-      "status": "0.8",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "23/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5755",
-      "diff_pct": "0.8",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "23/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "0001",
-      "diff_pct": "0.6",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "23/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5149",
-      "diff_pct": "0.1",
-      "status": "0.8",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "24/7/2569",
-      "vdm_class": "Xuan Mai",
-      "qc_class": "5751",
-      "diff_pct": "0.5",
-      "status": "0.8",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "23/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "5657",
-      "diff_pct": "0.1",
-      "status": "1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "24/7/2569",
-      "vdm_class": "Hai Duong",
-      "qc_class": "4855",
-      "diff_pct": "0.9",
-      "status": "1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "24/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5349",
-      "diff_pct": "1",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "25/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4953",
-      "diff_pct": "1.6",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "25/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "Test-1000",
-      "diff_pct": "0.4",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "27/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5554",
-      "diff_pct": "0.2",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "27/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5557",
-      "diff_pct": "0.6",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "27/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5351",
-      "diff_pct": "0.1",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "27/7/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "270726",
-      "diff_pct": "0.3",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "27/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5351",
-      "diff_pct": "0.5",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "28/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5451",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "28/7/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "5152",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "28/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4954",
-      "diff_pct": "3.5",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "30/7/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5252",
-      "diff_pct": "0.9",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "30/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4957",
-      "diff_pct": "0.2",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "30/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4954",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "31/7/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494857535253",
-      "diff_pct": "0.1",
-      "status": "-0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "21/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5552",
-      "diff_pct": "0.3",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "22/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5653",
-      "diff_pct": "0.3",
-      "status": "0.05",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "23/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5749",
-      "diff_pct": "0.6",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "24/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "4956",
-      "diff_pct": "0.5",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "25/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5052",
-      "diff_pct": "0.2",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "27/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5448",
-      "diff_pct": "1.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "28/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "4848",
-      "diff_pct": "1.2",
-      "status": "-0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "29/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5048",
-      "diff_pct": "0.2",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "30/7/2569",
-      "vdm_class": "Phnom Penh",
-      "qc_class": "5651",
-      "diff_pct": "0.1",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "31/7/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5254",
-      "diff_pct": "0.2",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "1/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494857545753",
-      "diff_pct": "0.2",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "1/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5753",
-      "diff_pct": "1.7",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494857565154",
-      "diff_pct": "0.1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5257",
-      "diff_pct": "0.7",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4955",
-      "diff_pct": "1.5",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "3/8/2569",
-      "vdm_class": "Yangon",
-      "qc_class": "4955",
-      "diff_pct": "1.8",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494857575652",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5350",
-      "diff_pct": "0.8",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4955",
-      "diff_pct": "0.6",
-      "status": "0.6",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "1234",
-      "diff_pct": "0.4",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "5/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5755",
-      "diff_pct": "0.6",
-      "status": "2.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "4/8/2569",
-      "vdm_class": "Yangon",
-      "qc_class": "5555",
-      "diff_pct": "1.3",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "5/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494948485454",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "5/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5551",
-      "diff_pct": "1.5",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5752",
-      "diff_pct": "0.2",
-      "status": "1.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494948495257",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5655",
-      "diff_pct": "0.7",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5748",
-      "diff_pct": "1.4",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "5/8/2569",
-      "vdm_class": "Yangon",
-      "qc_class": "5157",
-      "diff_pct": "2.2",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "6/8/2569",
-      "vdm_class": "Yangon",
-      "qc_class": "5653",
-      "diff_pct": "1.2",
-      "status": "0",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "7/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5657",
-      "diff_pct": "0.3",
-      "status": "1.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "7/8/2569",
-      "vdm_class": "26494948505653",
-      "qc_class": "",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "7/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5757",
-      "diff_pct": "0.6",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "7/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5454",
-      "diff_pct": "1.2",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5649",
-      "diff_pct": "0.6",
-      "status": "0.9",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494948515656",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5049",
-      "diff_pct": "1",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "8/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5156",
-      "diff_pct": "1.3",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494948545256",
-      "diff_pct": "0.2",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5155",
-      "diff_pct": "1.9",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4853",
-      "diff_pct": "0.3",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "10/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5056",
-      "diff_pct": "1.1",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5757",
-      "diff_pct": "0.1",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5351",
-      "diff_pct": "1.3",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "11/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494948555649",
-      "diff_pct": "0.3",
-      "status": "0.1",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "12/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5355",
-      "diff_pct": "0.2",
-      "status": "0.6",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "12/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494948565649",
-      "diff_pct": "0.1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "12/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5551",
-      "diff_pct": "1.6",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5854",
-      "diff_pct": "0.1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5748",
-      "diff_pct": "1.6",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "13/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5257",
-      "diff_pct": "1.1",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "4948",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "14/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5757",
-      "diff_pct": "0.8",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "15/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494949485749",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "15/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5057",
-      "diff_pct": "0.4",
-      "status": "0.4",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "15/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "4953",
-      "diff_pct": "1.3",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "5756",
-      "diff_pct": "0.4",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5254",
-      "diff_pct": "1.9",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494949505256",
-      "diff_pct": "0.4",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "17/8/2569",
-      "vdm_class": "Binh Phuoc",
-      "qc_class": "26494949495454",
-      "diff_pct": "0.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/8/2569",
-      "vdm_class": "Binh Dinh",
-      "qc_class": "",
-      "diff_pct": "0.2",
-      "status": "0.5",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5450",
-      "diff_pct": "1.8",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "18/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "35750",
-      "diff_pct": "6.7",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "19/8/2569",
-      "vdm_class": "Mandalay",
-      "qc_class": "5757",
-      "diff_pct": "3.1",
-      "status": "0.2",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "20/8/2569",
-      "vdm_class": "Pailin",
-      "qc_class": "545748",
-      "diff_pct": "1.2",
-      "status": "0.02",
-      "updated_at": "2026-08-20 15:42:22"
-    },
-    {
-      "branch": "20/8/2569",
-      "vdm_class": "Taunggyi",
-      "qc_class": "5053",
-      "diff_pct": "1.8",
-      "status": "0.3",
-      "updated_at": "2026-08-20 15:42:22"
-    }
-  ],
+  "generated_at": "2026-08-21 13:51:40",
+  "logfile_window": {
+    "start": "2026-08-13",
+    "end": "2026-08-20"
+  },
+  "dy_window": {
+    "start": "2026-08-14",
+    "end": "2026-08-21"
+  },
+  "compare_window": {
+    "start": "2026-08-13",
+    "end": "2026-08-20"
+  },
   "branches": {
-    "1/7/2569": {
-      "branch": "1/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5655",
-        "diff_pct": "0.3",
-        "status": "0.1"
-      }
-    },
-    "1/8/2569": {
-      "branch": "1/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Taunggyi",
-        "qc_class": "5753",
-        "diff_pct": "1.7",
-        "status": "0.3"
-      }
-    },
-    "10/7/2569": {
-      "branch": "10/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5052",
-        "diff_pct": "0.4",
-        "status": "0.1"
-      }
-    },
-    "10/8/2569": {
-      "branch": "10/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "5056",
-        "diff_pct": "1.1",
-        "status": "0.5"
-      }
-    },
-    "11/7/2569": {
-      "branch": "11/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5457",
-        "diff_pct": "2.3",
-        "status": "-0.5"
-      }
-    },
-    "11/8/2569": {
-      "branch": "11/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Binh Phuoc",
-        "qc_class": "26494948555649",
-        "diff_pct": "0.3",
-        "status": "0.1"
-      }
-    },
-    "12/8/2569": {
-      "branch": "12/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Taunggyi",
-        "qc_class": "5551",
-        "diff_pct": "1.6",
-        "status": "0.2"
-      }
-    },
-    "13/7/2569": {
-      "branch": "13/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "4848",
-        "diff_pct": "0.2",
-        "status": "0.1"
-      }
-    },
-    "13/8/2569": {
-      "branch": "13/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "5257",
-        "diff_pct": "1.1",
-        "status": "0.3"
-      }
-    },
-    "14/7/2569": {
-      "branch": "14/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5055",
-        "diff_pct": "0.6",
-        "status": "0.1"
-      }
-    },
-    "14/8/2569": {
-      "branch": "14/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Taunggyi",
-        "qc_class": "5757",
-        "diff_pct": "0.8",
-        "status": "0.4"
-      }
-    },
-    "15/7/2569": {
-      "branch": "15/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5251",
-        "diff_pct": "1.1",
-        "status": "0"
-      }
-    },
-    "15/8/2569": {
-      "branch": "15/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Taunggyi",
-        "qc_class": "4953",
-        "diff_pct": "1.3",
-        "status": "0.3"
-      }
-    },
-    "16/7/2569": {
-      "branch": "16/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Hai Duong",
-        "qc_class": "5448",
-        "diff_pct": "0.2",
-        "status": "-0.1"
-      }
-    },
-    "17/7/2569": {
-      "branch": "17/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Hai Duong",
-        "qc_class": "5049",
-        "diff_pct": "0.3",
-        "status": "0.1"
-      }
-    },
-    "17/8/2569": {
-      "branch": "17/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Binh Phuoc",
-        "qc_class": "26494949495454",
-        "diff_pct": "0.1",
-        "status": "0.2"
-      }
-    },
-    "18/7/2569": {
-      "branch": "18/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Hai Duong",
-        "qc_class": "4850",
-        "diff_pct": "0.1",
-        "status": "0.3"
-      }
-    },
-    "18/8/2569": {
-      "branch": "18/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "35750",
-        "diff_pct": "6.7",
-        "status": "0.2"
-      }
-    },
-    "19/7/2569": {
-      "branch": "19/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Hai Duong",
-        "qc_class": "5656",
-        "diff_pct": "0.1",
-        "status": "0.5"
-      }
-    },
-    "19/8/2569": {
-      "branch": "19/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "5757",
-        "diff_pct": "3.1",
-        "status": "0.2"
-      }
-    },
-    "2/7/2569": {
-      "branch": "2/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "4952",
-        "diff_pct": "0.5",
-        "status": "0.2"
-      }
-    },
-    "20/7/2569": {
-      "branch": "20/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Hai Duong",
-        "qc_class": "5257",
-        "diff_pct": "0.2",
-        "status": "0.5"
-      }
-    },
-    "20/8/2569": {
-      "branch": "20/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Taunggyi",
-        "qc_class": "5053",
-        "diff_pct": "1.8",
-        "status": "0.3"
-      }
-    },
-    "21/7/2569": {
-      "branch": "21/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5552",
-        "diff_pct": "0.3",
-        "status": "0.5"
-      }
-    },
-    "22/7/2569": {
-      "branch": "22/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5653",
-        "diff_pct": "0.3",
-        "status": "0.05"
-      }
-    },
-    "23/7/2569": {
-      "branch": "23/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5749",
-        "diff_pct": "0.6",
-        "status": "0.5"
-      }
-    },
-    "24/7/2569": {
-      "branch": "24/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "4956",
-        "diff_pct": "0.5",
-        "status": "0.1"
-      }
-    },
-    "25/7/2569": {
-      "branch": "25/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5052",
-        "diff_pct": "0.2",
-        "status": "0.1"
-      }
-    },
-    "27/7/2569": {
-      "branch": "27/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5448",
-        "diff_pct": "1.1",
-        "status": "0.2"
-      }
-    },
-    "28/7/2569": {
-      "branch": "28/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "4848",
-        "diff_pct": "1.2",
-        "status": "-0.2"
-      }
-    },
-    "29/6/2569": {
-      "branch": "29/6/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5251",
-        "diff_pct": "0.1",
-        "status": "0.1"
-      }
-    },
-    "29/7/2569": {
-      "branch": "29/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5048",
-        "diff_pct": "0.2",
-        "status": "0.2"
-      }
-    },
-    "3/7/2569": {
-      "branch": "3/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "4853",
-        "diff_pct": "0.8",
-        "status": "0.2"
-      }
-    },
-    "3/8/2569": {
-      "branch": "3/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Yangon",
-        "qc_class": "4955",
-        "diff_pct": "1.8",
-        "status": "0"
-      }
-    },
-    "30/6/2569": {
-      "branch": "30/6/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5554",
-        "diff_pct": "1",
-        "status": "0"
-      }
-    },
-    "30/7/2569": {
-      "branch": "30/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5651",
-        "diff_pct": "0.1",
-        "status": "0"
-      }
-    },
-    "31/7/2569": {
-      "branch": "31/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Binh Dinh",
-        "qc_class": "5254",
-        "diff_pct": "0.2",
-        "status": "0"
-      }
-    },
-    "4/7/2569": {
-      "branch": "4/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5749 MGF",
-        "diff_pct": "0.4",
-        "status": "0"
-      }
-    },
-    "4/8/2569": {
-      "branch": "4/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Yangon",
-        "qc_class": "5555",
-        "diff_pct": "1.3",
-        "status": "0"
-      }
-    },
-    "5/8/2569": {
-      "branch": "5/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Yangon",
-        "qc_class": "5157",
-        "diff_pct": "2.2",
-        "status": "0"
-      }
-    },
-    "6/7/2569": {
-      "branch": "6/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "4948",
-        "diff_pct": "1.3",
-        "status": "0.1"
-      }
-    },
-    "6/8/2569": {
-      "branch": "6/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Yangon",
-        "qc_class": "5653",
-        "diff_pct": "1.2",
-        "status": "0"
-      }
-    },
-    "7/7/2569": {
-      "branch": "7/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "5551",
-        "diff_pct": "0.8",
-        "status": "0.2"
-      }
-    },
-    "7/8/2569": {
-      "branch": "7/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "5454",
-        "diff_pct": "1.2",
-        "status": "0.1"
-      }
-    },
-    "8/7/2569": {
-      "branch": "8/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "4852",
-        "diff_pct": "0.6",
-        "status": "0"
-      }
-    },
-    "8/8/2569": {
-      "branch": "8/8/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Mandalay",
-        "qc_class": "5156",
-        "diff_pct": "1.3",
-        "status": "0.2"
-      }
-    },
-    "9/7/2569": {
-      "branch": "9/7/2569",
-      "country": "—",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "Phnom Penh",
-        "qc_class": "5649 MGF",
-        "diff_pct": "0.3",
-        "status": "0.1"
-      }
-    },
-    "Bangladesh": {
-      "branch": "Bangladesh",
-      "country": "Bangladesh",
-      "flag": "🌍",
-      "product_group": "—",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
     "Binh Dinh": {
-      "branch": "Binh Dinh",
       "country": "Vietnam",
       "flag": "🇻🇳",
       "product_group": "5106",
-      "n_active_days": 6,
-      "total_7days": 7,
-      "pct_active": 85.7,
-      "active_dates": [
-        "2026-08-13",
-        "2026-08-14",
-        "2026-08-15",
-        "2026-08-17",
-        "2026-08-18",
-        "2026-08-19"
-      ],
-      "last_day": "2026-08-19",
-      "mode_active_pct": 66.7,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 33.3,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 21,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Binh Phuoc": {
-      "branch": "Binh Phuoc",
-      "country": "Vietnam",
-      "flag": "🇻🇳",
-      "product_group": "5106",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
+      "usage": {
+        "n_active_days": 7,
+        "total_days": 7,
+        "pct_active": 100.0,
+        "last_day": "2026-08-20"
+      },
+      "mode": {
+        "active_pct": 63.6,
+        "semi_pct": 0.0,
+        "bypass_pct": 36.4,
+        "disable_pct": 0.0,
+        "total_records": 22
+      },
+      "dy": {
+        "total_diff": 0.03,
+        "on5_diff": 0.0,
+        "on2_diff": 0.0,
+        "n": 4
+      },
+      "calibration": {
+        "date": "2026-08-17",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-08-18",
+        "status": "Completed"
+      },
+      "compare_qc": {
+        "diff_dg": 0.38,
+        "diff_mg": 0.12,
+        "diff_bg": 0.42,
+        "diff_adm": -0.06,
+        "n": 5
       }
     },
     "Dak Lak": {
-      "branch": "Dak Lak",
       "country": "Vietnam",
       "flag": "🇻🇳",
       "product_group": "5106",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
+      "usage": {
+        "n_active_days": 0,
+        "total_days": 7,
+        "pct_active": 0.0,
+        "last_day": null
+      },
+      "mode": {
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-17",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-08-17",
+        "status": "Completed"
+      },
+      "compare_qc": null
+    },
+    "Binh Phuoc": {
+      "country": "Vietnam",
+      "flag": "🇻🇳",
+      "product_group": "5106",
+      "usage": {
+        "n_active_days": 0,
+        "total_days": 7,
+        "pct_active": 0.0,
+        "last_day": null
+      },
+      "mode": {
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-19",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-08-19",
+        "status": "Completed"
+      },
+      "compare_qc": {
+        "diff_dg": 0.2,
+        "diff_mg": -0.03,
+        "diff_bg": 1.8,
+        "diff_adm": 0.03,
+        "n": 3
       }
     },
     "Hai Duong": {
-      "branch": "Hai Duong",
       "country": "Vietnam",
       "flag": "🇻🇳",
       "product_group": "5106",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Isabella": {
-      "branch": "Isabella",
-      "country": "Philippines",
-      "flag": "🇵🇭",
-      "product_group": "5218",
-      "n_active_days": 1,
-      "total_7days": 7,
-      "pct_active": 14.3,
-      "active_dates": [
-        "2026-08-13"
-      ],
-      "last_day": "2026-08-13",
-      "mode_active_pct": 0.0,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 100.0,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 1,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Kampot": {
-      "branch": "Kampot",
-      "country": "Cambodia",
-      "flag": "🇰🇭",
-      "product_group": "5106",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Laos": {
-      "branch": "Laos",
-      "country": "Laos",
-      "flag": "🇱🇦",
-      "product_group": "1101",
-      "n_active_days": 1,
-      "total_7days": 7,
-      "pct_active": 14.3,
-      "active_dates": [
-        "2026-08-13"
-      ],
-      "last_day": "2026-08-13",
-      "mode_active_pct": 0.0,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 100.0,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 1,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Mandalay": {
-      "branch": "Mandalay",
-      "country": "Myanmar",
-      "flag": "🇲🇲",
-      "product_group": "A061",
-      "n_active_days": 3,
-      "total_7days": 7,
-      "pct_active": 42.9,
-      "active_dates": [
-        "2026-08-13",
-        "2026-08-18",
-        "2026-08-19"
-      ],
-      "last_day": "2026-08-19",
-      "mode_active_pct": 80.0,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 20.0,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 20,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Pailin": {
-      "branch": "Pailin",
-      "country": "Cambodia",
-      "flag": "🇰🇭",
-      "product_group": "5106",
-      "n_active_days": 7,
-      "total_7days": 7,
-      "pct_active": 100.0,
-      "active_dates": [
-        "2026-08-13",
-        "2026-08-14",
-        "2026-08-15",
-        "2026-08-17",
-        "2026-08-18",
-        "2026-08-19",
-        "2026-08-20"
-      ],
-      "last_day": "2026-08-20",
-      "mode_active_pct": 84.6,
-      "mode_semi_pct": 2.6,
-      "mode_bypass_pct": 12.8,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 78,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Phnom Penh": {
-      "branch": "Phnom Penh",
-      "country": "Cambodia",
-      "flag": "🇰🇭",
-      "product_group": "5106",
-      "n_active_days": 7,
-      "total_7days": 7,
-      "pct_active": 100.0,
-      "active_dates": [
-        "2026-08-13",
-        "2026-08-14",
-        "2026-08-15",
-        "2026-08-17",
-        "2026-08-18",
-        "2026-08-19",
-        "2026-08-20"
-      ],
-      "last_day": "2026-08-20",
-      "mode_active_pct": 0.0,
-      "mode_semi_pct": 96.4,
-      "mode_bypass_pct": 3.6,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 220,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Tarlac": {
-      "branch": "Tarlac",
-      "country": "Philippines",
-      "flag": "🇵🇭",
-      "product_group": "5218",
-      "n_active_days": 1,
-      "total_7days": 7,
-      "pct_active": 14.3,
-      "active_dates": [
-        "2026-08-13"
-      ],
-      "last_day": "2026-08-13",
-      "mode_active_pct": 0.0,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 100.0,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 2,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
-    },
-    "Taunggyi": {
-      "branch": "Taunggyi",
-      "country": "Myanmar",
-      "flag": "🇲🇲",
-      "product_group": "A061",
-      "n_active_days": 1,
-      "total_7days": 7,
-      "pct_active": 14.3,
-      "active_dates": [
-        "2026-08-13"
-      ],
-      "last_day": "2026-08-13",
-      "mode_active_pct": 0.0,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 100.0,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 1,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
-      }
+      "usage": {
+        "n_active_days": 0,
+        "total_days": 7,
+        "pct_active": 0.0,
+        "last_day": null
+      },
+      "mode": {
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-18",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-08-18",
+        "status": "In Process"
+      },
+      "compare_qc": null
     },
     "Xuan Mai": {
-      "branch": "Xuan Mai",
       "country": "Vietnam",
       "flag": "🇻🇳",
       "product_group": "5106",
-      "n_active_days": 0,
-      "total_7days": 7,
-      "pct_active": 0.0,
-      "active_dates": [],
-      "last_day": null,
-      "mode_active_pct": null,
-      "mode_semi_pct": null,
-      "mode_bypass_pct": null,
-      "mode_disable_pct": null,
-      "mode_total_records": 0,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
+      "usage": {
+        "n_active_days": 0,
+        "total_days": 7,
+        "pct_active": 0.0,
+        "last_day": null
+      },
+      "mode": {
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-07-22",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-08-11",
+        "status": "Completed"
+      },
+      "compare_qc": null
+    },
+    "Tarlac": {
+      "country": "Philippines",
+      "flag": "🇵🇭",
+      "product_group": "5218",
+      "usage": {
+        "n_active_days": 1,
+        "total_days": 7,
+        "pct_active": 14.3,
+        "last_day": "2026-08-13"
+      },
+      "mode": {
+        "active_pct": 0.0,
+        "semi_pct": 0.0,
+        "bypass_pct": 100.0,
+        "disable_pct": 0.0,
+        "total_records": 2
+      },
+      "dy": {
+        "total_diff": 0.0,
+        "on5_diff": 0.02,
+        "on2_diff": 0.02,
+        "n": 6
+      },
+      "calibration": {
+        "date": "2026-08-17",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-07-28",
+        "status": "Completed"
+      },
+      "compare_qc": null
+    },
+    "Isabella": {
+      "country": "Philippines",
+      "flag": "🇵🇭",
+      "product_group": "5218",
+      "usage": {
+        "n_active_days": 1,
+        "total_days": 7,
+        "pct_active": 14.3,
+        "last_day": "2026-08-13"
+      },
+      "mode": {
+        "active_pct": 0.0,
+        "semi_pct": 0.0,
+        "bypass_pct": 100.0,
+        "disable_pct": 0.0,
+        "total_records": 1
+      },
+      "dy": {
+        "total_diff": 0.04,
+        "on5_diff": -0.06,
+        "on2_diff": 0.0,
+        "n": 7
+      },
+      "calibration": {
+        "date": "2026-08-17",
+        "status": "Completed"
+      },
+      "pm": null,
+      "compare_qc": null
+    },
+    "Taunggyi": {
+      "country": "Myanmar",
+      "flag": "🇲🇲",
+      "product_group": "A061",
+      "usage": {
+        "n_active_days": 1,
+        "total_days": 7,
+        "pct_active": 14.3,
+        "last_day": "2026-08-13"
+      },
+      "mode": {
+        "active_pct": 0.0,
+        "semi_pct": 0.0,
+        "bypass_pct": 100.0,
+        "disable_pct": 0.0,
+        "total_records": 1
+      },
+      "dy": {
+        "total_diff": -0.09,
+        "on5_diff": -0.11,
+        "on2_diff": -0.1,
+        "n": 7
+      },
+      "calibration": {
+        "date": "2026-08-18",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-08-21",
+        "status": "In Process"
+      },
+      "compare_qc": {
+        "diff_dg": 0.32,
+        "diff_mg": -0.33,
+        "diff_bg": -0.2,
+        "diff_adm": 0.42,
+        "n": 6
       }
     },
     "Yangon": {
-      "branch": "Yangon",
       "country": "Myanmar",
       "flag": "🇲🇲",
       "product_group": "A061",
-      "n_active_days": 6,
-      "total_7days": 7,
-      "pct_active": 85.7,
-      "active_dates": [
-        "2026-08-13",
-        "2026-08-14",
-        "2026-08-15",
-        "2026-08-17",
-        "2026-08-18",
-        "2026-08-20"
-      ],
-      "last_day": "2026-08-20",
-      "mode_active_pct": 0.0,
-      "mode_semi_pct": 0.0,
-      "mode_bypass_pct": 100.0,
-      "mode_disable_pct": 0.0,
-      "mode_total_records": 7,
-      "compare_vdm_qc": {
-        "vdm_class": "-",
-        "qc_class": "-",
-        "diff_pct": "-",
-        "status": "ไม่ได้ทำ / ไม่มีข้อมูล"
+      "usage": {
+        "n_active_days": 6,
+        "total_days": 7,
+        "pct_active": 85.7,
+        "last_day": "2026-08-20"
+      },
+      "mode": {
+        "active_pct": 0.0,
+        "semi_pct": 0.0,
+        "bypass_pct": 100.0,
+        "disable_pct": 0.0,
+        "total_records": 7
+      },
+      "dy": {
+        "total_diff": -0.07,
+        "on5_diff": -0.1,
+        "on2_diff": 0.02,
+        "n": 6
+      },
+      "calibration": {
+        "date": "2026-08-18",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-07-25",
+        "status": "Completed"
+      },
+      "compare_qc": null
+    },
+    "Mandalay": {
+      "country": "Myanmar",
+      "flag": "🇲🇲",
+      "product_group": "A061",
+      "usage": {
+        "n_active_days": 4,
+        "total_days": 7,
+        "pct_active": 57.1,
+        "last_day": "2026-08-20"
+      },
+      "mode": {
+        "active_pct": 75.0,
+        "semi_pct": 4.2,
+        "bypass_pct": 20.8,
+        "disable_pct": 0.0,
+        "total_records": 24
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-18",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-07-25",
+        "status": "Completed"
+      },
+      "compare_qc": {
+        "diff_dg": 0.23,
+        "diff_mg": -0.57,
+        "diff_bg": -0.53,
+        "diff_adm": 0.07,
+        "n": 3
       }
+    },
+    "Kampot": {
+      "country": "Cambodia",
+      "flag": "🇰🇭",
+      "product_group": "5106",
+      "usage": {
+        "n_active_days": 0,
+        "total_days": 7,
+        "pct_active": 0.0,
+        "last_day": null
+      },
+      "mode": {
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-13",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-07-27",
+        "status": "Completed"
+      },
+      "compare_qc": null
+    },
+    "Pailin": {
+      "country": "Cambodia",
+      "flag": "🇰🇭",
+      "product_group": "5106",
+      "usage": {
+        "n_active_days": 7,
+        "total_days": 7,
+        "pct_active": 100.0,
+        "last_day": "2026-08-20"
+      },
+      "mode": {
+        "active_pct": 84.6,
+        "semi_pct": 2.6,
+        "bypass_pct": 12.8,
+        "disable_pct": 0.0,
+        "total_records": 78
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-15",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-07-30",
+        "status": "Completed"
+      },
+      "compare_qc": {
+        "diff_dg": 0.02,
+        "diff_mg": -0.52,
+        "diff_bg": 0.69,
+        "diff_adm": 0.28,
+        "n": 1
+      }
+    },
+    "Phnom Penh": {
+      "country": "Cambodia",
+      "flag": "🇰🇭",
+      "product_group": "5106",
+      "usage": {
+        "n_active_days": 7,
+        "total_days": 7,
+        "pct_active": 100.0,
+        "last_day": "2026-08-20"
+      },
+      "mode": {
+        "active_pct": 0.0,
+        "semi_pct": 96.4,
+        "bypass_pct": 3.6,
+        "disable_pct": 0.0,
+        "total_records": 220
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-08-14",
+        "status": "Completed"
+      },
+      "pm": {
+        "date": "2026-07-31",
+        "status": "Completed"
+      },
+      "compare_qc": null
+    },
+    "Laos": {
+      "country": "Laos",
+      "flag": "🇱🇦",
+      "product_group": "1101",
+      "usage": {
+        "n_active_days": 1,
+        "total_days": 7,
+        "pct_active": 14.3,
+        "last_day": "2026-08-13"
+      },
+      "mode": {
+        "active_pct": 0.0,
+        "semi_pct": 0.0,
+        "bypass_pct": 100.0,
+        "disable_pct": 0.0,
+        "total_records": 1
+      },
+      "dy": null,
+      "calibration": {
+        "date": "2026-07-17",
+        "status": "Completed"
+      },
+      "pm": null,
+      "compare_qc": null
+    },
+    "Bangladesh": {
+      "country": "Bangladesh",
+      "flag": "🌍",
+      "product_group": "—",
+      "usage": {
+        "n_active_days": 0,
+        "total_days": 7,
+        "pct_active": 0.0,
+        "last_day": null
+      },
+      "mode": {
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
+      },
+      "dy": null,
+      "calibration": null,
+      "pm": null,
+      "compare_qc": null
     }
   }
 }
