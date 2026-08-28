@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-28 14:41:33",
+  "generated_at": "2026-08-28 15:00:59",
   "logfile_window": {
     "start": "2026-08-21",
     "end": "2026-08-28"
@@ -395,10 +395,10 @@
         "total_records": 220
       },
       "dy": {
-        "total_diff": -0.16,
+        "total_diff": -0.15,
         "on5_diff": 0.16,
-        "on2_diff": -4.29,
-        "n": 7
+        "on2_diff": -3.76,
+        "n": 8
       },
       "calibration": {
         "date": "2026-08-22",
