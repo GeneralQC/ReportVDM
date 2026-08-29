@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-08-28 15:02:38",
+  "generated_at": "2026-08-29 09:30:10",
   "logfile_window": {
     "start": "2026-08-21",
     "end": "2026-08-28"
   },
   "dy_window": {
-    "start": "2026-08-21",
-    "end": "2026-08-28"
+    "start": "2026-08-22",
+    "end": "2026-08-29"
   },
   "compare_window": {
-    "start": "2026-08-20",
-    "end": "2026-08-27"
+    "start": "2026-08-21",
+    "end": "2026-08-28"
   },
   "branches": {
     "Binh Dinh": {
@@ -215,7 +215,7 @@
         "total_records": 7
       },
       "dy": {
-        "total_diff": 0.21,
+        "total_diff": 0.2,
         "on5_diff": 0.13,
         "on2_diff": 0.0,
         "n": 7
@@ -246,8 +246,8 @@
       },
       "dy": {
         "total_diff": -0.08,
-        "on5_diff": -0.1,
-        "on2_diff": -0.1,
+        "on5_diff": -0.08,
+        "on2_diff": -0.12,
         "n": 6
       },
       "calibration": {
@@ -259,10 +259,10 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.33,
-        "diff_mg": -0.23,
-        "diff_bg": -0.08,
-        "diff_adm": 0.35,
+        "diff_dg": 0.35,
+        "diff_mg": -0.22,
+        "diff_bg": 0.0,
+        "diff_adm": 0.4,
         "n": 4
       }
     },
@@ -271,23 +271,23 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 7,
         "total_days": 7,
-        "pct_active": 85.7,
-        "last_day": "2026-08-27"
+        "pct_active": 100.0,
+        "last_day": "2026-08-28"
       },
       "mode": {
         "active_pct": 0.0,
-        "semi_pct": 22.2,
-        "bypass_pct": 77.8,
+        "semi_pct": 20.0,
+        "bypass_pct": 80.0,
         "disable_pct": 0.0,
-        "total_records": 9
+        "total_records": 10
       },
       "dy": {
         "total_diff": -0.03,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 7
+        "n": 6
       },
       "calibration": {
         "date": "2026-08-25",
@@ -304,23 +304,23 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 7,
         "total_days": 7,
-        "pct_active": 85.7,
-        "last_day": "2026-08-27"
+        "pct_active": 100.0,
+        "last_day": "2026-08-28"
       },
       "mode": {
-        "active_pct": 75.7,
+        "active_pct": 76.2,
         "semi_pct": 0.0,
-        "bypass_pct": 24.3,
+        "bypass_pct": 23.8,
         "disable_pct": 0.0,
-        "total_records": 37
+        "total_records": 42
       },
       "dy": {
         "total_diff": 0.0,
         "on5_diff": -0.01,
         "on2_diff": 0.0,
-        "n": 5
+        "n": 6
       },
       "calibration": {
         "date": "2026-08-25",
@@ -331,11 +331,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.17,
-        "diff_mg": -0.17,
-        "diff_bg": -0.07,
-        "diff_adm": -0.07,
-        "n": 3
+        "diff_dg": 0.2,
+        "diff_mg": -0.23,
+        "diff_bg": -0.1,
+        "diff_adm": -0.05,
+        "n": 4
       }
     },
     "Kampot": {
@@ -382,26 +382,26 @@
       "flag": "🇰🇭",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 7,
         "total_days": 7,
-        "pct_active": 85.7,
-        "last_day": "2026-08-27"
+        "pct_active": 100.0,
+        "last_day": "2026-08-28"
       },
       "mode": {
-        "active_pct": 80.9,
-        "semi_pct": 3.2,
-        "bypass_pct": 15.9,
+        "active_pct": 82.8,
+        "semi_pct": 2.8,
+        "bypass_pct": 14.4,
         "disable_pct": 0.0,
-        "total_records": 220
+        "total_records": 250
       },
       "dy": {
-        "total_diff": -0.1,
-        "on5_diff": 0.16,
+        "total_diff": -0.09,
+        "on5_diff": 0.13,
         "on2_diff": -0.07,
         "n": 7
       },
       "calibration": {
-        "date": "2026-08-22",
+        "date": "2026-08-29",
         "status": "Completed"
       },
       "pm": {
@@ -409,10 +409,10 @@
         "status": "In Process"
       },
       "compare_qc": {
-        "diff_dg": 0.52,
-        "diff_mg": -0.44,
-        "diff_bg": -0.09,
-        "diff_adm": 0.16,
+        "diff_dg": 0.53,
+        "diff_mg": -0.41,
+        "diff_bg": -0.2,
+        "diff_adm": 0.15,
         "n": 10
       }
     },
@@ -421,17 +421,17 @@
       "flag": "🇰🇭",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 7,
         "total_days": 7,
-        "pct_active": 85.7,
-        "last_day": "2026-08-27"
+        "pct_active": 100.0,
+        "last_day": "2026-08-28"
       },
       "mode": {
         "active_pct": 0.0,
-        "semi_pct": 96.9,
-        "bypass_pct": 3.1,
+        "semi_pct": 96.4,
+        "bypass_pct": 3.6,
         "disable_pct": 0.0,
-        "total_records": 195
+        "total_records": 223
       },
       "dy": null,
       "calibration": {
@@ -439,7 +439,7 @@
         "status": "Completed"
       },
       "pm": {
-        "date": "2026-07-31",
+        "date": "2026-08-28",
         "status": "Completed"
       },
       "compare_qc": {
