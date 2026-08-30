@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-08-29 09:30:10",
+  "generated_at": "2026-08-30 09:30:09",
   "logfile_window": {
-    "start": "2026-08-21",
-    "end": "2026-08-28"
+    "start": "2026-08-22",
+    "end": "2026-08-29"
   },
   "dy_window": {
     "start": "2026-08-22",
     "end": "2026-08-29"
   },
   "compare_window": {
-    "start": "2026-08-21",
-    "end": "2026-08-28"
+    "start": "2026-08-24",
+    "end": "2026-08-30"
   },
   "branches": {
     "Binh Dinh": {
@@ -18,23 +18,23 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 5,
+        "n_active_days": 4,
         "total_days": 7,
-        "pct_active": 71.4,
+        "pct_active": 57.1,
         "last_day": "2026-08-26"
       },
       "mode": {
-        "active_pct": 54.5,
+        "active_pct": 60.0,
         "semi_pct": 0.0,
-        "bypass_pct": 45.5,
+        "bypass_pct": 40.0,
         "disable_pct": 0.0,
-        "total_records": 11
+        "total_records": 10
       },
       "dy": {
         "total_diff": -0.1,
-        "on5_diff": 0.05,
-        "on2_diff": 0.0,
-        "n": 2
+        "on5_diff": 0.03,
+        "on2_diff": 0.03,
+        "n": 3
       },
       "calibration": {
         "date": "2026-08-24",
@@ -162,16 +162,22 @@
         "date": "2026-08-11",
         "status": "Completed"
       },
-      "compare_qc": null
+      "compare_qc": {
+        "diff_dg": 0.2,
+        "diff_mg": 0.2,
+        "diff_bg": 0.5,
+        "diff_adm": 0.3,
+        "n": 1
+      }
     },
     "Tarlac": {
       "country": "Philippines",
       "flag": "🇵🇭",
       "product_group": "5218",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
+        "pct_active": 71.4,
         "last_day": "2026-08-28"
       },
       "mode": {
@@ -179,7 +185,7 @@
         "semi_pct": 0.0,
         "bypass_pct": 100.0,
         "disable_pct": 0.0,
-        "total_records": 6
+        "total_records": 5
       },
       "dy": {
         "total_diff": 0.08,
@@ -202,9 +208,9 @@
       "flag": "🇵🇭",
       "product_group": "5218",
       "usage": {
-        "n_active_days": 7,
+        "n_active_days": 6,
         "total_days": 7,
-        "pct_active": 100.0,
+        "pct_active": 85.7,
         "last_day": "2026-08-28"
       },
       "mode": {
@@ -212,7 +218,7 @@
         "semi_pct": 0.0,
         "bypass_pct": 100.0,
         "disable_pct": 0.0,
-        "total_records": 7
+        "total_records": 6
       },
       "dy": {
         "total_diff": 0.2,
@@ -232,17 +238,17 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
+        "pct_active": 71.4,
         "last_day": "2026-08-28"
       },
       "mode": {
-        "active_pct": 78.8,
+        "active_pct": 80.6,
         "semi_pct": 0.0,
-        "bypass_pct": 21.2,
+        "bypass_pct": 19.4,
         "disable_pct": 0.0,
-        "total_records": 33
+        "total_records": 31
       },
       "dy": {
         "total_diff": -0.08,
@@ -259,10 +265,10 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.35,
-        "diff_mg": -0.22,
-        "diff_bg": 0.0,
-        "diff_adm": 0.4,
+        "diff_dg": 0.38,
+        "diff_mg": -0.25,
+        "diff_bg": 0.05,
+        "diff_adm": 0.5,
         "n": 4
       }
     },
@@ -274,20 +280,20 @@
         "n_active_days": 7,
         "total_days": 7,
         "pct_active": 100.0,
-        "last_day": "2026-08-28"
+        "last_day": "2026-08-29"
       },
       "mode": {
         "active_pct": 0.0,
-        "semi_pct": 20.0,
-        "bypass_pct": 80.0,
+        "semi_pct": 22.2,
+        "bypass_pct": 77.8,
         "disable_pct": 0.0,
-        "total_records": 10
+        "total_records": 9
       },
       "dy": {
-        "total_diff": -0.03,
+        "total_diff": -0.04,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 6
+        "n": 7
       },
       "calibration": {
         "date": "2026-08-25",
@@ -307,14 +313,14 @@
         "n_active_days": 7,
         "total_days": 7,
         "pct_active": 100.0,
-        "last_day": "2026-08-28"
+        "last_day": "2026-08-29"
       },
       "mode": {
-        "active_pct": 76.2,
+        "active_pct": 78.7,
         "semi_pct": 0.0,
-        "bypass_pct": 23.8,
+        "bypass_pct": 21.3,
         "disable_pct": 0.0,
-        "total_records": 42
+        "total_records": 47
       },
       "dy": {
         "total_diff": 0.0,
@@ -385,14 +391,14 @@
         "n_active_days": 7,
         "total_days": 7,
         "pct_active": 100.0,
-        "last_day": "2026-08-28"
+        "last_day": "2026-08-29"
       },
       "mode": {
-        "active_pct": 82.8,
-        "semi_pct": 2.8,
-        "bypass_pct": 14.4,
+        "active_pct": 83.1,
+        "semi_pct": 2.4,
+        "bypass_pct": 14.5,
         "disable_pct": 0.0,
-        "total_records": 250
+        "total_records": 248
       },
       "dy": {
         "total_diff": -0.09,
@@ -405,13 +411,13 @@
         "status": "Completed"
       },
       "pm": {
-        "date": "2026-08-27",
-        "status": "In Process"
+        "date": "2026-08-29",
+        "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.53,
-        "diff_mg": -0.41,
-        "diff_bg": -0.2,
+        "diff_dg": 0.69,
+        "diff_mg": -0.31,
+        "diff_bg": -0.15,
         "diff_adm": 0.15,
         "n": 10
       }
@@ -424,14 +430,14 @@
         "n_active_days": 7,
         "total_days": 7,
         "pct_active": 100.0,
-        "last_day": "2026-08-28"
+        "last_day": "2026-08-29"
       },
       "mode": {
         "active_pct": 0.0,
         "semi_pct": 96.4,
         "bypass_pct": 3.6,
         "disable_pct": 0.0,
-        "total_records": 223
+        "total_records": 221
       },
       "dy": null,
       "calibration": {
@@ -443,11 +449,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.38,
-        "diff_mg": -0.41,
-        "diff_bg": -0.16,
+        "diff_dg": 0.35,
+        "diff_mg": -0.35,
+        "diff_bg": -0.2,
         "diff_adm": 0.0,
-        "n": 4
+        "n": 2
       }
     },
     "Laos": {
@@ -469,7 +475,7 @@
       },
       "dy": null,
       "calibration": {
-        "date": "2026-07-17",
+        "date": "2026-08-29",
         "status": "Completed"
       },
       "pm": null,
