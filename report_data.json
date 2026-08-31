@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-30 09:30:09",
+  "generated_at": "2026-08-31 09:30:09",
   "logfile_window": {
     "start": "2026-08-22",
     "end": "2026-08-29"
   },
   "dy_window": {
-    "start": "2026-08-22",
-    "end": "2026-08-29"
+    "start": "2026-08-24",
+    "end": "2026-08-31"
   },
   "compare_window": {
     "start": "2026-08-24",
@@ -18,17 +18,17 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 4,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 57.1,
-        "last_day": "2026-08-26"
+        "pct_active": 71.4,
+        "last_day": "2026-08-29"
       },
       "mode": {
-        "active_pct": 60.0,
+        "active_pct": 54.5,
         "semi_pct": 0.0,
-        "bypass_pct": 40.0,
+        "bypass_pct": 45.5,
         "disable_pct": 0.0,
-        "total_records": 10
+        "total_records": 11
       },
       "dy": {
         "total_diff": -0.1,
@@ -127,7 +127,7 @@
       },
       "dy": null,
       "calibration": {
-        "date": "2026-08-26",
+        "date": "2026-08-31",
         "status": "Completed"
       },
       "pm": {
@@ -222,9 +222,9 @@
       },
       "dy": {
         "total_diff": 0.2,
-        "on5_diff": 0.13,
+        "on5_diff": 0.15,
         "on2_diff": 0.0,
-        "n": 7
+        "n": 6
       },
       "calibration": {
         "date": "2026-08-24",
@@ -290,10 +290,10 @@
         "total_records": 9
       },
       "dy": {
-        "total_diff": -0.04,
+        "total_diff": -0.03,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 7
+        "n": 6
       },
       "calibration": {
         "date": "2026-08-25",
@@ -324,9 +324,9 @@
       },
       "dy": {
         "total_diff": 0.0,
-        "on5_diff": -0.01,
+        "on5_diff": 0.0,
         "on2_diff": 0.0,
-        "n": 6
+        "n": 7
       },
       "calibration": {
         "date": "2026-08-25",
@@ -364,8 +364,8 @@
       "dy": {
         "total_diff": -0.1,
         "on5_diff": 0.0,
-        "on2_diff": -0.05,
-        "n": 2
+        "on2_diff": 0.0,
+        "n": 1
       },
       "calibration": {
         "date": "2026-08-24",
@@ -401,9 +401,9 @@
         "total_records": 248
       },
       "dy": {
-        "total_diff": -0.09,
-        "on5_diff": 0.13,
-        "on2_diff": -0.07,
+        "total_diff": -0.07,
+        "on5_diff": 0.14,
+        "on2_diff": -0.06,
         "n": 7
       },
       "calibration": {
