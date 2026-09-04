@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-03 09:30:12",
+  "generated_at": "2026-09-04 09:30:09",
   "logfile_window": {
     "start": "2026-08-28",
     "end": "2026-09-03"
   },
   "dy_window": {
-    "start": "2026-08-27",
-    "end": "2026-09-03"
+    "start": "2026-08-28",
+    "end": "2026-09-04"
   },
   "compare_window": {
     "start": "2026-08-28",
@@ -24,11 +24,11 @@
         "last_day": "2026-09-03"
       },
       "mode": {
-        "active_pct": 0.0,
-        "semi_pct": 0.0,
-        "bypass_pct": 100.0,
+        "active_pct": 57.1,
+        "semi_pct": 28.6,
+        "bypass_pct": 14.3,
         "disable_pct": 0.0,
-        "total_records": 2
+        "total_records": 14
       },
       "dy": {
         "total_diff": -0.1,
@@ -129,11 +129,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": -0.25,
-        "diff_mg": 0.2,
-        "diff_bg": 0.25,
-        "diff_adm": 0.0,
-        "n": 2
+        "diff_dg": -0.23,
+        "diff_mg": -0.07,
+        "diff_bg": 0.2,
+        "diff_adm": 0.12,
+        "n": 4
       }
     },
     "Xuan Mai": {
@@ -163,11 +163,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.4,
+        "diff_dg": 0.42,
         "diff_mg": 0.1,
-        "diff_bg": 0.5,
-        "diff_adm": 0.05,
-        "n": 4
+        "diff_bg": 0.52,
+        "diff_adm": 0.02,
+        "n": 5
       }
     },
     "Tarlac": {
@@ -190,7 +190,7 @@
       "dy": {
         "total_diff": 0.04,
         "on5_diff": -0.02,
-        "on2_diff": 0.02,
+        "on2_diff": 0.0,
         "n": 5
       },
       "calibration": {
@@ -221,8 +221,8 @@
         "total_records": 2
       },
       "dy": {
-        "total_diff": 0.22,
-        "on5_diff": 0.18,
+        "total_diff": 0.0,
+        "on5_diff": -0.04,
         "on2_diff": 0.0,
         "n": 5
       },
@@ -265,11 +265,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.38,
-        "diff_mg": -0.16,
-        "diff_bg": 0.04,
+        "diff_dg": 0.33,
+        "diff_mg": -0.18,
+        "diff_bg": 0.02,
         "diff_adm": 0.42,
-        "n": 5
+        "n": 6
       }
     },
     "Yangon": {
@@ -290,10 +290,10 @@
         "total_records": 4
       },
       "dy": {
-        "total_diff": -0.05,
+        "total_diff": -0.06,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 6
+        "n": 5
       },
       "calibration": {
         "date": "2026-09-01",
@@ -338,10 +338,10 @@
       },
       "compare_qc": {
         "diff_dg": 0.17,
-        "diff_mg": -0.27,
-        "diff_bg": 0.07,
-        "diff_adm": -0.03,
-        "n": 3
+        "diff_mg": -0.15,
+        "diff_bg": -0.05,
+        "diff_adm": -0.05,
+        "n": 4
       }
     },
     "Kampot": {
@@ -363,8 +363,8 @@
       },
       "dy": {
         "total_diff": -0.08,
-        "on5_diff": -0.05,
-        "on2_diff": 0.08,
+        "on5_diff": -0.08,
+        "on2_diff": 0.1,
         "n": 4
       },
       "calibration": {
@@ -388,17 +388,17 @@
         "last_day": "2026-09-03"
       },
       "mode": {
-        "active_pct": 93.7,
+        "active_pct": 93.8,
         "semi_pct": 0.0,
-        "bypass_pct": 6.3,
+        "bypass_pct": 6.2,
         "disable_pct": 0.0,
-        "total_records": 95
+        "total_records": 97
       },
       "dy": {
-        "total_diff": 0.03,
-        "on5_diff": 0.06,
+        "total_diff": 0.05,
+        "on5_diff": 0.04,
         "on2_diff": -0.03,
-        "n": 7
+        "n": 8
       },
       "calibration": {
         "date": "2026-08-29",
@@ -409,11 +409,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.44,
-        "diff_mg": -0.17,
-        "diff_bg": -0.79,
-        "diff_adm": 0.08,
-        "n": 5
+        "diff_dg": 0.33,
+        "diff_mg": -0.11,
+        "diff_bg": -1.01,
+        "diff_adm": 0.24,
+        "n": 6
       }
     },
     "Phnom Penh": {
@@ -428,10 +428,10 @@
       },
       "mode": {
         "active_pct": 0.0,
-        "semi_pct": 95.6,
-        "bypass_pct": 4.4,
+        "semi_pct": 96.1,
+        "bypass_pct": 3.9,
         "disable_pct": 0.0,
-        "total_records": 181
+        "total_records": 206
       },
       "dy": null,
       "calibration": {
