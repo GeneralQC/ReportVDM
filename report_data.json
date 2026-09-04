@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04 09:30:09",
+  "generated_at": "2026-09-04 11:55:41",
   "logfile_window": {
     "start": "2026-08-28",
     "end": "2026-09-03"
@@ -203,7 +203,7 @@
       },
       "compare_qc": null
     },
-    "Isabella": {
+    "Ilagan": {
       "country": "Philippines",
       "flag": "🇵🇭",
       "product_group": "5218",
@@ -230,7 +230,10 @@
         "date": "2026-09-01",
         "status": "Completed"
       },
-      "pm": null,
+      "pm": {
+        "date": "2026-08-28",
+        "status": "Completed"
+      },
       "compare_qc": null
     },
     "Taunggyi": {
@@ -290,10 +293,10 @@
         "total_records": 4
       },
       "dy": {
-        "total_diff": -0.06,
+        "total_diff": -0.07,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 5
+        "n": 6
       },
       "calibration": {
         "date": "2026-09-01",
@@ -442,7 +445,13 @@
         "date": "2026-08-28",
         "status": "Completed"
       },
-      "compare_qc": null
+      "compare_qc": {
+        "diff_dg": 0.43,
+        "diff_mg": 0.53,
+        "diff_bg": -0.56,
+        "diff_adm": 0.14,
+        "n": 5
+      }
     },
     "Laos": {
       "country": "Laos",
