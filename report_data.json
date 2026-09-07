@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-09-04 11:55:41",
+  "generated_at": "2026-09-07 09:30:11",
   "logfile_window": {
-    "start": "2026-08-28",
-    "end": "2026-09-03"
+    "start": "2026-09-01",
+    "end": "2026-09-07"
   },
   "dy_window": {
-    "start": "2026-08-28",
-    "end": "2026-09-04"
+    "start": "2026-08-31",
+    "end": "2026-09-07"
   },
   "compare_window": {
-    "start": "2026-08-28",
-    "end": "2026-09-03"
+    "start": "2026-08-31",
+    "end": "2026-09-06"
   },
   "branches": {
     "Binh Dinh": {
@@ -18,33 +18,39 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 2,
+        "n_active_days": 4,
         "total_days": 7,
-        "pct_active": 28.6,
-        "last_day": "2026-09-03"
+        "pct_active": 57.1,
+        "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 57.1,
-        "semi_pct": 28.6,
-        "bypass_pct": 14.3,
+        "active_pct": 63.6,
+        "semi_pct": 18.2,
+        "bypass_pct": 18.2,
         "disable_pct": 0.0,
-        "total_records": 14
+        "total_records": 22
       },
       "dy": {
-        "total_diff": -0.1,
-        "on5_diff": 0.0,
-        "on2_diff": 0.1,
-        "n": 1
+        "total_diff": -0.03,
+        "on5_diff": -0.05,
+        "on2_diff": 0.02,
+        "n": 4
       },
       "calibration": {
-        "date": "2026-08-24",
+        "date": "2026-09-07",
         "status": "Completed"
       },
       "pm": {
         "date": "2026-08-18",
         "status": "Completed"
       },
-      "compare_qc": null
+      "compare_qc": {
+        "diff_dg": 0.4,
+        "diff_mg": 0.3,
+        "diff_bg": 0.8,
+        "diff_adm": -0.05,
+        "n": 2
+      }
     },
     "Dak Lak": {
       "country": "Vietnam",
@@ -65,12 +71,12 @@
       },
       "dy": null,
       "calibration": {
-        "date": "2026-08-31",
+        "date": "2026-09-07",
         "status": "Completed"
       },
       "pm": {
-        "date": "2026-08-17",
-        "status": "Completed"
+        "date": "2026-09-07",
+        "status": "In Process"
       },
       "compare_qc": null
     },
@@ -79,17 +85,17 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 0,
+        "n_active_days": 3,
         "total_days": 7,
-        "pct_active": 0.0,
-        "last_day": null
+        "pct_active": 42.9,
+        "last_day": "2026-09-05"
       },
       "mode": {
-        "active_pct": null,
-        "semi_pct": null,
-        "bypass_pct": null,
-        "disable_pct": null,
-        "total_records": 0
+        "active_pct": 0.0,
+        "semi_pct": 0.0,
+        "bypass_pct": 100.0,
+        "disable_pct": 0.0,
+        "total_records": 3
       },
       "dy": null,
       "calibration": {
@@ -107,17 +113,17 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 5,
+        "n_active_days": 3,
         "total_days": 7,
-        "pct_active": 71.4,
+        "pct_active": 42.9,
         "last_day": "2026-09-03"
       },
       "mode": {
-        "active_pct": 83.3,
+        "active_pct": 76.9,
         "semi_pct": 0.0,
-        "bypass_pct": 16.7,
+        "bypass_pct": 23.1,
         "disable_pct": 0.0,
-        "total_records": 30
+        "total_records": 13
       },
       "dy": null,
       "calibration": {
@@ -130,10 +136,10 @@
       },
       "compare_qc": {
         "diff_dg": -0.23,
-        "diff_mg": -0.07,
-        "diff_bg": 0.2,
-        "diff_adm": 0.12,
-        "n": 4
+        "diff_mg": -0.17,
+        "diff_bg": 0.5,
+        "diff_adm": 0.27,
+        "n": 3
       }
     },
     "Xuan Mai": {
@@ -141,21 +147,21 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 7,
         "total_days": 7,
-        "pct_active": 85.7,
-        "last_day": "2026-09-03"
+        "pct_active": 100.0,
+        "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 78.1,
-        "semi_pct": 0.0,
-        "bypass_pct": 21.9,
+        "active_pct": 79.5,
+        "semi_pct": 2.3,
+        "bypass_pct": 18.2,
         "disable_pct": 0.0,
-        "total_records": 32
+        "total_records": 44
       },
       "dy": null,
       "calibration": {
-        "date": "2026-08-26",
+        "date": "2026-09-07",
         "status": "Completed"
       },
       "pm": {
@@ -163,11 +169,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.42,
-        "diff_mg": 0.1,
-        "diff_bg": 0.52,
-        "diff_adm": 0.02,
-        "n": 5
+        "diff_dg": 0.54,
+        "diff_mg": 0.07,
+        "diff_bg": 0.6,
+        "diff_adm": -0.01,
+        "n": 7
       }
     },
     "Tarlac": {
@@ -175,23 +181,23 @@
       "flag": "🇵🇭",
       "product_group": "5218",
       "usage": {
-        "n_active_days": 3,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 42.9,
-        "last_day": "2026-09-02"
+        "pct_active": 71.4,
+        "last_day": "2026-09-05"
       },
       "mode": {
         "active_pct": 0.0,
         "semi_pct": 0.0,
         "bypass_pct": 100.0,
         "disable_pct": 0.0,
-        "total_records": 3
+        "total_records": 5
       },
       "dy": {
-        "total_diff": 0.04,
-        "on5_diff": -0.02,
-        "on2_diff": 0.0,
-        "n": 5
+        "total_diff": 0.03,
+        "on5_diff": -0.03,
+        "on2_diff": -0.03,
+        "n": 4
       },
       "calibration": {
         "date": "2026-09-02",
@@ -208,26 +214,26 @@
       "flag": "🇵🇭",
       "product_group": "5218",
       "usage": {
-        "n_active_days": 2,
+        "n_active_days": 1,
         "total_days": 7,
-        "pct_active": 28.6,
-        "last_day": "2026-08-29"
+        "pct_active": 14.3,
+        "last_day": "2026-09-07"
       },
       "mode": {
         "active_pct": 0.0,
         "semi_pct": 0.0,
         "bypass_pct": 100.0,
         "disable_pct": 0.0,
-        "total_records": 2
+        "total_records": 1
       },
       "dy": {
-        "total_diff": 0.0,
-        "on5_diff": -0.04,
-        "on2_diff": 0.0,
+        "total_diff": -0.22,
+        "on5_diff": 0.0,
+        "on2_diff": -0.02,
         "n": 5
       },
       "calibration": {
-        "date": "2026-09-01",
+        "date": "2026-09-07",
         "status": "Completed"
       },
       "pm": {
@@ -241,23 +247,23 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 1,
+        "n_active_days": 0,
         "total_days": 7,
-        "pct_active": 14.3,
-        "last_day": "2026-08-28"
+        "pct_active": 0.0,
+        "last_day": null
       },
       "mode": {
-        "active_pct": 85.7,
-        "semi_pct": 0.0,
-        "bypass_pct": 14.3,
-        "disable_pct": 0.0,
-        "total_records": 7
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
       },
       "dy": {
-        "total_diff": 1.07,
+        "total_diff": 1.27,
         "on5_diff": -0.07,
-        "on2_diff": -0.11,
-        "n": 7
+        "on2_diff": -0.12,
+        "n": 6
       },
       "calibration": {
         "date": "2026-09-01",
@@ -268,10 +274,10 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.33,
-        "diff_mg": -0.18,
-        "diff_bg": 0.02,
-        "diff_adm": 0.42,
+        "diff_dg": 0.32,
+        "diff_mg": -0.22,
+        "diff_bg": -0.08,
+        "diff_adm": 0.4,
         "n": 6
       }
     },
@@ -280,9 +286,9 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 4,
+        "n_active_days": 1,
         "total_days": 7,
-        "pct_active": 57.1,
+        "pct_active": 14.3,
         "last_day": "2026-09-01"
       },
       "mode": {
@@ -290,13 +296,13 @@
         "semi_pct": 0.0,
         "bypass_pct": 100.0,
         "disable_pct": 0.0,
-        "total_records": 4
+        "total_records": 1
       },
       "dy": {
-        "total_diff": -0.07,
+        "total_diff": -0.06,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 6
+        "n": 5
       },
       "calibration": {
         "date": "2026-09-01",
@@ -313,17 +319,17 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 4,
+        "n_active_days": 1,
         "total_days": 7,
-        "pct_active": 57.1,
+        "pct_active": 14.3,
         "last_day": "2026-09-01"
       },
       "mode": {
-        "active_pct": 91.3,
+        "active_pct": 93.3,
         "semi_pct": 0.0,
-        "bypass_pct": 8.7,
+        "bypass_pct": 6.7,
         "disable_pct": 0.0,
-        "total_records": 46
+        "total_records": 15
       },
       "dy": {
         "total_diff": 0.0,
@@ -340,11 +346,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.17,
-        "diff_mg": -0.15,
-        "diff_bg": -0.05,
-        "diff_adm": -0.05,
-        "n": 4
+        "diff_dg": 0.14,
+        "diff_mg": -0.1,
+        "diff_bg": 0.0,
+        "diff_adm": -0.04,
+        "n": 5
       }
     },
     "Kampot": {
@@ -352,33 +358,39 @@
       "flag": "🇰🇭",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
-        "last_day": "2026-09-03"
+        "pct_active": 71.4,
+        "last_day": "2026-09-05"
       },
       "mode": {
-        "active_pct": 87.3,
+        "active_pct": 79.3,
         "semi_pct": 0.0,
-        "bypass_pct": 12.7,
+        "bypass_pct": 20.7,
         "disable_pct": 0.0,
-        "total_records": 55
+        "total_records": 29
       },
       "dy": {
-        "total_diff": -0.08,
-        "on5_diff": -0.08,
-        "on2_diff": 0.1,
-        "n": 4
+        "total_diff": -0.1,
+        "on5_diff": -0.05,
+        "on2_diff": 0.07,
+        "n": 6
       },
       "calibration": {
-        "date": "2026-08-24",
+        "date": "2026-09-05",
         "status": "Completed"
       },
       "pm": {
         "date": "2026-08-26",
         "status": "Completed"
       },
-      "compare_qc": null
+      "compare_qc": {
+        "diff_dg": 0.1,
+        "diff_mg": 0.3,
+        "diff_bg": -0.58,
+        "diff_adm": 0.1,
+        "n": 1
+      }
     },
     "Pailin": {
       "country": "Cambodia",
@@ -388,20 +400,20 @@
         "n_active_days": 6,
         "total_days": 7,
         "pct_active": 85.7,
-        "last_day": "2026-09-03"
+        "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 93.8,
+        "active_pct": 87.0,
         "semi_pct": 0.0,
-        "bypass_pct": 6.2,
+        "bypass_pct": 13.0,
         "disable_pct": 0.0,
-        "total_records": 97
+        "total_records": 46
       },
       "dy": {
-        "total_diff": 0.05,
-        "on5_diff": 0.04,
-        "on2_diff": -0.03,
-        "n": 8
+        "total_diff": 0.07,
+        "on5_diff": 0.0,
+        "on2_diff": 0.0,
+        "n": 7
       },
       "calibration": {
         "date": "2026-08-29",
@@ -412,10 +424,10 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.33,
-        "diff_mg": -0.11,
-        "diff_bg": -1.01,
-        "diff_adm": 0.24,
+        "diff_dg": 0.43,
+        "diff_mg": -0.04,
+        "diff_bg": -1.61,
+        "diff_adm": 0.51,
         "n": 6
       }
     },
@@ -427,14 +439,14 @@
         "n_active_days": 6,
         "total_days": 7,
         "pct_active": 85.7,
-        "last_day": "2026-09-03"
+        "last_day": "2026-09-07"
       },
       "mode": {
         "active_pct": 0.0,
-        "semi_pct": 96.1,
-        "bypass_pct": 3.9,
+        "semi_pct": 95.3,
+        "bypass_pct": 4.7,
         "disable_pct": 0.0,
-        "total_records": 206
+        "total_records": 148
       },
       "dy": null,
       "calibration": {
@@ -446,10 +458,10 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.43,
-        "diff_mg": 0.53,
-        "diff_bg": -0.56,
-        "diff_adm": 0.14,
+        "diff_dg": 0.44,
+        "diff_mg": 0.36,
+        "diff_bg": -0.44,
+        "diff_adm": 0.22,
         "n": 5
       }
     },
@@ -458,30 +470,30 @@
       "flag": "🇱🇦",
       "product_group": "1101",
       "usage": {
-        "n_active_days": 3,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 42.9,
-        "last_day": "2026-09-01"
+        "pct_active": 71.4,
+        "last_day": "2026-09-05"
       },
       "mode": {
         "active_pct": 0.0,
         "semi_pct": 0.0,
         "bypass_pct": 100.0,
         "disable_pct": 0.0,
-        "total_records": 3
+        "total_records": 5
       },
       "dy": null,
       "calibration": {
-        "date": "2026-09-02",
+        "date": "2026-09-05",
         "status": "Completed"
       },
       "pm": null,
       "compare_qc": {
-        "diff_dg": -0.85,
-        "diff_mg": 0.45,
-        "diff_bg": 0.95,
+        "diff_dg": -1.13,
+        "diff_mg": 0.73,
+        "diff_bg": 1.3,
         "diff_adm": 0.0,
-        "n": 2
+        "n": 3
       }
     },
     "Bangladesh": {
@@ -489,17 +501,17 @@
       "flag": "🌍",
       "product_group": "—",
       "usage": {
-        "n_active_days": 3,
+        "n_active_days": 0,
         "total_days": 7,
-        "pct_active": 42.9,
-        "last_day": "2026-08-31"
+        "pct_active": 0.0,
+        "last_day": null
       },
       "mode": {
-        "active_pct": 100.0,
-        "semi_pct": 0.0,
-        "bypass_pct": 0.0,
-        "disable_pct": 0.0,
-        "total_records": 78
+        "active_pct": null,
+        "semi_pct": null,
+        "bypass_pct": null,
+        "disable_pct": null,
+        "total_records": 0
       },
       "dy": null,
       "calibration": null,
