@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07 15:11:58",
+  "generated_at": "2026-09-07 16:24:54",
   "logfile_window": {
     "start": "2026-09-01",
     "end": "2026-09-07"
@@ -127,7 +127,7 @@
       },
       "dy": null,
       "calibration": {
-        "date": "2026-08-31",
+        "date": "2026-09-07",
         "status": "Completed"
       },
       "pm": {
@@ -325,11 +325,11 @@
         "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 98.3,
+        "active_pct": 98.4,
         "semi_pct": 0.0,
-        "bypass_pct": 1.7,
+        "bypass_pct": 1.6,
         "disable_pct": 0.0,
-        "total_records": 59
+        "total_records": 62
       },
       "dy": {
         "total_diff": 0.0,
@@ -403,11 +403,11 @@
         "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 100.0,
-        "semi_pct": 0.0,
+        "active_pct": 96.6,
+        "semi_pct": 3.4,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 40
+        "total_records": 59
       },
       "dy": {
         "total_diff": 0.07,
@@ -424,11 +424,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.52,
-        "diff_mg": -0.08,
-        "diff_bg": -1.44,
-        "diff_adm": 0.61,
-        "n": 5
+        "diff_dg": 0.54,
+        "diff_mg": -0.04,
+        "diff_bg": -1.47,
+        "diff_adm": 0.56,
+        "n": 6
       }
     },
     "Phnom Penh": {
@@ -436,17 +436,17 @@
       "flag": "🇰🇭",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 5,
+        "n_active_days": 6,
         "total_days": 7,
-        "pct_active": 71.4,
-        "last_day": "2026-09-05"
+        "pct_active": 85.7,
+        "last_day": "2026-09-07"
       },
       "mode": {
         "active_pct": 0.0,
         "semi_pct": 100.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 155
+        "total_records": 162
       },
       "dy": null,
       "calibration": {
