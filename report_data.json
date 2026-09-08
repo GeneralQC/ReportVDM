@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-07 16:24:54",
+  "generated_at": "2026-09-08 09:30:08",
   "logfile_window": {
-    "start": "2026-09-01",
-    "end": "2026-09-07"
+    "start": "2026-09-02",
+    "end": "2026-09-08"
   },
   "dy_window": {
-    "start": "2026-08-31",
-    "end": "2026-09-07"
+    "start": "2026-09-01",
+    "end": "2026-09-08"
   },
   "compare_window": {
     "start": "2026-09-01",
@@ -18,23 +18,23 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 3,
+        "n_active_days": 4,
         "total_days": 7,
-        "pct_active": 42.9,
-        "last_day": "2026-09-05"
+        "pct_active": 57.1,
+        "last_day": "2026-09-07"
       },
       "mode": {
         "active_pct": 100.0,
         "semi_pct": 0.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 9
+        "total_records": 12
       },
       "dy": {
-        "total_diff": -0.03,
-        "on5_diff": -0.05,
-        "on2_diff": 0.02,
-        "n": 4
+        "total_diff": -0.04,
+        "on5_diff": -0.04,
+        "on2_diff": 0.03,
+        "n": 5
       },
       "calibration": {
         "date": "2026-09-07",
@@ -76,7 +76,7 @@
       },
       "pm": {
         "date": "2026-09-07",
-        "status": "In Process"
+        "status": "Completed"
       },
       "compare_qc": null
     },
@@ -113,9 +113,9 @@
       "flag": "🇻🇳",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 2,
+        "n_active_days": 1,
         "total_days": 7,
-        "pct_active": 28.6,
+        "pct_active": 14.3,
         "last_day": "2026-09-02"
       },
       "mode": {
@@ -123,7 +123,7 @@
         "semi_pct": 0.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 10
+        "total_records": 5
       },
       "dy": null,
       "calibration": {
@@ -150,14 +150,14 @@
         "n_active_days": 6,
         "total_days": 7,
         "pct_active": 85.7,
-        "last_day": "2026-09-06"
+        "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 94.6,
-        "semi_pct": 2.7,
-        "bypass_pct": 2.7,
+        "active_pct": 95.2,
+        "semi_pct": 2.4,
+        "bypass_pct": 2.4,
         "disable_pct": 0.0,
-        "total_records": 37
+        "total_records": 42
       },
       "dy": null,
       "calibration": {
@@ -247,9 +247,9 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
+        "pct_active": 71.4,
         "last_day": "2026-09-07"
       },
       "mode": {
@@ -257,7 +257,7 @@
         "semi_pct": 0.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 89
+        "total_records": 72
       },
       "dy": {
         "total_diff": 1.07,
@@ -266,7 +266,7 @@
         "n": 7
       },
       "calibration": {
-        "date": "2026-09-01",
+        "date": "2026-09-08",
         "status": "Completed"
       },
       "pm": {
@@ -299,10 +299,10 @@
         "total_records": 0
       },
       "dy": {
-        "total_diff": -0.06,
+        "total_diff": -0.05,
         "on5_diff": -0.1,
         "on2_diff": 0.0,
-        "n": 5
+        "n": 4
       },
       "calibration": {
         "date": "2026-09-01",
@@ -319,26 +319,26 @@
       "flag": "🇲🇲",
       "product_group": "A061",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
+        "pct_active": 71.4,
         "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 98.4,
+        "active_pct": 97.9,
         "semi_pct": 0.0,
-        "bypass_pct": 1.6,
+        "bypass_pct": 2.1,
         "disable_pct": 0.0,
-        "total_records": 62
+        "total_records": 47
       },
       "dy": {
         "total_diff": 0.0,
         "on5_diff": 0.0,
         "on2_diff": 0.0,
-        "n": 7
+        "n": 6
       },
       "calibration": {
-        "date": "2026-09-01",
+        "date": "2026-09-08",
         "status": "Completed"
       },
       "pm": {
@@ -346,11 +346,11 @@
         "status": "Completed"
       },
       "compare_qc": {
-        "diff_dg": 0.12,
-        "diff_mg": -0.1,
-        "diff_bg": -0.05,
-        "diff_adm": -0.05,
-        "n": 4
+        "diff_dg": 0.1,
+        "diff_mg": -0.12,
+        "diff_bg": 0.0,
+        "diff_adm": -0.04,
+        "n": 5
       }
     },
     "Kampot": {
@@ -361,20 +361,20 @@
         "n_active_days": 5,
         "total_days": 7,
         "pct_active": 71.4,
-        "last_day": "2026-09-05"
+        "last_day": "2026-09-08"
       },
       "mode": {
         "active_pct": 100.0,
         "semi_pct": 0.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 23
+        "total_records": 21
       },
       "dy": {
-        "total_diff": -0.09,
-        "on5_diff": -0.69,
-        "on2_diff": 0.06,
-        "n": 7
+        "total_diff": -0.08,
+        "on5_diff": -0.78,
+        "on2_diff": 0.05,
+        "n": 6
       },
       "calibration": {
         "date": "2026-09-07",
@@ -397,20 +397,20 @@
       "flag": "🇰🇭",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
+        "pct_active": 71.4,
         "last_day": "2026-09-07"
       },
       "mode": {
-        "active_pct": 96.6,
-        "semi_pct": 3.4,
+        "active_pct": 96.0,
+        "semi_pct": 4.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 59
+        "total_records": 50
       },
       "dy": {
-        "total_diff": 0.07,
+        "total_diff": 0.04,
         "on5_diff": 0.0,
         "on2_diff": 0.0,
         "n": 7
@@ -436,9 +436,9 @@
       "flag": "🇰🇭",
       "product_group": "5106",
       "usage": {
-        "n_active_days": 6,
+        "n_active_days": 5,
         "total_days": 7,
-        "pct_active": 85.7,
+        "pct_active": 71.4,
         "last_day": "2026-09-07"
       },
       "mode": {
@@ -446,7 +446,7 @@
         "semi_pct": 100.0,
         "bypass_pct": 0.0,
         "disable_pct": 0.0,
-        "total_records": 162
+        "total_records": 128
       },
       "dy": null,
       "calibration": {
